@@ -8,42 +8,42 @@ import type {
   OrganizationUsersInput,
 } from "./schema";
 
-export const createOrganizationController = async ({
-  ctx,
-  input,
-}: {
-  ctx: Context;
-  input: CreateUserInput;
-}) => {
-  try {
-    const { prisma } = ctx;
+// export const createOrganizationController = async ({
+//   ctx,
+//   input,
+// }: {
+//   ctx: Context;
+//   input: CreateUserInput;
+// }) => {
+//   try {
+//     const { prisma } = ctx;
 
-    const user = await prisma.user.create({
-      data: {
-        name: input.name,
-        email: input.email,
-        role: input.role,
-        organizationId: input.organizationId,
-      },
-    });
-    return {
-      status: "success",
-      data: {
-        user,
-      },
-    };
-  } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      if (error.code === "P2002") {
-        throw new TRPCError({
-          code: "CONFLICT",
-          message: "Email already exists",
-        });
-      }
-    }
-    throw error;
-  }
-};
+//     const user = await prisma.user.create({
+//       data: {
+//         name: input.name,
+//         email: input.email,
+//         role: input.role,
+//         organizationId: input.organizationId,
+//       },
+//     });
+//     return {
+//       status: "success",
+//       data: {
+//         user,
+//       },
+//     };
+//   } catch (error) {
+//     if (error instanceof Prisma.PrismaClientKnownRequestError) {
+//       if (error.code === "P2002") {
+//         throw new TRPCError({
+//           code: "CONFLICT",
+//           message: "Email already exists",
+//         });
+//       }
+//     }
+//     throw error;
+//   }
+// };
 
 export const getMeController = async ({ ctx }: { ctx: Context }) => {
   try {

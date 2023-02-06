@@ -56,6 +56,9 @@ model User {
     email         String?   @unique
     emailVerified DateTime?
 
+    punishments  Punishment[] @relation("givenPunishments")
+    givenPunishments Punishment[] @relation("receivedPunishments")
+
     role          Role     @default(ORG_MEMBER)
     image         String?
     organizationId String?
@@ -64,6 +67,67 @@ model User {
 
     accounts      Account[]
     sessions      Session[]
+}
+
+model PunishmentType {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    name      String   @unique
+    description String?
+    quantityToFulfill  Int
+    organization Organization @relation(fields: [organizationId], references: [id])
+    organizationId String
+    Punishments Punishment[]
+    PunishmentFromConversion PunishmentConversion[] @relation("PunishmentConversionFrom")
+    PunishmentToConversion PunishmentConversion[] @relation("PunishmentConversionTo")
+}
+
+model PunishmentConversion {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    organization Organization @relation(fields: [organizationId], references: [id])
+    organizationId String
+    from      PunishmentType @relation(name: "PunishmentConversionFrom", fields: [fromId], references: [id])
+    fromId    String
+    to        PunishmentType @relation(name: "PunishmentConversionTo", fields: [toId], references: [id])
+    toId      String
+    rate      Float
+
+    @@unique([fromId, toId, organizationId])
+}
+
+model PunishmentReason {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    name      String   @unique
+    organization Organization @relation(fields: [organizationId], references: [id])
+    organizationId String
+    description String?
+    Punishments Punishment[]
+}
+
+model Punishment {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    user      User     @relation(name: "receivedPunishments", fields: [userId], references: [id])
+    userId    String
+    createdBy User     @relation(name: "givenPunishments", fields: [createdById], references: [id])
+    createdById String
+    type      PunishmentType @relation(fields: [typeId], references: [id])
+    typeId    String
+    reason    PunishmentReason @relation(fields: [reasonId], references: [id])
+    reasonId  String
+    organization Organization @relation(fields: [organizationId], references: [id])
+    organizationId String
+    description String?
+    proof     String?
+    quantity  Int     @default(1)
+    approved  Boolean @default(false)
+
 }
 
 model VerificationToken {
@@ -78,10 +142,14 @@ model Organization {
     id        String   @id @default(cuid())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    name      String
+    name      String   @unique
 
     users     User[]
     posts     Post[]
+    punishments Punishment[]
+    punishmentReasons PunishmentReason[]
+    punishmentTypes PunishmentType[]
+    punishmentConversions PunishmentConversion[]
 }
 
 model Post {

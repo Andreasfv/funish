@@ -48,7 +48,7 @@ export const addUserToOrganizationSchema = z.object({
 export type CreateUserInput = z.infer<typeof createUserSchema>;
 export type UpdateUserInput = z.infer<typeof updateUserSchema>;
 export type OrganizationUsersInput = z.infer<typeof organizationUsersSchema>;
-export type SortUSersInput = z.infer<typeof sortUsers>;
+export type SortUsersInput = z.infer<typeof sortUsers>;
 export type AddUserToOrganizationInput = z.infer<
   typeof addUserToOrganizationSchema
 >;
