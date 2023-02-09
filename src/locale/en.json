@@ -1,3 +1,4 @@
 {
-  "common.organization": "Organization"
+  "common.organization": "Organization",
+  "dashboard.title": "Welcome to {{orgName}}'s dashboard"
 }
