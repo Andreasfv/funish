@@ -10,7 +10,6 @@ const Card = styled.div`
   background-color: white;
   border-radius: 0.7rem;
   padding: 1rem;
-  border: ${(props) => props.theme.borders.cardBorder};
   box-shadow: ${(props) => props.theme.shadow.cardShadow};
 `;
 
