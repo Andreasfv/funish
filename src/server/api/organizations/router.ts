@@ -13,6 +13,7 @@ import {
   createOrganizationController,
   updateOrganizationController,
   deleteOrganizationController,
+  getOrganizationWithPunishmentDataController,
 } from "./controller";
 import {
   getOrganizationSchema,
@@ -29,6 +30,11 @@ export const organizationsRouter = createTRPCRouter({
   getOrganizations: protectedProcedure
     .input(filterOrganizationSchema)
     .query(({ ctx, input }) => getOrganizationsController({ ctx, input })),
+  getOrganizationWithPunishmentDataController: protectedProcedure
+    .input(getOrganizationSchema)
+    .query(({ ctx, input }) =>
+      getOrganizationWithPunishmentDataController({ ctx, input })
+    ),
   getMyOrganization: protectedProcedure.query(({ ctx }) =>
     getMyOrganizationController({ ctx })
   ),

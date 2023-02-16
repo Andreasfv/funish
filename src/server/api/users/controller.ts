@@ -5,6 +5,8 @@ import type { Context } from "../trpc";
 import type {
   AddUserToOrganizationInput,
   CreateUserInput,
+  GetComprehensiveUserDataInput,
+  GetUserInput,
   OrganizationUsersInput,
 } from "./schema";
 
@@ -176,6 +178,40 @@ export const createUserController = async ({
   }
 };
 
+export const getUserController = async ({
+  ctx,
+  userId,
+}: {
+  ctx: Context;
+  userId: string;
+}) => {
+  try {
+    const { prisma, session } = ctx;
+
+    if (!userId) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "User not found",
+      });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    return {
+      status: "success",
+      data: {
+        user,
+      },
+    };
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const addUserToOrganizationController = async ({
   ctx,
   input,
@@ -200,6 +236,55 @@ export const addUserToOrganizationController = async ({
       },
       data: {
         organizationId,
+      },
+    });
+
+    return {
+      status: "success",
+      data: {
+        user,
+      },
+    };
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getComprehensiveUserDataController = async ({
+  ctx,
+  input,
+}: {
+  ctx: Context;
+  input: GetUserInput;
+}) => {
+  try {
+    const { prisma, session } = ctx;
+
+    if (!input) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "User not found",
+      });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: input,
+      },
+      include: {
+        organization: {
+          include: {
+            punishmentTypes: {
+              include: {
+                Punishments: {
+                  where: {
+                    userId: input,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
 

@@ -19,6 +19,7 @@ export const filterPunishmentTypeSchema = z.object({
   limit: z.number().default(10),
   page: z.number().default(0),
   filterString: z.string().optional(),
+  organizationId: z.string().optional(),
   sort: z.enum(["name", "-name", "description", "-description"]).optional(),
 });
 

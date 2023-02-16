@@ -45,7 +45,28 @@ export const addUserToOrganizationSchema = z.object({
   organizationId: z.string(),
 });
 
+export const getUserSchema = z.string();
+export const getComprehensiveUserDataSchema = z.object({
+  userId: z.string(),
+
+  include: z.object({
+    organization: z
+      .object({
+        include: z.object({
+          punishmentTypes: z.boolean().default(false),
+          punishmentReasons: z.boolean().default(false),
+        }),
+      })
+      .or(z.boolean())
+      .default(false),
+    punishments: z.boolean().default(false),
+  }),
+});
 export type CreateUserInput = z.infer<typeof createUserSchema>;
+export type GetUserInput = z.infer<typeof getUserSchema>;
+export type GetComprehensiveUserDataInput = z.infer<
+  typeof getComprehensiveUserDataSchema
+>;
 export type UpdateUserInput = z.infer<typeof updateUserSchema>;
 export type OrganizationUsersInput = z.infer<typeof organizationUsersSchema>;
 export type SortUsersInput = z.infer<typeof sortUsers>;

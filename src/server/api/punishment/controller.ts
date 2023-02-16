@@ -292,6 +292,9 @@ export const getMyPunishmentsController = async ({
         userId: session?.user?.id,
         approved: input.approved,
         createdById: input.createdById,
+        type: {
+          id: input.typeId,
+        },
       },
       orderBy,
       skip: input.page * input.limit,

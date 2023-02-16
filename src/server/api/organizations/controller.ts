@@ -214,3 +214,43 @@ export const getMyOrganizationController = async ({
     throw error;
   }
 };
+
+export const getOrganizationWithPunishmentDataController = async ({
+  ctx,
+  input,
+}: {
+  ctx: Context;
+  input: string;
+}) => {
+  try {
+    const { prisma, session } = ctx;
+
+    // Permission Handling other than logged in
+    if (session?.user?.role !== "SUPER_ADMIN") {
+      if (session?.user?.organizationId !== input) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Not authorized",
+        });
+      }
+    }
+    const organization = await prisma.organization.findUnique({
+      where: {
+        id: input,
+      },
+      include: {
+        punishments: true,
+        punishmentTypes: true,
+        punishmentReasons: true,
+      },
+    });
+    return {
+      status: "success",
+      data: {
+        organization,
+      },
+    };
+  } catch (error) {
+    throw error;
+  }
+};

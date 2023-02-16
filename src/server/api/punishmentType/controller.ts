@@ -172,7 +172,7 @@ export const getPunishmentTypesController = async ({
     const punishmentTypes = await prisma.punishmentType.findMany({
       where: {
         name: { contains: filterString, mode: "insensitive" },
-        organizationId: session?.user?.organizationId,
+        organizationId: input.organizationId,
       },
       skip: page * limit,
       take: limit,

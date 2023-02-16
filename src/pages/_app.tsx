@@ -1,12 +1,11 @@
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
+import { ThemeProvider } from "styled-components";
+import theme from "../utils/theme";
 import "../i18";
-import "antd/dist/reset.css";
 import { api } from "../utils/api";
 import "../styles/globals.css";
-import { Header } from "../components/Header/Header";
-import { ConfigProvider } from "antd";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -14,15 +13,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <ConfigProvider
-        theme={{
-          token: {
-            colorPrimary: "#291321",
-          },
-        }}
-      >
+      <ThemeProvider theme={theme}>
         <Component {...pageProps} />
-      </ConfigProvider>
+      </ThemeProvider>
     </SessionProvider>
   );
 };

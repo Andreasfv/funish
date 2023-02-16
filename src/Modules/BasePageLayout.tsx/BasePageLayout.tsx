@@ -3,105 +3,43 @@ import {
   HomeOutlined,
   NotificationOutlined,
 } from "@ant-design/icons";
-import { Breadcrumb, Layout, Menu, MenuProps, theme } from "antd";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React from "react";
 import styled from "styled-components";
+import Header from "./components/Header";
+import Sidebar from "./components/Sidebar";
 
-const { Header, Content, Footer, Sider } = Layout;
-
-const BreadcrumbWrapper = styled.div`
+const Wrapper = styled.div`
   display: flex;
-  justify-content: 100%;
-  align-items: center;
+  flex-direction: column;
+  width: 100%;
   height: 100%;
+  justify-content: center;
 `;
 
-interface breadcrumbItem {
-  label: string;
-  href: string;
-}
+const ContentWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: row;
+`;
+
 interface BasePageLayoutProps {
   children: React.ReactNode;
-  breadcrumbItems: breadcrumbItem[];
 }
 
-export const BasePageLayout: React.FC<BasePageLayoutProps> = ({
-  children,
-  breadcrumbItems,
-}) => {
+export const BasePageLayout: React.FC<BasePageLayoutProps> = ({ children }) => {
   const router = useRouter();
   const session = useSession();
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
-
-  const breadcrumbItemsRender = breadcrumbItems.map((item) => (
-    <Breadcrumb.Item
-      key={item.label}
-      onClick={() => {
-        router.push(`/${item.href}`);
-      }}
-    >
-      {item.label}
-    </Breadcrumb.Item>
-  ));
-
-  const menuItems: MenuProps["items"] = [
-    {
-      key: "Home",
-      label: "Home",
-      icon: <HomeOutlined />,
-      onClick: () => {
-        router.push("/");
-      },
-    },
-  ];
 
   return (
-    <Layout>
-      <Header>
-        <div className="logo" />
-      </Header>
-      <Layout>
-        <Sider width={200} style={{ background: colorBgContainer }}>
-          <Menu
-            mode="inline"
-            defaultSelectedKeys={["1"]}
-            style={{
-              height: "100%",
-              borderRight: 0,
-            }}
-            items={menuItems}
-          />
-        </Sider>
-        <Layout
-          style={{
-            padding: "0 24px 24px",
-          }}
-        >
-          <BreadcrumbWrapper>
-            <Breadcrumb
-              style={{
-                margin: "16px 0",
-              }}
-            >
-              {breadcrumbItemsRender}
-            </Breadcrumb>
-          </BreadcrumbWrapper>
-          <Content
-            style={{
-              padding: "1rem 24px 24px 24px",
-              margin: 0,
-              minHeight: 320,
-              background: colorBgContainer,
-            }}
-          >
-            {children}
-          </Content>
-        </Layout>
-      </Layout>
-    </Layout>
+    <Wrapper>
+      <Header />
+      <ContentWrapper>
+        <Sidebar />
+        {children}
+      </ContentWrapper>
+    </Wrapper>
   );
 };
