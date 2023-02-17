@@ -125,6 +125,7 @@ model Punishment {
     organizationId String
     description String?
     proof     String?
+    reedemed  Boolean @default(false)
     quantity  Int     @default(1)
     approved  Boolean @default(false)
 
