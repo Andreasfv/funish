@@ -242,6 +242,7 @@ export const getOrganizationWithPunishmentDataController = async ({
         punishments: true,
         punishmentTypes: true,
         punishmentReasons: true,
+        users: true,
       },
     });
     return {
