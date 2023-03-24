@@ -32,6 +32,19 @@ const theme = {
     mobile: "only screen and (max-width: 600px)",
   },
 };
+// export interface Theme {
+//   colors: {
+//     [key: string]: string;
+//   };
+//   borders: {
+//     [key: string]: string;
+//   };
+//   shadow: {
+//     [key: string]: string;
+//   };
+//   media: {
+//     [key: string]: string;
+//   };
+// }
 
-export type Theme = typeof theme;
 export default theme;
