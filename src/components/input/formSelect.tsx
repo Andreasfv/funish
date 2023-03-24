@@ -162,7 +162,6 @@ const FormSelect: React.FC<FormSelectProps> = ({
         onChange={handleSearch}
         tabIndex={0}
       />
-      {error && <ErrorSpan>{error}</ErrorSpan>}
       {isOpen && (
         <DropDownContainer ref={dropdownRef}>
           <DropDownListContainer>
