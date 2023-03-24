@@ -17,7 +17,10 @@ export const createPunishmentReasonController = async ({
 }) => {
   try {
     const { prisma, session } = ctx;
-    if (session?.user?.role !== "ORG_ADMIN") {
+    if (
+      session?.user?.role !== "ORG_ADMIN" &&
+      session?.user?.role !== "SUPER_ADMIN"
+    ) {
       throw new TRPCError({
         code: "UNAUTHORIZED",
         message: "Not authorized",
@@ -99,7 +102,7 @@ export const deletePunishmentReasonController = async ({
   input,
 }: {
   ctx: Context;
-  input: { id: string };
+  input: string;
 }) => {
   try {
     const { prisma, session } = ctx;
@@ -112,7 +115,7 @@ export const deletePunishmentReasonController = async ({
 
     const punishmentReason = await prisma.punishmentReason.delete({
       where: {
-        id: input.id,
+        id: input,
       },
     });
     return {

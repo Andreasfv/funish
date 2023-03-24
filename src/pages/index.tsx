@@ -7,11 +7,23 @@ import "../i18";
 import { api } from "../utils/api";
 import { useTranslation } from "react-i18next";
 import { useAdmin } from "../utils/admin/useAdmin";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
   const admin = useAdmin();
+  const router = useRouter();
+  const { data: me } = api.users.me.useQuery();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (me?.data?.user?.organizationId) {
+      router.push(`/[organizationId]/dashboard`, {
+        query: { organizationId: me?.data?.user?.organizationId },
+      });
+    }
+  }, [me]);
   return (
     <>
       <Head>
@@ -35,7 +47,7 @@ const Home: NextPage = () => {
             )}
             <Link
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-              href="/dashboard"
+              href={"/dashboard"}
             >
               {"Dashboard"}
             </Link>
@@ -70,7 +82,14 @@ const AuthShowcase: React.FC = () => {
       </p>
       <button
         className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-        onClick={sessionData ? () => void signOut() : () => void signIn()}
+        onClick={
+          sessionData
+            ? () => void signOut()
+            : () =>
+                void signIn().then((user) => {
+                  console.log(user);
+                })
+        }
       >
         {sessionData ? "Sign out" : "Sign in"}
       </button>

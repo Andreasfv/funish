@@ -27,6 +27,10 @@ export const deletePunishmentTypeSchema = z.string();
 
 export const getPunishmentTypeSchema = z.string();
 
+export const getPunishmentTypeWithPunishmentsForUserSchema = z.object({
+  organizationId: z.string(),
+  userId: z.string(),
+});
 export type CreatePunishmentTypeInput = z.infer<
   typeof createPunishmentTypeSchema
 >;
@@ -43,3 +47,7 @@ export type DeletePunishmentTypeInput = z.infer<
   typeof deletePunishmentTypeSchema
 >;
 export type GetPunishmentTypeInput = z.infer<typeof getPunishmentTypeSchema>;
+
+export type GetPunishmentTypeWithPunishmentsForUserInput = z.infer<
+  typeof getPunishmentTypeWithPunishmentsForUserSchema
+>;

@@ -7,6 +7,7 @@ import type {
   UpdatePunishmentTypeInput,
   FilterPunishmentTypeInput,
   GetPunishmentTypeInput,
+  GetPunishmentTypeWithPunishmentsForUserInput,
 } from "./schema";
 
 export const createPunishmentTypeController = async ({
@@ -18,7 +19,10 @@ export const createPunishmentTypeController = async ({
 }) => {
   try {
     const { prisma, session } = ctx;
-    if (session?.user?.role !== "ORG_ADMIN") {
+    if (
+      session?.user?.role !== "ORG_ADMIN" &&
+      session?.user?.role !== "SUPER_ADMIN"
+    ) {
       throw new TRPCError({
         code: "UNAUTHORIZED",
         message: "Not authorized",
@@ -105,7 +109,10 @@ export const deletePunishmentTypeController = async ({
 }) => {
   try {
     const { prisma, session } = ctx;
-    if (session?.user?.role !== "ORG_ADMIN") {
+    if (
+      session?.user?.role !== "ORG_ADMIN" &&
+      session?.user?.role !== "SUPER_ADMIN"
+    ) {
       throw new TRPCError({
         code: "UNAUTHORIZED",
         message: "Not authorized",
@@ -174,6 +181,50 @@ export const getPunishmentTypesController = async ({
       },
       skip: page * limit,
       take: limit,
+    });
+    return {
+      status: "success",
+      data: {
+        punishmentTypes,
+      },
+    };
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getPunishmentTypesWithPunishmentsForUser = async ({
+  ctx,
+  input,
+}: {
+  ctx: Context;
+  input: GetPunishmentTypeWithPunishmentsForUserInput;
+}) => {
+  try {
+    const { prisma, session } = ctx;
+    const { organizationId, userId } = input;
+    if (!session?.user?.organizationId) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message:
+          "Organization membership not found, or you are not a member of an organization",
+      });
+    }
+    const punishmentTypes = await prisma.punishmentType.findMany({
+      where: {
+        organizationId: input.organizationId,
+      },
+      include: {
+        Punishments: {
+          where: {
+            userId: input.userId,
+          },
+          include: {
+            createdBy: true,
+            reason: true,
+          },
+        },
+      },
     });
     return {
       status: "success",

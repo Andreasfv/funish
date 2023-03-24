@@ -9,6 +9,8 @@ import { useTranslation } from "react-i18next";
 import FormSelect from "../../components/input/formSelect";
 import { useRouter } from "next/router";
 import FormNumberInput from "../../components/input/formNumberInput";
+import FormField from "./components/FormField";
+import SubmitButton from "./components/SubmitButton";
 const Wrapper = styled.div`
   display: flex;
   width: 100%;
@@ -22,7 +24,7 @@ const ContentWrapper = styled.div`
   align-items: center;
   width: 100%;
   height: 100%;
-  max-width: 700px;
+  max-width: 500px;
   background-color: white;
   border-radius: 0.5rem;
   padding: 1rem;
@@ -31,37 +33,10 @@ const ContentWrapper = styled.div`
 const FormWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 400px;
+  width: 100%;
   height: 100%;
   justify-content: center;
   align-items: center;
-`;
-
-const FormField = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  margin-bottom: 1rem;
-  label {
-    display: flex;
-    justify-content: space-between;
-    font-weight: 600;
-    color: ${(props) => props.theme.colors.gray5};
-  }
-`;
-const SubmitButton = styled.button`
-  width: 100%;
-  height: 2.5rem;
-  border-radius: 4px;
-  background-color: ${(props) => props.theme.colors.green};
-
-  :hover {
-    border: 2px solid ${(props) => props.theme.colors.darkGreen};
-  }
-
-  :focus {
-    background-color: ${(props) => props.theme.colors.darkGreen};
-  }
 `;
 
 const ErrorSpan = styled.span`
@@ -94,6 +69,7 @@ const CreatePunishment: React.FC = () => {
     api.organizations.getOrganizationWithPunishmentData.useQuery(
       me?.data?.user?.organizationId ?? ""
     );
+  console.log(me?.data?.user?.organizationId);
 
   const {
     handleSubmit,
@@ -128,6 +104,7 @@ const CreatePunishment: React.FC = () => {
       console.warn(e);
     });
   }
+
   const onSubmit = (data: formType) => {
     const createPunishmentData = {
       ...data,

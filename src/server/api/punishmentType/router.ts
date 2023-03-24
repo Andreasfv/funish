@@ -6,6 +6,7 @@ import {
   getPunishmentTypeController,
   getPunishmentTypesController,
   updatePunishmentTypeController,
+  getPunishmentTypesWithPunishmentsForUser,
 } from "./controller";
 
 import {
@@ -14,6 +15,7 @@ import {
   filterPunishmentTypeSchema,
   getPunishmentTypeSchema,
   updatePunishmentTypeSchema,
+  getPunishmentTypeWithPunishmentsForUserSchema,
 } from "./schema";
 
 export const punishmentTypeRouter = createTRPCRouter({
@@ -24,6 +26,12 @@ export const punishmentTypeRouter = createTRPCRouter({
   getPunishmentTypes: protectedProcedure
     .input(filterPunishmentTypeSchema)
     .query(({ ctx, input }) => getPunishmentTypesController({ ctx, input })),
+
+  getPunishmentTypesWithPunishmentsForUser: protectedProcedure
+    .input(getPunishmentTypeWithPunishmentsForUserSchema)
+    .query(({ ctx, input }) =>
+      getPunishmentTypesWithPunishmentsForUser({ ctx, input })
+    ),
 
   createPunishmentType: protectedProcedure
     .input(createPunishmentTypeSchema)

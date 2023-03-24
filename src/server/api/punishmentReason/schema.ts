@@ -21,9 +21,7 @@ export const filterPunishmentReasonSchema = z.object({
   sort: z.enum(["name", "-name", "description", "-description"]).optional(),
 });
 
-export const deletePunishmentReasonSchema = z.object({
-  id: z.string(),
-});
+export const deletePunishmentReasonSchema = z.string();
 
 export const getPunishmentReasonSchema = z.object({
   id: z.string(),

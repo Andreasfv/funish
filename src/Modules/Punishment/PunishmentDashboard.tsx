@@ -1,8 +1,11 @@
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import { useAdmin } from "../../utils/admin/useAdmin";
+import { api } from "../../utils/api";
 import { BasePageLayout } from "../BasePageLayout.tsx/BasePageLayout";
 import CreatePunishment from "./CreatePunishment";
+import ManagePunishmentReasons from "./ManagePunishmenReasons";
+import ManagePunishmentTypes from "./ManagePunishmentTypes";
 
 const Wrapper = styled.div`
   display: flex;
@@ -74,7 +77,7 @@ const PunishmentDashboard: React.FC = () => {
   const router = useRouter();
   const switchItem =
     router.pathname.split("/")[router.pathname.split("/").length - 1] ?? "";
-
+  const { organizationId } = router.query;
   function goToSwitchItem(item: string) {
     const route = router.asPath;
     const routeArray = route.split("/");
@@ -83,6 +86,13 @@ const PunishmentDashboard: React.FC = () => {
       .join("/")}/${item}`;
     router.push(goToRoute).catch((err) => console.log(err));
   }
+
+  const { data: organization, refetch } =
+    api.organizations.getOrganizationWithPunishmentData.useQuery(
+      organizationId as string,
+      { enabled: !!organizationId }
+    );
+  console.log(organization);
   const switchItems = [
     { label: "Punish", href: "punish" },
     { label: "Manage Punishment Types", href: "manage_punishment_types" },
@@ -103,6 +113,33 @@ const PunishmentDashboard: React.FC = () => {
     <SwitchItem selected={false}>Punish</SwitchItem>
   );
 
+  function contentSwitch(str: string) {
+    switch (str) {
+      case "punish":
+        return <CreatePunishment />;
+      case "manage_punishment_types":
+        return (
+          <ManagePunishmentTypes
+            punishmentTypes={
+              organization?.data.organization?.punishmentTypes ?? []
+            }
+            refetch={refetch}
+          />
+        );
+      case "manage_punishment_reasons":
+        return (
+          <ManagePunishmentReasons
+            refetch={refetch}
+            punishmentReasons={
+              organization?.data.organization?.punishmentReasons ?? []
+            }
+          />
+        );
+      default:
+        return <CreatePunishment />;
+    }
+  }
+
   return (
     <>
       <BasePageLayout>
@@ -111,9 +148,7 @@ const PunishmentDashboard: React.FC = () => {
             <SwitchWrapper>{SwitchItems}</SwitchWrapper>
           </TopContentWrapper>
           <BottomContentWrapper>
-            <DashboardWrapper>
-              <CreatePunishment />
-            </DashboardWrapper>
+            <DashboardWrapper>{contentSwitch(switchItem)}</DashboardWrapper>
           </BottomContentWrapper>
         </Wrapper>
       </BasePageLayout>
