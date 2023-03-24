@@ -113,7 +113,7 @@ export const getOrganizationsController = async ({
       take: limit,
       skip: page * limit,
       where: {
-        name: { contains: filterString, mode: "insensitive" },
+        name: { contains: filterString },
       },
     });
 
