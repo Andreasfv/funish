@@ -1,17 +1,14 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-generator client {
-    provider = "prisma-client-js"
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
-datasource db {
-    provider = "postgresql"
-    // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    url      = env("DATABASE_URL")
+generator client {
+  provider = "prisma-client-js"
 }
 
 model Example {
@@ -37,6 +34,7 @@ model Account {
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([provider, providerAccountId])
+    @@index([userId])
 }
 
 model Session {
@@ -45,6 +43,8 @@ model Session {
     userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
 }
 
 model User {
@@ -67,6 +67,8 @@ model User {
 
     accounts      Account[]
     sessions      Session[]
+
+    @@index([organizationId])
 }
 
 model PunishmentType {
@@ -81,6 +83,8 @@ model PunishmentType {
     Punishments Punishment[]
     PunishmentFromConversion PunishmentConversion[] @relation("PunishmentConversionFrom")
     PunishmentToConversion PunishmentConversion[] @relation("PunishmentConversionTo")
+
+    @@index([organizationId])
 }
 
 model PunishmentConversion {
@@ -96,6 +100,8 @@ model PunishmentConversion {
     rate      Float
 
     @@unique([fromId, toId, organizationId])
+    @@index([toId])
+    @@index([organizationId])
 }
 
 model PunishmentReason {
@@ -107,6 +113,8 @@ model PunishmentReason {
     organizationId String
     description String?
     Punishments Punishment[]
+
+    @@index([organizationId])
 }
 
 model Punishment {
@@ -129,6 +137,11 @@ model Punishment {
     quantity  Int     @default(1)
     approved  Boolean @default(false)
 
+    @@index([userId])
+    @@index([createdById])
+    @@index([typeId])
+    @@index([organizationId])
+    @@index([reasonId])
 }
 
 model VerificationToken {
@@ -164,6 +177,9 @@ model Post {
     organizationId String
     author    User     @relation(fields: [authorId], references: [id])
     authorId  String
+
+    @@index([authorId])
+    @@index([organizationId])
 }
 
 enum Role {
