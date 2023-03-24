@@ -113,6 +113,10 @@ const PunishmentDashboard: React.FC = () => {
     <SwitchItem selected={false}>Punish</SwitchItem>
   );
 
+  function execRefetch() {
+    void refetch();
+  }
+
   function contentSwitch(str: string) {
     switch (str) {
       case "punish":
@@ -123,13 +127,13 @@ const PunishmentDashboard: React.FC = () => {
             punishmentTypes={
               organization?.data.organization?.punishmentTypes ?? []
             }
-            refetch={refetch}
+            refetch={execRefetch}
           />
         );
       case "manage_punishment_reasons":
         return (
           <ManagePunishmentReasons
-            refetch={refetch}
+            refetch={execRefetch}
             punishmentReasons={
               organization?.data.organization?.punishmentReasons ?? []
             }

@@ -39,10 +39,12 @@ const Sidebar: React.FC = () => {
     if (!me?.data?.user?.organizationId) return;
 
     return () => {
-      router.push({
-        pathname: `/[organizationId]/${path}`,
-        query: { organizationId: me?.data?.user?.organizationId },
-      });
+      router
+        .push({
+          pathname: `/[organizationId]/${path}`,
+          query: { organizationId: me?.data?.user?.organizationId },
+        })
+        .catch((err) => console.warn(err));
     };
   }
 
@@ -55,7 +57,7 @@ const Sidebar: React.FC = () => {
         <SidebarItem>My Account</SidebarItem>
         <SidebarItem
           onClick={() => {
-            router.push("/");
+            router.push("/").catch((err) => console.log(err));
             void signOut();
           }}
         >

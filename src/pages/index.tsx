@@ -19,9 +19,11 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     if (me?.data?.user?.organizationId) {
-      router.push(`/[organizationId]/dashboard`, {
-        query: { organizationId: me?.data?.user?.organizationId },
-      });
+      router
+        .push(`/[organizationId]/dashboard`, {
+          query: { organizationId: me?.data?.user?.organizationId },
+        })
+        .catch((err) => console.warn(err));
     }
   }, [me]);
   return (
