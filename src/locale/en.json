@@ -1,4 +1,11 @@
 {
   "common.organization": "Organization",
-  "dashboard.title": "Welcome to {{orgName}}'s dashboard"
+  "dashboard.title": "Welcome to {{orgName}}'s dashboard",
+  "punish.form.reason": "Reason",
+  "punish.form.description": "Description",
+  "punish.form.user": "User",
+  "punish.form.type": "Type",
+  "punish.form.amount": "Amount",
+  "input.error.no-options": "No options",
+  "form.error.corrections": "Please correct the highlighted fields"
 }

@@ -6,6 +6,21 @@ const theme = {
     green: "#BCEAD5",
     lightDarkGreen: "#9ED5C5",
     darkGreen: "#8EC3B0",
+
+    black: "#2A2F5B",
+    gray1: "#363745",
+    gray2: "#424455",
+    gray3: "#5C5C72",
+    gray4: "#767689",
+    gray5: "#9696A2",
+    gray6: "#AFAFB4",
+    gray7: "#CACACC",
+    gray8: "#E1E1E1",
+    gray9: "#e9ecef",
+    gray10: "#F3F3F3",
+    gray11: "#f7f8fc",
+
+    red: "#880d1e",
   },
   borders: {
     cardBorder: "1px solid lightgrey",
