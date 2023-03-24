@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import FormInput from "../../components/input/formInput";
 import { useTranslation } from "react-i18next";
 import FormSelect from "../../components/input/formSelect";
-import { useAdmin } from "../../utils/admin/useAdmin";
 import { useRouter } from "next/router";
 import FormNumberInput from "../../components/input/formNumberInput";
 const Wrapper = styled.div`
@@ -91,7 +90,6 @@ const CreatePunishment: React.FC = () => {
   const router = useRouter();
   const params = router.query;
   const { data: me } = api.users.me.useQuery();
-  const isAdmin = useAdmin();
   const { data: organization } =
     api.organizations.getOrganizationWithPunishmentData.useQuery(
       me?.data?.user?.organizationId ?? ""
@@ -116,8 +114,7 @@ const CreatePunishment: React.FC = () => {
     },
     resolver: zodResolver(formSchema),
   });
-  const reg = register("userId");
-  const { mutateAsync: createPunishment, error } =
+  const { mutate: createPunishment } =
     api.punishments.createPunishment.useMutation();
 
   function handleChange(formKey: keyof formType) {
@@ -126,6 +123,11 @@ const CreatePunishment: React.FC = () => {
     };
   }
 
+  function submit() {
+    handleSubmit(onSubmit)().catch((e: Error) => {
+      console.warn(e);
+    });
+  }
   const onSubmit = (data: formType) => {
     const createPunishmentData = {
       ...data,
@@ -134,9 +136,7 @@ const CreatePunishment: React.FC = () => {
       description: data.description ?? "",
     };
 
-    createPunishment(createPunishmentData).then(() => {
-      alert("Punishment created!");
-    });
+    createPunishment(createPunishmentData);
   };
 
   const userOptions =
@@ -202,11 +202,7 @@ const CreatePunishment: React.FC = () => {
             </FormField>
             <FormField>
               <label>{t("punish.form.description")}</label>
-              <FormInput
-                register={register("description")}
-                label="description"
-                required={true}
-              />
+              <FormInput register={register("description")} />
             </FormField>
             <FormField>
               <label>
@@ -219,8 +215,6 @@ const CreatePunishment: React.FC = () => {
                 register={register("quantity", {
                   setValueAs: (value: string) => Number(value),
                 })}
-                id="quantity"
-                required={true}
               />
             </FormField>
             <FormField>
@@ -231,7 +225,7 @@ const CreatePunishment: React.FC = () => {
                 <ErrorSpan>{t("form.error.corrections")}</ErrorSpan>
               )}
             </div>
-            <SubmitButton onClick={handleSubmit(onSubmit)}>Submit</SubmitButton>
+            <SubmitButton onClick={submit}>Submit</SubmitButton>
           </FormWrapper>
         </ContentWrapper>
       </Wrapper>

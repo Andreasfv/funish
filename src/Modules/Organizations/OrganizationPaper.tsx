@@ -22,21 +22,14 @@ const OrganizationPaper: React.FC<OrganizationPaperProps> = ({
   organizationId,
   userId,
 }) => {
-  const { data: organization, isLoading } =
-    api.organizations.getOrganization.useQuery(organizationId);
-  const { data: punishmentTypes, isLoading: loadingPunishmentTypes } =
-    api.punishmentTypes.getPunishmentTypes.useQuery({
-      organizationId: organizationId,
-    });
-  const { data: punishment, isLoading: loadingPunishment } =
-    api.punishments.getPunishments.useQuery({
-      organizationId: organizationId,
-      userId: userId,
-    });
+  const { data: punishment } = api.punishments.getPunishments.useQuery({
+    organizationId: organizationId,
+    userId: userId,
+  });
   return (
     <Card>
       <p>Organization</p>
-      <p>{`Total Punishments: ${punishment?.data.punishment.length}`}</p>
+      <p>{`Total Punishments: ${punishment?.data.punishment.length ?? ""}`}</p>
     </Card>
   );
 };

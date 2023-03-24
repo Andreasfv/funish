@@ -1,10 +1,4 @@
-import { z } from "zod";
-import {
-  adminProcedure,
-  createTRPCRouter,
-  protectedProcedure,
-  superAdminProcedure,
-} from "../trpc";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 // Creating, editing and updating punisment conversions are available to superusers and
 // admins of the organization that the punishment conversion is associated with.

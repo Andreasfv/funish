@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import css from "styled-jsx/css";
 
 const Wrapper = styled.div`
   display: flex;
@@ -63,6 +62,7 @@ const DropDownListContainer = styled.ul`
   &:first-child {
   }
 `;
+
 const ListItem = styled.li`
   list-style: none;
   padding: 0.5rem 0.5rem;
@@ -73,13 +73,6 @@ const ListItem = styled.li`
   }
 `;
 
-const ErrorSpan = styled.span`
-  color: ${(props) => props.theme.colors.red};
-  font-size: 0.8rem;
-  margin-top: 0.2rem;
-  margin-left: 0.2rem;
-`;
-
 type Option = {
   value: string;
   label: string;
@@ -88,17 +81,14 @@ interface FormSelectProps {
   options: Option[];
   placeholder?: string;
   handleChange: (value: string) => void;
-  error?: string;
 }
 
 const FormSelect: React.FC<FormSelectProps> = ({
   options,
   placeholder,
   handleChange,
-  error,
 }) => {
   const { t } = useTranslation();
-  const [selected, setSelected] = useState<boolean>(false);
   const [filteredOptions, setFilteredOptions] = useState<Option[]>(options); // [
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -107,13 +97,9 @@ const FormSelect: React.FC<FormSelectProps> = ({
 
   const handleSearch = (e: React.FormEvent<HTMLInputElement>) => {
     //We use a const so that the update is immediatedly. setState can be slow.
-    const select = false;
-    setSelected(false);
     setSearch(e.currentTarget.value);
 
     const filteredOptions = options.filter((option) => {
-      if (select) return true;
-
       return option.label
         .toLowerCase()
         .includes(e.currentTarget.value.toLowerCase());
@@ -124,7 +110,6 @@ const FormSelect: React.FC<FormSelectProps> = ({
 
   const onOptionClicked = (value: Option) => () => {
     setFilteredOptions(options);
-    setSelected(true);
     setIsOpen(false);
     setSearch(value.label);
     handleChange(value.value);
@@ -133,7 +118,7 @@ const FormSelect: React.FC<FormSelectProps> = ({
   options =
     options.length >= 1
       ? options
-      : [{ value: "", label: t("input.error.no-options")! }];
+      : [{ value: "", label: t("input.error.no-options") ?? "" }];
 
   useEffect(() => {
     // Make sure the options are updated when the options prop changes
@@ -170,8 +155,9 @@ const FormSelect: React.FC<FormSelectProps> = ({
       {isOpen && (
         <DropDownContainer ref={dropdownRef}>
           <DropDownListContainer>
-            {filteredOptions.map((option) => (
+            {filteredOptions.map((option, index) => (
               <ListItem
+                key={index}
                 onClick={onOptionClicked(option)}
                 value={option.value}
                 tabIndex={0}

@@ -19,10 +19,6 @@ const SidebarItem = styled.div`
   }
 `;
 
-const SidebarBottomItem = styled(SidebarItem)`
-  justify-self: flex-end;
-`;
-
 const SidebarBottomWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -31,9 +27,7 @@ const SidebarBottomWrapper = styled.div`
   justify-content: flex-end;
 `;
 
-interface SidebarProps {}
-
-const Sidebar: React.FC<SidebarProps> = () => {
+const Sidebar: React.FC = () => {
   const admin = useAdmin();
   return (
     <Wrapper>

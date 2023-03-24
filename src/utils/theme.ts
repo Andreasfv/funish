@@ -1,21 +1,6 @@
 // https://colorhunt.co/palette/def5e5bcead59ed5c58ec3b0
 
-export interface Theme {
-  colors: {
-    [key: string]: string;
-  };
-  borders: {
-    [key: string]: string;
-  };
-  shadow: {
-    [key: string]: string;
-  };
-  media: {
-    [key: string]: string;
-  };
-}
-
-const theme: Theme = {
+const theme = {
   colors: {
     lightGreen: "#DEF5E5",
     green: "#BCEAD5",

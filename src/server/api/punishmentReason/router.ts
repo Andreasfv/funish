@@ -1,10 +1,4 @@
-import { z } from "zod";
-import {
-  adminProcedure,
-  createTRPCRouter,
-  protectedProcedure,
-  superAdminProcedure,
-} from "../trpc";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 import {
   createPunishmentReasonController,

@@ -1,6 +1,4 @@
 import styled from "styled-components";
-import Spinner from "../../components/Spiner";
-import { api } from "../../utils/api";
 
 const Card = styled.div`
   display: flex;

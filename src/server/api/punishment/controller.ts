@@ -1,12 +1,10 @@
 import { Prisma } from "@prisma/client";
-import { contextProps } from "@trpc/react-query/shared";
 import { TRPCError } from "@trpc/server";
 import type { Context } from "../trpc";
 
 import type {
   CreatePunishmentInput,
   UpdatePunishmentInput,
-  SortPunishmentsInput,
   FilterPunishmentInput,
 } from "./schema";
 

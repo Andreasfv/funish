@@ -69,7 +69,7 @@ export type Context = trpc.inferAsyncReturnType<typeof createTRPCContext>;
  */
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
-import { TrpcQueryOptionsForUseQueries } from "@trpc/react-query/dist/internals/useQueries";
+// import { TrpcQueryOptionsForUseQueries } from "@trpc/react-query/dist/internals/useQueries";
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,

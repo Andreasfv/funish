@@ -6,12 +6,10 @@ import "../i18";
 
 import { api } from "../utils/api";
 import { useTranslation } from "react-i18next";
-import { useRouter } from "next/router";
 import { useAdmin } from "../utils/admin/useAdmin";
 
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
-  const { data: me } = api.users.me.useQuery();
   const admin = useAdmin();
   const { t } = useTranslation();
   return (

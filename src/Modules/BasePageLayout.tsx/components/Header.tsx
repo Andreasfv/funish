@@ -15,9 +15,7 @@ const ContentWrapper = styled.div`
   width: 100%;
 `;
 
-interface HeaderProps {}
-
-const Header: React.FC<HeaderProps> = () => {
+const Header: React.FC = () => {
   return (
     <Wrapper>
       <ContentWrapper>

@@ -1,8 +1,6 @@
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 import styled from "styled-components";
 import { useAdmin } from "../../utils/admin/useAdmin";
-import { api } from "../../utils/api";
 import { BasePageLayout } from "../BasePageLayout.tsx/BasePageLayout";
 import CreatePunishment from "./CreatePunishment";
 
@@ -71,15 +69,11 @@ const DashboardWrapper = styled.div`
   padding: 1rem;
 `;
 
-interface PunishmentDashboardProps {}
-
-const PunishmentDashboard: React.FC<PunishmentDashboardProps> = () => {
+const PunishmentDashboard: React.FC = () => {
   const isAdmin = useAdmin();
   const router = useRouter();
   const switchItem =
     router.pathname.split("/")[router.pathname.split("/").length - 1] ?? "";
-  const organizationId = router.query.organizationId as string;
-  const { data: me } = api.users.me.useQuery();
 
   function goToSwitchItem(item: string) {
     const route = router.asPath;
@@ -87,7 +81,7 @@ const PunishmentDashboard: React.FC<PunishmentDashboardProps> = () => {
     const goToRoute = `${routeArray
       .slice(0, routeArray.length - 1)
       .join("/")}/${item}`;
-    router.push(goToRoute);
+    router.push(goToRoute).catch((err) => console.log(err));
   }
   const switchItems = [
     { label: "Punish", href: "punish" },
@@ -96,8 +90,9 @@ const PunishmentDashboard: React.FC<PunishmentDashboardProps> = () => {
   ];
 
   const SwitchItems = isAdmin ? (
-    switchItems.map((item) => (
+    switchItems.map((item, index) => (
       <SwitchItem
+        key={index}
         selected={switchItem === item.href}
         onClick={() => goToSwitchItem(item.href)}
       >

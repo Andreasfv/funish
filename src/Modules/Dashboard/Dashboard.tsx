@@ -1,14 +1,11 @@
 import { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { BasePageLayout } from "../../Modules/BasePageLayout.tsx/BasePageLayout";
 import OrganizationPaper from "../../Modules/Organizations/OrganizationPaper";
 import PunishmentCard from "../../Modules/Punishment/PunishmentCard";
-import { useAdmin } from "../../utils/admin/useAdmin";
 import { api } from "../../utils/api";
-import { useDevices } from "../../utils/media/useMedia";
 
 const Wrapper = styled.div`
   display: flex;
@@ -32,12 +29,6 @@ const ContentWrapper = styled.div`
   width: 100%;
   height: 100%;
   gap: 1rem;
-`;
-
-const Title = styled.p`
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
 `;
 
 const CardsWrapper = styled.div`
@@ -67,16 +58,9 @@ const LogWrapper = styled.div`
   background-color: ${(props) => props.theme.colors.lightGreen};
   box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.2);
 `;
-interface DashboardProps {
-  userId: string;
-}
-
 const Dashboard: NextPage = () => {
-  const { t } = useTranslation();
   const session = useSession();
-  const admin = useAdmin();
   const router = useRouter();
-  const [mobile] = useDevices();
   const inspecting = router.pathname !== "/dashboard";
 
   const { userId } = router.query;
@@ -102,8 +86,9 @@ const Dashboard: NextPage = () => {
                 <CardsWrapper>
                   {userData.data?.user?.organizationId &&
                     userData?.data?.user?.organization?.punishmentTypes?.map(
-                      (punishmentType) => (
+                      (punishmentType, index) => (
                         <PunishmentCard
+                          key={index}
                           punishmentType={punishmentType.name}
                           count={punishmentType.Punishments.length}
                         />

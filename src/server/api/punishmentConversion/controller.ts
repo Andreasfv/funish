@@ -1,12 +1,10 @@
 import { Prisma } from "@prisma/client";
-import { contextProps } from "@trpc/react-query/shared";
 import { TRPCError } from "@trpc/server";
 import type { Context } from "../trpc";
 
 import type {
   CreatePunishmentConversionInput,
   UpdatePunishmentConversionInput,
-  SortPunishmentConversionsInput,
   FilterPunishmentConversionInput,
   GetPunishmentConversionInput,
 } from "./schema";
@@ -151,7 +149,6 @@ export const deletePunishmentConversionController = async ({
 //TODO add fetch for admin? Select organization manually rather than from session?
 export const getPunishmentConversionsController = async ({
   ctx,
-  input,
 }: {
   ctx: Context;
   input: FilterPunishmentConversionInput;

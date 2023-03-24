@@ -1,10 +1,3 @@
-import {
-  UserOutlined,
-  HomeOutlined,
-  NotificationOutlined,
-} from "@ant-design/icons";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 import React from "react";
 import styled from "styled-components";
 import Header from "./components/Header";
@@ -30,9 +23,6 @@ interface BasePageLayoutProps {
 }
 
 export const BasePageLayout: React.FC<BasePageLayoutProps> = ({ children }) => {
-  const router = useRouter();
-  const session = useSession();
-
   return (
     <Wrapper>
       <Header />

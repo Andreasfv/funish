@@ -1,9 +1,4 @@
-import {
-  adminProcedure,
-  createTRPCRouter,
-  protectedProcedure,
-  superAdminProcedure,
-} from "../trpc";
+import { adminProcedure, createTRPCRouter, protectedProcedure } from "../trpc";
 import {
   addUserToOrganizationController,
   createUserController,

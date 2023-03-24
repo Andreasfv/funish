@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { api } from "../../../utils/api";
 
@@ -9,10 +10,10 @@ const Organization: NextPage = () => {
   );
   return (
     <>
-      <head>
+      <Head>
         <title>Organizations</title>
         <meta name="description" content="Organizations" />
-      </head>
+      </Head>
       <>
         <h1>{organization?.data?.organization?.name}</h1>
       </>

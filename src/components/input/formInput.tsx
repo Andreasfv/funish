@@ -1,9 +1,4 @@
-import {
-  FieldValues,
-  UseFormRegister,
-  useForm,
-  UseFormRegisterReturn,
-} from "react-hook-form";
+import { UseFormRegisterReturn } from "react-hook-form";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -31,17 +26,10 @@ const BaseInput = styled.input`
 `;
 
 interface FormInputProps {
-  label: string;
   placeholder?: string;
   register: UseFormRegisterReturn;
-  required: boolean;
 }
-const FormInput: React.FC<FormInputProps> = ({
-  register,
-  label,
-  required,
-  placeholder,
-}) => {
+const FormInput: React.FC<FormInputProps> = ({ register, placeholder }) => {
   return (
     <Wrapper>
       <BaseInput {...register} placeholder={placeholder} />

@@ -1,11 +1,9 @@
 import { Prisma } from "@prisma/client";
-import { contextProps } from "@trpc/react-query/shared";
 import { TRPCError } from "@trpc/server";
 import type { Context } from "../trpc";
 import type {
   AddUserToOrganizationInput,
   CreateUserInput,
-  GetComprehensiveUserDataInput,
   GetUserInput,
   OrganizationUsersInput,
 } from "./schema";
@@ -81,7 +79,7 @@ export const getOrganizationUsersController = async ({
 }) => {
   try {
     const { prisma } = ctx;
-    const { organizationId, sort } = input;
+    const { organizationId } = input;
 
     if (!organizationId) {
       throw new TRPCError({
@@ -186,7 +184,7 @@ export const getUserController = async ({
   userId: string;
 }) => {
   try {
-    const { prisma, session } = ctx;
+    const { prisma } = ctx;
 
     if (!userId) {
       throw new TRPCError({
@@ -258,7 +256,7 @@ export const getComprehensiveUserDataController = async ({
   input: GetUserInput;
 }) => {
   try {
-    const { prisma, session } = ctx;
+    const { prisma } = ctx;
 
     if (!input) {
       throw new TRPCError({
