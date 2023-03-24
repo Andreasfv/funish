@@ -1,3 +1,10 @@
 {
-  "common.organization": "Organisasjon"
+  "common.organization": "Organisasjon",
+  "punish.form.reason": "Begrunnelse",
+  "punish.form.description": "Beskrivelse",
+  "punish.form.user": "Bruker",
+  "punish.form.type": "Type",
+  "punish.form.amount": "Antall",
+  "input.error.no-options": "Ingen alternativer",
+  "form.error.corrections": "Venligst korriger merkede feil"
 }
