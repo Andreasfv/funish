@@ -24,8 +24,12 @@ const Home: NextPage = () => {
           query: { organizationId: me?.data?.user?.organizationId },
         })
         .catch((err) => console.warn(err));
+      router
+        .push(`${me?.data?.user?.organizationId}/dashboard`)
+        .catch((err) => console.warn(err));
     }
-  }, [me]);
+  }, [me?.data?.user?.organizationId]);
+
   return (
     <>
       <Head>
@@ -42,7 +46,7 @@ const Home: NextPage = () => {
             {admin && (
               <Link
                 className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-                href="/organizations"
+                href={`${me?.data?.user?.organizationId ?? ""}/organizations`}
               >
                 {t(`common.organization`)}
               </Link>
