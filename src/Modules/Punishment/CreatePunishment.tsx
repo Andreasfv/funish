@@ -112,10 +112,11 @@ const CreatePunishment: React.FC = () => {
         "",
       quantity: 1,
       proof: "Not implemented",
+      description: "",
     },
     resolver: zodResolver(formSchema),
   });
-
+  const reg = register("userId");
   const { mutateAsync: createPunishment, error } =
     api.punishments.createPunishment.useMutation();
 
@@ -125,11 +126,12 @@ const CreatePunishment: React.FC = () => {
     };
   }
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: formType) => {
     const createPunishmentData = {
       ...data,
-      organizationId: me?.data.user?.organizationId,
-      createdById: me?.data.user?.id,
+      organizationId: me?.data.user?.organizationId ?? "",
+      createdById: me?.data.user?.id ?? "",
+      description: data.description ?? "",
     };
 
     createPunishment(createPunishmentData).then(() => {
@@ -201,7 +203,7 @@ const CreatePunishment: React.FC = () => {
             <FormField>
               <label>{t("punish.form.description")}</label>
               <FormInput
-                register={register}
+                register={register("description")}
                 label="description"
                 required={true}
               />
@@ -214,8 +216,10 @@ const CreatePunishment: React.FC = () => {
                 )}
               </label>
               <FormNumberInput
-                register={register}
-                label="quantity"
+                register={register("quantity", {
+                  setValueAs: (value: string) => Number(value),
+                })}
+                id="quantity"
                 required={true}
               />
             </FormField>

@@ -87,7 +87,7 @@ type Option = {
 interface FormSelectProps {
   options: Option[];
   placeholder?: string;
-  handleChange: any;
+  handleChange: (value: string) => void;
   error?: string;
 }
 
@@ -105,16 +105,18 @@ const FormSelect: React.FC<FormSelectProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const toggling = () => setIsOpen(!isOpen);
 
-  const handleSearch = (e: any) => {
+  const handleSearch = (e: React.FormEvent<HTMLInputElement>) => {
     //We use a const so that the update is immediatedly. setState can be slow.
     const select = false;
     setSelected(false);
-    setSearch(e.target.value);
+    setSearch(e.currentTarget.value);
 
     const filteredOptions = options.filter((option) => {
       if (select) return true;
 
-      return option.label.toLowerCase().includes(e.target.value.toLowerCase());
+      return option.label
+        .toLowerCase()
+        .includes(e.currentTarget.value.toLowerCase());
     });
 
     setFilteredOptions(filteredOptions);
@@ -141,8 +143,11 @@ const FormSelect: React.FC<FormSelectProps> = ({
   useEffect(() => {
     // Handle closing the dropdown if the user clicks outside of it
     if (!isOpen) return;
-    function handleClickOutside(event: any) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     }
