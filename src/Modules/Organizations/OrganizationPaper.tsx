@@ -30,7 +30,7 @@ const OrganizationPaper: React.FC<OrganizationPaperProps> = ({
   return (
     <Card>
       <p>Organization</p>
-      <p>{`Total Punishments: ${punishment?.data.punishment.length ?? ""}`}</p>
+      <p>{`Total Punishments: ${punishment?.punishment.length ?? ""}`}</p>
     </Card>
   );
 };
