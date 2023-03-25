@@ -29,8 +29,8 @@ const OrganizationPaper: React.FC<OrganizationPaperProps> = ({
   });
   return (
     <Card>
-      <p>Organization</p>
-      <p>{`Total Punishments: ${punishment?.data.punishment.length ?? ""}`}</p>
+      <p>Lyche Bar</p>
+      <p>{`Total Punishments: ${punishment?.data?.punishment?.length ?? ""}`}</p>
     </Card>
   );
 };
