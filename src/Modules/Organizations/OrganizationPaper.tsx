@@ -9,7 +9,8 @@ interface OrganizationPaperProps {
 const Card = styled.div`
   display: flex;
   flex-direction: column;
-  width: 300px;
+  min-width: 200px;
+  width: 100%;
   height: 200px;
   background-color: white;
   border-radius: 0.7rem;

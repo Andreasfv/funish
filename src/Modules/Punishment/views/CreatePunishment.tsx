@@ -1,16 +1,16 @@
 import React from "react";
 import styled from "styled-components";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { api } from "../../utils/api";
+import { api } from "../../../utils/api";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
-import FormInput from "../../components/input/formInput";
+import FormInput from "../../../components/input/formInput";
 import { useTranslation } from "react-i18next";
-import FormSelect from "../../components/input/formSelect";
+import FormSelect from "../../../components/input/formSelect";
 import { useRouter } from "next/router";
-import FormNumberInput from "../../components/input/formNumberInput";
-import FormField from "./components/FormField";
-import SubmitButton from "./components/SubmitButton";
+import FormNumberInput from "../../../components/input/formNumberInput";
+import FormField from "../components/FormField";
+import SubmitButton from "../components/SubmitButton";
 const Wrapper = styled.div`
   display: flex;
   width: 100%;

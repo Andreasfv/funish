@@ -4,8 +4,9 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import { BasePageLayout } from "../../Modules/BasePageLayout.tsx/BasePageLayout";
 import OrganizationPaper from "../../Modules/Organizations/OrganizationPaper";
-import PunishmentCard from "../../Modules/Punishment/PunishmentCard";
+import PunishmentCard from "../Punishment/components/PunishmentCard";
 import { api } from "../../utils/api";
+import Link from "next/link";
 
 const Wrapper = styled.div`
   display: flex;
@@ -20,6 +21,11 @@ const InnerWrapper = styled.div`
   width: 100%;
   gap: 1rem;
   height: 100%;
+
+ @media ${(props) => props.theme.media.largeMobile } {
+    flex-direction: column;
+  }
+
 `;
 
 const ContentWrapper = styled.div`
@@ -37,6 +43,7 @@ const CardsWrapper = styled.div`
   flex-wrap: wrap;
   width: 100%;
   gap: 1rem;
+  flex-grow: 1;
   justify-content: flex-start;
   padding: 1rem;
   border-radius: 0.5rem;
@@ -57,11 +64,33 @@ const LogWrapper = styled.div`
   border: 1px solid ${(props) => props.theme.colors.lightDarkGreen};
   background-color: ${(props) => props.theme.colors.lightGreen};
   box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.2);
+
+  @media ${(props) => props.theme.media.largeMobile } {
+    width: 100%;
+  }
 `;
+
+const BigButton = styled(Link)`
+  display: flex;
+  height: 3rem;
+  background-color: ${(props) => props.theme.colors.green};
+  width: 100%;
+  font-size: 1.5rem;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+
+  :hover {
+    background-color: ${(props) => props.theme.colors.darkGreen};
+  }
+
+`
 const Dashboard: NextPage = () => {
   const session = useSession();
   const router = useRouter();
-  const inspecting = router.pathname !== "/dashboard";
 
   const { userId } = router.query;
   const { data: userData, isLoading: userDataLoading } =
@@ -74,15 +103,16 @@ const Dashboard: NextPage = () => {
   }
 
   if (userData?.data?.user?.organization) {
+    const { organization } = userData.data.user;
     return (
       <BasePageLayout>
         <Wrapper>
           <ContentWrapper>
             <InnerWrapper>
               <ContentWrapper>
-                {!inspecting && (
-                  <CardsWrapper>### ACTIONS TODO ###</CardsWrapper>
-                )}
+                <CardsWrapper>
+                  <BigButton href={`/${organization.id}/punishment/punish`}>PUNISH!!</BigButton>
+                </CardsWrapper>
                 <CardsWrapper>
                   {userData.data?.user?.organizationId &&
                     userData?.data?.user?.organization?.punishmentTypes?.map(

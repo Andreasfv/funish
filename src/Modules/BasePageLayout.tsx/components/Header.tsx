@@ -5,6 +5,9 @@ import theme from "../../../utils/theme";
 import MobileNavMenu from "./MobileNavMenu";
 
 const Wrapper = styled.div`
+  z-index: 9000;
+  position: sticky;
+  top: 0;
   display: flex;
   width: 100%;
   height: 4rem;
@@ -41,7 +44,7 @@ const Header: React.FC<HeaderProps> = ({toggleNavMenu, open}) => {
    const headerRef = useRef<HTMLDivElement>(null)
   return (
     <Wrapper ref={headerRef}>
-      {open && <MobileNavMenu open={open} toggleNavMenu={toggleNavMenu} clickRef={headerRef}/>}
+      {open && <MobileNavMenu  toggleNavMenu={toggleNavMenu} clickRef={headerRef}/>}
 
       <ContentWrapper>
         <h1>Header</h1>

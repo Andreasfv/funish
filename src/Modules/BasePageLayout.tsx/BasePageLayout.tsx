@@ -20,6 +20,17 @@ const ContentWrapper = styled.div`
   flex-direction: row;
 `;
 
+const SidebarNinja = styled.div`
+  display: none;
+
+  width: 200px;
+  height: 100%;
+`
+const HeaderNinja = styled.div`
+  display: none;
+  height: 4rem;
+  width: 100%;
+`
 interface BasePageLayoutProps {
   children: React.ReactNode;
 }
@@ -34,8 +45,10 @@ export const BasePageLayout: React.FC<BasePageLayoutProps> = ({ children }) => {
   
   return (
     <Wrapper>
+      <HeaderNinja></HeaderNinja>
       <Header toggleNavMenu={toggleNavMenu} open={open}/>
       <ContentWrapper>
+        {!mobile && <SidebarNinja />}
         {!mobile && <Sidebar />}
         {children}
       </ContentWrapper>

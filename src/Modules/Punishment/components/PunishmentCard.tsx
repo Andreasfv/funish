@@ -2,8 +2,11 @@ import styled from "styled-components";
 
 const Card = styled.div`
   display: flex;
+  flex: 1;
   flex-direction: column;
-  width: 300px;
+  min-width: 200px;
+  max-width: 400px;
+  width: 100%;
   height: 200px;
   background-color: white;
   border-radius: 0.7rem;
