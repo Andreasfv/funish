@@ -67,7 +67,6 @@ const Sidebar: React.FC = () => {
         <SidebarItem onClick={goTo("all-users-punishments")}>Punishments Overview</SidebarItem>
       </OrgContentWrapper>
       <SidebarBottomWrapper>
-        <SidebarItem>My Account</SidebarItem>
         <SidebarItem
           onClick={() => {
             router.push("/").catch((err) => console.log(err));

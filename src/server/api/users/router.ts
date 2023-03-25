@@ -1,4 +1,4 @@
-import { adminProcedure, createTRPCRouter, protectedProcedure } from "../trpc";
+import { adminProcedure, createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import {
   addUserToOrganizationController,
   createUserController,
@@ -20,7 +20,7 @@ export const usersRouter = createTRPCRouter({
   getOrganizationUsers: protectedProcedure
     .input(organizationUsersSchema)
     .query(({ ctx, input }) => getOrganizationUsersController({ ctx, input })),
-  addUserToOrganization: adminProcedure
+  addUserToOrganization: publicProcedure
     .input(addUserToOrganizationSchema)
     .mutation(({ ctx, input }) =>
       addUserToOrganizationController({ ctx, input })

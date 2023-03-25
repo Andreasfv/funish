@@ -1,23 +1,39 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, signOut, useSession,  } from "next-auth/react";
 import "../i18";
 
 import { api } from "../utils/api";
 import { useTranslation } from "react-i18next";
 import { useAdmin } from "../utils/admin/useAdmin";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
-  const admin = useAdmin();
+  const [wait, setWait] = useState(false)
   const router = useRouter();
   const { data: me } = api.users.me.useQuery();
   const { t } = useTranslation();
-
+  const {mutate, isLoading,  } = api.users.addUserToOrganization.useMutation()
   useEffect(() => {
+    if (me?.data?.user?.id && !me?.data?.user?.organizationId) {
+      if(isLoading || wait) return
+      setWait(true)
+      mutate({
+        userId: me?.data?.user?.id,
+        organizationId: "clfmhi3mg0000xron5petwdsp",
+      }, {
+        onSuccess: () => {
+          router
+            .push(`/[organizationId]/dashboard`, {
+              query: { organizationId: me?.data?.user?.organizationId },
+            })
+            .catch((err) => console.warn(err));
+        }
+      })
+    }
     if (me?.data?.user?.organizationId) {
       router
         .push(`/[organizationId]/dashboard`, {
@@ -30,6 +46,7 @@ const Home: NextPage = () => {
     }
   }, [me?.data?.user?.organizationId, router]);
 
+  
   return (
     <>
       <Head>
@@ -43,20 +60,6 @@ const Home: NextPage = () => {
             Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
           </h1>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 md:gap-8">
-            {admin && (
-              <Link
-                className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-                href={`${me?.data?.user?.organizationId ?? ""}/organizations`}
-              >
-                {t(`common.organization`)}
-              </Link>
-            )}
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-              href={"/dashboard"}
-            >
-              {"Dashboard"}
-            </Link>
           </div>
           <div className="flex flex-col items-center gap-2">
             <p className="text-2xl text-white">
@@ -80,6 +83,8 @@ const AuthShowcase: React.FC = () => {
     { enabled: sessionData?.user !== undefined }
   );
 
+  const { mutate } = api.users.addUserToOrganization.useMutation()
+
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       <p className="text-center text-2xl text-white">
@@ -93,7 +98,7 @@ const AuthShowcase: React.FC = () => {
             ? () => void signOut()
             : () =>
                 void signIn().then((user) => {
-                  console.log(user);
+                  console.log(user)
                 })
         }
       >

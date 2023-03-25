@@ -99,7 +99,7 @@ const PunishmentDashboard: React.FC = () => {
     { label: "Reasons", href: "manage_punishment_reasons" },
   ];
 
-  const SwitchItems = isAdmin ? (
+  const SwitchItems = true ? (
     switchItems.map((item, index) => (
       <SwitchItem
         key={index}

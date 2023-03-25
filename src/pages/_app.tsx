@@ -24,11 +24,11 @@ const MyApp: AppType<{ session: Session | null }> = ({
   }, [me, fetching, loading, router])
 
   return (
-    <SessionProvider session={session}>
-      <ThemeProvider theme={theme}>
-        <Component {...pageProps} />
-      </ThemeProvider>
-    </SessionProvider>
+      <SessionProvider session={session}>
+        <ThemeProvider theme={theme}>
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </SessionProvider>
   );
 };
 

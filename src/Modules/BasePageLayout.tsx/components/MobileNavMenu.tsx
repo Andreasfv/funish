@@ -131,6 +131,10 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = ({toggleNavMenu, clickRef}) 
                     name: 'My Punishments',
                     path: `/${orgId}/my-punishments`
                 },
+                {
+                    name: "Punishments Overview",
+                    path: `/${orgId}/all-users-punishments`
+                }
             ]
             setRoutes(routes)
         }
