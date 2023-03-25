@@ -40,6 +40,11 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  **/
 export const authOptions: NextAuthOptions = {
+  events: {
+    createUser({user}) {
+      console.log("createUser", user)
+    }
+  },
   callbacks: {
     session({ session, user }) {
       if (session.user) {
@@ -63,8 +68,8 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
-
       allowDangerousEmailAccountLinking: true,
+      
       authorization: {
         params: {
           prompt: "consent",
