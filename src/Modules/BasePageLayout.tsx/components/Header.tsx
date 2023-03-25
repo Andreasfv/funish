@@ -1,4 +1,8 @@
+import { useRef } from "react";
 import styled from "styled-components";
+import { useMediaQuery } from "../../../utils/media/useMedia";
+import theme from "../../../utils/theme";
+import MobileNavMenu from "./MobileNavMenu";
 
 const Wrapper = styled.div`
   display: flex;
@@ -15,11 +19,33 @@ const ContentWrapper = styled.div`
   width: 100%;
 `;
 
-const Header: React.FC = () => {
+const MenuIcon = styled.div`
+  display: flex;
+  width: 4rem;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  height: 2rem;
+  background-color: ${(props) => props.theme.colors.darkGreen};
+  border-radius: 0.5rem;
+  margin-right: 1rem;
+`;
+
+interface HeaderProps {
+  open: boolean;
+  toggleNavMenu: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({toggleNavMenu, open}) => {
+   const mobile = useMediaQuery(theme.media.largeMobile)
+   const headerRef = useRef<HTMLDivElement>(null)
   return (
-    <Wrapper>
+    <Wrapper ref={headerRef}>
+      {open && <MobileNavMenu open={open} toggleNavMenu={toggleNavMenu} clickRef={headerRef}/>}
+
       <ContentWrapper>
         <h1>Header</h1>
+        {mobile && <MenuIcon onClick={toggleNavMenu}>Menu</MenuIcon>}
       </ContentWrapper>
     </Wrapper>
   );

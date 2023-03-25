@@ -95,8 +95,8 @@ const PunishmentDashboard: React.FC = () => {
   console.log(organization);
   const switchItems = [
     { label: "Punish", href: "punish" },
-    { label: "Manage Punishment Types", href: "manage_punishment_types" },
-    { label: "Manage Punishment Reasons", href: "manage_punishment_reasons" },
+    { label: "Types", href: "manage_punishment_types" },
+    { label: "Reasons", href: "manage_punishment_reasons" },
   ];
 
   const SwitchItems = isAdmin ? (

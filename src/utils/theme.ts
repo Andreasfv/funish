@@ -30,6 +30,7 @@ const theme = {
   },
   media: {
     mobile: "only screen and (max-width: 600px)",
+    largeMobile: "only screen and (max-width: 768px)",
   },
 };
 

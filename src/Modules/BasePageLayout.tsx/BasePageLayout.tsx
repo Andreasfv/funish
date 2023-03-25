@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { useMediaQuery } from "../../utils/media/useMedia";
+import theme from "../../utils/theme";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 
@@ -23,11 +25,18 @@ interface BasePageLayoutProps {
 }
 
 export const BasePageLayout: React.FC<BasePageLayoutProps> = ({ children }) => {
+  const [open, setOpen] = useState(false)
+  const mobile = useMediaQuery(theme.media.largeMobile)
+
+  function toggleNavMenu() {
+    setOpen(!open)
+  }
+  
   return (
     <Wrapper>
-      <Header />
+      <Header toggleNavMenu={toggleNavMenu} open={open}/>
       <ContentWrapper>
-        <Sidebar />
+        {!mobile && <Sidebar />}
         {children}
       </ContentWrapper>
     </Wrapper>
