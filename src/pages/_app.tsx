@@ -21,7 +21,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
     if (!fetching && !loading && !me?.data?.user?.organizationId) {
       router.push("/").catch((err) => console.error(err));
     }
-  }, [me, fetching, loading])
+  }, [me, fetching, loading, router])
 
   return (
     <SessionProvider session={session}>

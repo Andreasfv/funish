@@ -141,7 +141,7 @@ export const getPunishmentTypeController = async ({
   input: GetPunishmentTypeInput;
 }) => {
   try {
-    const { prisma, session } = ctx;
+    const { prisma } = ctx;
 
     const punishmentType = await prisma.punishmentType.findUnique({
       where: { id: input },
@@ -202,7 +202,6 @@ export const getPunishmentTypesWithPunishmentsForUser = async ({
 }) => {
   try {
     const { prisma, session } = ctx;
-    const { organizationId, userId } = input;
     if (!session?.user?.organizationId) {
       throw new TRPCError({
         code: "NOT_FOUND",

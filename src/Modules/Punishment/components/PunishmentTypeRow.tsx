@@ -1,4 +1,4 @@
-import { PunishmentType } from "@prisma/client";
+import type { PunishmentType } from "@prisma/client";
 import styled from "styled-components";
 import { api } from "../../../utils/api";
 

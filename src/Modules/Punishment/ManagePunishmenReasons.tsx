@@ -1,15 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PunishmentReason, PunishmentType } from "@prisma/client";
+import type { PunishmentReason} from "@prisma/client";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import { z } from "zod";
 import FormInput from "../../components/input/formInput";
-import FormNumberInput from "../../components/input/formNumberInput";
 import { api } from "../../utils/api";
 import FormField from "./components/FormField";
 import PunishmentReasonRow from "./components/PunishmentReasonRow";
-import PunishmentTypeRow from "./components/PunishmentTypeRow";
 import SubmitButton from "./components/SubmitButton";
 
 const ContentWrapper = styled.div`
@@ -52,7 +50,6 @@ const ManagePunishmentReasons: React.FC<ManagePunishmentReasonsProps> = ({
   const {
     handleSubmit,
     register,
-    formState: { errors },
   } = useForm<formType>({
     defaultValues: {
       description: "",

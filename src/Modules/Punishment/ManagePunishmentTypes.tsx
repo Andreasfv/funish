@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PunishmentType } from "@prisma/client";
+import type { PunishmentType } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
@@ -52,7 +52,6 @@ const ManagePunishmentTypes: React.FC<ManagePunishmentTypesProps> = ({
   const {
     handleSubmit,
     register,
-    formState: { errors },
   } = useForm<formType>({
     defaultValues: {
       description: "",

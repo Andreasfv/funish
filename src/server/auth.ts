@@ -8,7 +8,7 @@ import DiscordProvider from "next-auth/providers/discord";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "../env/server.mjs";
 import { prisma } from "./db";
-import { Role } from "@prisma/client";
+import type { Role } from "@prisma/client";
 
 /**
  * Module augmentation for `next-auth` types.

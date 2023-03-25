@@ -1,4 +1,4 @@
-import { PunishmentReason, PunishmentType } from "@prisma/client";
+import type { PunishmentReason} from "@prisma/client";
 import styled from "styled-components";
 import { api } from "../../../utils/api";
 

@@ -1,9 +1,8 @@
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { useAdmin } from '../../../utils/admin/useAdmin';
 import { api } from '../../../utils/api';
 
 interface WrapperProps {
@@ -72,41 +71,19 @@ const MenuLink = styled(Link)`
     }
 `
 
-const LogoutButton = styled.button`
-    display: flex;
-    height: 2rem;
-    padding: 0.5rem;
-    background: ${props => props.theme.colors.green};
-    margin-bottom: 0.3rem;
-    border-radius: 0.3rem;
-    align-items: center;
-    :hover {
-        cursor: pointer;
-        background: ${props => props.theme.colors.lightRed};
-    }
-    :focus {
-        background: ${props => props.theme.colors.lightRed};
-    }
-    :active {
-        background: ${props => props.theme.colors.lightRed};
-    }
-`
-
 type Route = {
     name: string;
     path: string;
 }
 
 interface MobileNavMenuProps {
-    open: boolean;
     toggleNavMenu: () => void;
     clickRef: React.RefObject<HTMLDivElement>;
 }
 
-const MobileNavMenu: React.FC<MobileNavMenuProps> = ({open, toggleNavMenu, clickRef}) => {
+const MobileNavMenu: React.FC<MobileNavMenuProps> = ({toggleNavMenu, clickRef}) => {
     const [opened, setOpened] = useState(false)
     const [routes, setRoutes] = useState<Route[]>([])
-    const admin = useAdmin();
     const router = useRouter();
     const { data: me } = api.users.me.useQuery();
 

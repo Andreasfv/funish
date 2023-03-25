@@ -1,4 +1,4 @@
-import { Punishment, PunishmentReason, User } from "@prisma/client";
+import type { Punishment, PunishmentReason, User } from "@prisma/client";
 import styled from "styled-components";
 
 const Wrapper = styled.div`

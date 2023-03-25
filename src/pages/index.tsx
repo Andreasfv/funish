@@ -28,7 +28,7 @@ const Home: NextPage = () => {
         .push(`${me?.data?.user?.organizationId}/dashboard`)
         .catch((err) => console.warn(err));
     }
-  }, [me?.data?.user?.organizationId]);
+  }, [me?.data?.user?.organizationId, router]);
 
   return (
     <>

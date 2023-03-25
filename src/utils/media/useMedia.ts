@@ -1,6 +1,4 @@
-import { useState, useEffect, useContext } from "react";
-import type { DefaultTheme as Theme } from "styled-components";
-import { ThemeContext } from "styled-components";
+import { useState, useEffect,  } from "react";
 
 export function useMediaQuery(query: string) {
   const [matches, setMatches] = useState(false);

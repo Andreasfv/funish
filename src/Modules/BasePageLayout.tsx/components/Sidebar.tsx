@@ -1,8 +1,7 @@
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import { useAdmin } from "../../../utils/admin/useAdmin";
 import { api } from "../../../utils/api";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 
 const Wrapper = styled.div`
   display: flex;
@@ -31,7 +30,6 @@ const SidebarBottomWrapper = styled.div`
 `;
 
 const Sidebar: React.FC = () => {
-  const admin = useAdmin();
   const router = useRouter();
   const { data: me } = api.users.me.useQuery();
 
