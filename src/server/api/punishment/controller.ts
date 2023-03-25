@@ -196,6 +196,8 @@ export const getPunishmentsController = async ({
       }
     }
 
+    const {cursor} = input;
+
     const punishment = await prisma.punishment.findMany({
       where: {
         organizationId: input.organizationId
@@ -205,15 +207,25 @@ export const getPunishmentsController = async ({
         approved: input.approved,
         createdById: input.createdById,
       },
+      include: {
+        user: input.including?.user ?? false,
+        type: input.including?.type ?? false,
+        reason: input.including?.reason ?? false,
+        createdBy: input.including?.createdBy ?? false,
+      },
       orderBy,
-      skip: input.page * input.limit,
+      cursor: input.cursor ? {id: input.cursor} : undefined,
       take: input.limit,
     });
+    let nextCursor: typeof cursor | undefined = undefined
+    if (punishment.length >= input.limit) {
+      const nextItem = punishment.pop()
+      nextCursor = nextItem?.id
+    }
     return {
       status: "success",
-      data: {
-        punishment,
-      },
+      nextCursor,
+      punishment,
     };
   } catch (error) {
     throw error;
@@ -295,7 +307,6 @@ export const getMyPunishmentsController = async ({
         },
       },
       orderBy,
-      skip: input.page * input.limit,
       take: input.limit,
     });
     return {

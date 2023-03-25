@@ -14,20 +14,20 @@ export const createPunishmentSchema = z.object({
 
 export const updatePunishmentSchema = z.object({
   id: z.string(),
-  userId: z.string(),
-  typeId: z.string(),
-  reasonId: z.string(),
-  description: z.string(),
-  date: z.string(),
-  quantity: z.number(),
-  proof: z.string(),
-  approved: z.boolean(),
+  userId: z.string().optional(),
+  typeId: z.string().optional(),
+  reasonId: z.string().optional(),
+  description: z.string().optional(),
+  date: z.string().optional(),
+  quantity: z.number().optional(),
+  proof: z.string().optional(),
+  approved: z.boolean().optional(),
 });
 
 //Todo add approved filter
 export const filterPunishmentSchema = z.object({
   limit: z.number().default(10),
-  page: z.number().default(0),
+  cursor: z.string().nullish(),
   filterString: z.string().optional(),
   approved: z.boolean().optional(),
   organizationId: z.string().optional(),
@@ -46,6 +46,12 @@ export const filterPunishmentSchema = z.object({
       "-approved",
     ])
     .optional(),
+  including: z.object({
+    type: z.boolean().default(false),
+    reason: z.boolean().default(false),
+    user: z.boolean().default(false),
+    createdBy: z.boolean().default(false),
+  }).optional()
 });
 
 export const deletePunishmentSchema = z.string();
