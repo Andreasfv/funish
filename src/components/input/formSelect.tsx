@@ -81,24 +81,27 @@ interface FormSelectProps {
   options: Option[];
   placeholder?: string;
   handleChange: (value: string) => void;
+  text: string
+  handleTextChange: (value: string) => void;
 }
 
 const FormSelect: React.FC<FormSelectProps> = ({
   options,
   placeholder,
+  text,
   handleChange,
+  handleTextChange
 }) => {
   const { t } = useTranslation();
   const [filteredOptions, setFilteredOptions] = useState<Option[]>(options); // [
   const [isOpen, setIsOpen] = useState(false);
-  const [search, setSearch] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
   const toggling = () => setIsOpen(!isOpen);
 
   const handleSearch = (e: React.FormEvent<HTMLInputElement>) => {
     //We use a const so that the update is immediatedly. setState can be slow.
-    setSearch(e.currentTarget.value);
-
+    handleTextChange(e.currentTarget.value)
+    console.log(e.currentTarget.value)
     const filteredOptions = options.filter((option) => {
       return option.label
         .toLowerCase()
@@ -111,19 +114,9 @@ const FormSelect: React.FC<FormSelectProps> = ({
   const onOptionClicked = (value: Option) => () => {
     setFilteredOptions(options);
     setIsOpen(false);
-    setSearch(value.label);
     handleChange(value.value);
+    handleTextChange(value.label)
   };
-
-  options =
-    options.length >= 1
-      ? options
-      : [{ value: "", label: t("input.error.no-options") ?? "" }];
-
-  useEffect(() => {
-    // Make sure the options are updated when the options prop changes
-    setFilteredOptions(options);
-  }, [options]);
 
   useEffect(() => {
     // Handle closing the dropdown if the user clicks outside of it
@@ -148,7 +141,7 @@ const FormSelect: React.FC<FormSelectProps> = ({
         placeholder={placeholder}
         onClick={toggling}
         isOpen={isOpen}
-        value={search}
+        value={text}
         onChange={handleSearch}
         tabIndex={0}
       />

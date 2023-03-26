@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "../../../utils/api";
@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import FormNumberInput from "../../../components/input/formNumberInput";
 import FormField from "../components/FormField";
 import SubmitButton from "../components/SubmitButton";
+import { toast } from "react-toastify";
 const Wrapper = styled.div`
   display: flex;
   width: 100%;
@@ -48,10 +49,13 @@ const ErrorSpan = styled.span`
 
 const formSchema = z.object({
   userId: z.string(),
+  userIdText: z.string().optional(),
   createdById: z.string(),
   reasonId: z.string(),
+  reasonIdText: z.string().optional(),
   quantity: z.number().min(1),
   typeId: z.string(),
+  typeIdText: z.string().optional(),
   organizationId: z.string(),
   approved: z.boolean().optional(),
   description: z.string().optional(),
@@ -69,16 +73,20 @@ const CreatePunishment: React.FC = () => {
     api.organizations.getOrganizationWithPunishmentData.useQuery(
       me?.data?.user?.organizationId ?? ""
     );
-  console.log(me?.data?.user?.organizationId);
 
   const {
     handleSubmit,
     register,
     setValue,
-
+    getValues,
+    reset: formReset,
+    watch,
     formState: { errors },
   } = useForm<formType>({
     defaultValues: {
+      userIdText: "",
+      reasonIdText: "",
+      typeIdText: "",
       createdById: me?.data.user?.id ?? "",
       organizationId:
         (params?.organizationId as string | null) ??
@@ -90,6 +98,13 @@ const CreatePunishment: React.FC = () => {
     },
     resolver: zodResolver(formSchema),
   });
+
+  useEffect(() => {
+    register("userId");
+    register("reasonId");
+    register("typeId");
+  }, [register])
+
   const { mutate: createPunishment } =
     api.punishments.createPunishment.useMutation();
 
@@ -107,13 +122,38 @@ const CreatePunishment: React.FC = () => {
 
   const onSubmit = (data: formType) => {
     const createPunishmentData = {
-      ...data,
+      userId: data.userId ?? "",
+      reasonId: data.reasonId ?? "",
+      typeId: data.typeId ?? "",
       organizationId: me?.data.user?.organizationId ?? "",
       createdById: me?.data.user?.id ?? "",
       description: data.description ?? "",
+      quantity: data.quantity ?? 1,
+      proof: data.proof ?? "",
+      approved: false,
     };
 
-    createPunishment(createPunishmentData);
+    createPunishment(createPunishmentData, {
+      onSuccess: () => {
+        formReset({
+          userId: "",
+          userIdText: "",
+          typeId: "",
+          typeIdText: "",
+          reasonId: "",
+          reasonIdText: "",
+          description: "",
+          quantity: 1,
+        }, {
+          keepValues: false,
+        });
+        toast("Punishment created", {
+          type: "success",
+          position: "bottom-center"
+        })
+      },
+      onError: (e) => toast(e.message, { type: "error" })
+    });
   };
 
   const userOptions =
@@ -149,8 +189,10 @@ const CreatePunishment: React.FC = () => {
                 )}
               </label>
               <FormSelect
+                text={watch("userIdText") ?? ""}
                 options={userOptions}
                 handleChange={handleChange("userId")}
+                handleTextChange={handleChange("userIdText")}
               />
             </FormField>
             <FormField>
@@ -161,8 +203,10 @@ const CreatePunishment: React.FC = () => {
                 )}
               </label>
               <FormSelect
+                text={watch("typeIdText") ?? ""}
                 options={typeOptions}
                 handleChange={handleChange("typeId")}
+                handleTextChange={handleChange("typeIdText")}
               />
             </FormField>
             <FormField>
@@ -174,7 +218,9 @@ const CreatePunishment: React.FC = () => {
               </label>
               <FormSelect
                 options={reasonOptions}
+                text={watch("reasonIdText") ?? ""}
                 handleChange={handleChange("reasonId")}
+                handleTextChange={handleChange("reasonIdText")}
               />
             </FormField>
             <FormField>

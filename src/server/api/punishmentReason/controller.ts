@@ -106,7 +106,7 @@ export const deletePunishmentReasonController = async ({
 }) => {
   try {
     const { prisma, session } = ctx;
-    if (session?.user?.role !== "ORG_ADMIN") {
+    if (session?.user?.role !== "ORG_ADMIN" && session?.user?.role !== "SUPER_ADMIN") {
       throw new TRPCError({
         code: "UNAUTHORIZED",
         message: "Not authorized",

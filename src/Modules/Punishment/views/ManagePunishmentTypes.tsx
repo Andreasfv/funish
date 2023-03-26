@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { PunishmentType } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import styled from "styled-components";
 import { z } from "zod";
 import FormInput from "../../../components/input/formInput";
@@ -48,9 +49,23 @@ const ManagePunishmentTypes: React.FC<ManagePunishmentTypesProps> = ({
   const router = useRouter();
   const { organizationId } = router.query;
   const { mutate: createPunishmentType } =
-    api.punishmentTypes.createPunishmentType.useMutation();
+    api.punishmentTypes.createPunishmentType.useMutation({
+      onSuccess: () => {
+        toast("Punishment type created", {
+          type: "success",
+          position: "bottom-center",
+        });
+
+        resetForm({
+          name: "",
+          quantity: 1,
+          description: "",
+        });
+      }
+    });
   const {
     handleSubmit,
+    reset: resetForm,
     register,
   } = useForm<formType>({
     defaultValues: {

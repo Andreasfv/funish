@@ -1,4 +1,5 @@
 import type { PunishmentReason} from "@prisma/client";
+import { toast } from "react-toastify";
 import styled from "styled-components";
 import { api } from "../../../utils/api";
 
@@ -37,8 +38,18 @@ const PunishmentReasonRow: React.FC<PunishmentTypeRowProps> = ({
   function handleDelete() {
     deletePunishmentReason(punishmentReason.id, {
       onSuccess: () => {
+        toast("Punishment reason deleted", {
+          type: "success",
+          position: "bottom-center"
+        })
         refetch();
       },
+      onError: () => {
+        toast("Cannot delete reason with existing punishments", {
+          type: "error",
+          position: "bottom-center"
+        })
+      }
     });
   }
 

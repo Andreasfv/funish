@@ -43,9 +43,15 @@ export const authOptions: NextAuthOptions = {
   events: {
     createUser({user}) {
       console.log("createUser", user)
-    }
+    },
+    signIn({user}) {
+      return 
+    },
   },
   callbacks: {
+    signIn({ user, account, profile, email, credentials }) {
+      return true;
+    },
     session({ session, user }) {
       if (session.user) {
         session.user.id = user.id;

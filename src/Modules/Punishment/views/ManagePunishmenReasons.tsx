@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { PunishmentReason} from "@prisma/client";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import styled from "styled-components";
 import { z } from "zod";
 import FormInput from "../../../components/input/formInput";
@@ -46,10 +47,20 @@ const ManagePunishmentReasons: React.FC<ManagePunishmentReasonsProps> = ({
   const router = useRouter();
   const { organizationId } = router.query;
   const { mutate: createPunishmentType } =
-    api.punishmentReasons.createPunishmentReason.useMutation();
+    api.punishmentReasons.createPunishmentReason.useMutation({
+      onSuccess: () => {
+        toast("Punishment reason created", { type: "success", position: "bottom-center" })
+        resetForm({
+          description: "",
+          name: "",
+        })
+      }
+    });
+
   const {
     handleSubmit,
     register,
+    reset: resetForm,
   } = useForm<formType>({
     defaultValues: {
       description: "",

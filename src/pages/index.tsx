@@ -11,14 +11,13 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 const Home: NextPage = () => {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
   const [wait, setWait] = useState(false)
   const router = useRouter();
-  const { data: me } = api.users.me.useQuery();
-  const { t } = useTranslation();
-  const {mutate, isLoading,  } = api.users.addUserToOrganization.useMutation()
+  const { data: me, isLoading } = api.users.me.useQuery();
+  const { mutate, isLoading: meLoading } = api.users.addUserToOrganization.useMutation()
+  const session = useSession()
   useEffect(() => {
-    if (me?.data?.user?.id && !me?.data?.user?.organizationId) {
+    if (me?.data?.user?.id && !me?.data?.user?.organizationId && !meLoading) {
       if(isLoading || wait) return
       setWait(true)
       mutate({
@@ -34,19 +33,17 @@ const Home: NextPage = () => {
         }
       })
     }
-    if (me?.data?.user?.organizationId) {
+  }, [isLoading, me?.data?.user?.id, me?.data?.user?.organizationId, meLoading, mutate, router, wait]);
+
+  useEffect(() => {
+    console.log(session)
+    if (session.data?.user.organizationId) {
       router
-        .push(`/[organizationId]/dashboard`, {
-          query: { organizationId: me?.data?.user?.organizationId },
-        })
-        .catch((err) => console.warn(err));
-      router
-        .push(`${me?.data?.user?.organizationId}/dashboard`)
+        .push(`/${session.data.user.organizationId}/dashboard`)
         .catch((err) => console.warn(err));
     }
-  }, [me?.data?.user?.organizationId, router]);
+  }, [router, session])
 
-  
   return (
     <>
       <Head>
@@ -62,9 +59,6 @@ const Home: NextPage = () => {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 md:gap-8">
           </div>
           <div className="flex flex-col items-center gap-2">
-            <p className="text-2xl text-white">
-              {hello.data ? hello.data.greeting : "Loading tRPC query..."}
-            </p>
             <AuthShowcase />
           </div>
         </div>
