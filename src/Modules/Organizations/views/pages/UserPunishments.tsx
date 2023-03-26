@@ -46,7 +46,7 @@ const HeaderRow = styled.div`
     & > :last-child {
         min-width: 175px;
         @media ${theme.media.largeMobile} {
-            min-width: 70px;
+            min-width: 80px;
             max-width: 90px;
         }
     }

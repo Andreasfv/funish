@@ -120,7 +120,7 @@ const Dashboard: NextPage = () => {
                         <PunishmentCard
                           key={index}
                           punishmentType={punishmentType.name}
-                          count={punishmentType.Punishments.length}
+                          count={punishmentType.Punishments.reduce((acc, punishment) => acc +( punishment.approved ? punishment.quantity : 0), 0)}
                         />
                       )
                     )}

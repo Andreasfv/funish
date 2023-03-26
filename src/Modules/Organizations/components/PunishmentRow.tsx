@@ -67,7 +67,7 @@ const ButtonWrapper = styled.div`
     flex: 1;
     min-width: 175px;
     @media ${theme.media.largeMobile} {
-        min-width: 70px;
+        min-width: 85px;
         max-width: 90px;
     }
 `

@@ -98,6 +98,12 @@ const FormSelect: React.FC<FormSelectProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const toggling = () => setIsOpen(!isOpen);
 
+  useEffect(() => {
+    if(text !== "") return
+    setFilteredOptions(options);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [options])
+
   const handleSearch = (e: React.FormEvent<HTMLInputElement>) => {
     //We use a const so that the update is immediatedly. setState can be slow.
     handleTextChange(e.currentTarget.value)
