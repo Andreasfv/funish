@@ -73,7 +73,8 @@ const UserPunishments: React.FC<UserPunishmentsProps> = () => {
         including: {
             createdBy: true,
             type: true,
-            reason: true
+            reason: true,
+            user: true
         }
     }, {
         getNextPageParam: (lastPage) => lastPage.nextCursor
@@ -151,11 +152,20 @@ const UserPunishments: React.FC<UserPunishmentsProps> = () => {
             <Wrapper>
                 <ContentWrapper onScroll={handleScroll}>
                     <HeaderRow>
-                        <div>Type</div>
-                        {!mobile && (<div>Reason</div>)}
-                        <div>From</div>
-                        <div>Approved</div>
-                        {isAdmin && <div></div>}
+                        {!mobile ? (
+                            <>
+                                <div>Type</div> {punishmentRows.length}
+                                <div>Reason</div>
+                                <div>From</div>
+                                <div>Approved</div>
+                                <div></div>
+                            </>
+                            ) : (
+                                <>
+                                    <div>Punishments</div>
+                                </>
+                            )
+                        }
                     </HeaderRow>
                     {punishmentRows}
                 </ContentWrapper>

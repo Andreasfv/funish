@@ -99,14 +99,14 @@ const MyPunishments: React.FC = () => {
                   <div>
                     Totalt:{" "}
                     {punishmentType.Punishments.reduce(
-                      (acc, cur) => acc + cur.quantity,
+                      (acc, cur) => acc + (cur.approved ? cur.quantity : 0),
                       0
                     )}
                   </div>
                   <div>{punishmentType.description}</div>
                   <div></div>
                 </div>
-                {punishmentType.Punishments.map((punishment) => (
+                {punishmentType.Punishments.filter((punishment) => punishment.approved ).map((punishment) => (
                   <PunishmentRow key={punishment.id} punishment={punishment} />
                 ))}
               </PunishmentTypeWrapper>

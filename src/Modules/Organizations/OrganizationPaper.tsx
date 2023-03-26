@@ -3,7 +3,6 @@ import { api } from "../../utils/api";
 
 interface OrganizationPaperProps {
   organizationId: string;
-  userId: string;
 }
 
 const Card = styled.div`
@@ -21,16 +20,16 @@ const Card = styled.div`
 
 const OrganizationPaper: React.FC<OrganizationPaperProps> = ({
   organizationId,
-  userId,
 }) => {
-  const { data: punishment } = api.punishments.getPunishments.useQuery({
-    organizationId: organizationId,
-    userId: userId,
-  });
+
+  const { data: organization } = api.organizations.getOrganizationWithPunishmentData.useQuery(
+    organizationId
+  );
+    console.log(organization)
   return (
     <Card>
-      <p>Lyche Bar</p>
-      <p>{`Total Punishments: ${punishment?.punishment?.length ?? ""}`}</p>
+      <p>{organization?.data?.organization?.name}</p>
+      <p>{`Total Punishments: ${organization?.data?.organization?.punishments.reduce((acc, punishment) => acc + (punishment.approved ? punishment.quantity : 0), 0 ) ?? ""}`}</p>
     </Card>
   );
 };

@@ -26,7 +26,7 @@ export const updatePunishmentSchema = z.object({
 
 //Todo add approved filter
 export const filterPunishmentSchema = z.object({
-  limit: z.number().default(10),
+  limit: z.number().optional(),
   cursor: z.string().nullish(),
   filterString: z.string().optional(),
   approved: z.boolean().optional(),

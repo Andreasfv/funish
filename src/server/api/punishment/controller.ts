@@ -218,7 +218,7 @@ export const getPunishmentsController = async ({
       take: input.limit,
     });
     let nextCursor: typeof cursor | undefined = undefined
-    if (punishment.length >= input.limit) {
+    if (punishment.length >= (input?.limit ? input.limit :  0)) {
       const nextItem = punishment.pop()
       nextCursor = nextItem?.id
     }

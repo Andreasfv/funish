@@ -1,5 +1,7 @@
 import type { Punishment, PunishmentReason, PunishmentType, User } from "@prisma/client";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { api } from "../../../utils/api";
 
 const Wrapper = styled.div`
   display: flex;
@@ -20,27 +22,33 @@ const Wrapper = styled.div`
     `
 
 interface UserPunishmentsRowProps {
-    user: User & {
-        punishments: (Punishment & {
+    user: {
+        id: string;
+        givenPunishments: {
+            user: User;
+            id: string;
             type: PunishmentType;
-            reason: PunishmentReason;
             createdBy: User;
-        })[];
+            reason: PunishmentReason;
+            reedemed: boolean;
+            quantity: number;
+            approved: boolean;
+        }[];
+        name: string | null;
     }
     onClick: () => void;
 }
 
 const UserPunishmentsRow: React.FC<UserPunishmentsRowProps> = ({user, onClick}) => {
+    const [approvedCount, setApprovedCount] = useState(0)
+    const [disaprovedCount, setDisaprovedCount] = useState(0)
 
-    let approvedCount = 0
-    let disaprovedCount = 0
-
-    user.punishments.forEach(punishment => {
-       if (punishment.approved) approvedCount += punishment.quantity
-       else disaprovedCount += punishment.quantity 
-    })
-
-
+    useEffect(() => {
+        const approved = user.givenPunishments.filter(p => p.approved && p.user.id === user.id)
+        const disapproved = user.givenPunishments.filter(p => !p.approved && p.user.id === user.id)
+        setApprovedCount(approved.length)
+        setDisaprovedCount(disapproved.length)
+    }, [user])
 
     return (
         <Wrapper onClick={onClick}>

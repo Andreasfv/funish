@@ -91,15 +91,14 @@ const BigButton = styled(Link)`
 const Dashboard: NextPage = () => {
   const session = useSession();
   const router = useRouter();
-
-  const { userId } = router.query;
+  const { organizationId } = router.query;
   const { data: userData, isLoading: userDataLoading } =
     api.users.getComprehensiveUserData.useQuery(
-      typeof userId == "string" ? userId : session?.data?.user?.id ?? ""
+      session?.data?.user?.id ?? ""
     );
 
   if (userDataLoading) {
-    return <>Loading...</>;
+    return <BasePageLayout>Loading...</BasePageLayout>;
   }
 
   if (userData?.data?.user?.organization) {
@@ -128,8 +127,7 @@ const Dashboard: NextPage = () => {
                 {userData.data?.user?.organizationId && (
                   <CardsWrapper>
                     <OrganizationPaper
-                      organizationId={userData.data.user.organizationId}
-                      userId={userData.data.user.id}
+                      organizationId={organizationId as string ?? ""}
                     />
                   </CardsWrapper>
                 )}

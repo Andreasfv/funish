@@ -52,7 +52,7 @@ const AllOrgUsersPunishments: React.FC = () => {
             router.push(`/[organizationId]/user-punishments/[userId]`, `/${organizationId}/user-punishments/${userId}`).catch((err) => console.warn(err))
         }
     }
-    const userCards = organization?.data?.organization?.users.map((user, index) => {
+    const userCards = organization?.organization?.users.map((user, index) => {
         return (
             <UserPunishmentsRow key={index} user={user} onClick={goToUserPunishments(user.id)}/>
         )

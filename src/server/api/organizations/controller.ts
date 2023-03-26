@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import type { Context } from "../trpc";
+import { usersRouter } from "../users/router";
 
 import type {
   CreateOrganizationInput,
@@ -277,25 +278,30 @@ export const getOrganizationUsersWithPunishmentDataController = async ({
       where: {
         id: input,
       },
-      include: {
+      select: {
         users: {
-          include: {
-            punishments: {
-              include: {
+          select: {
+            id: true,
+            name: true,
+            givenPunishments: {
+              select: {
+                id: true,
                 type: true,
                 reason: true,
-                createdBy: true
+                user: true,
+                createdBy: true,
+                approved: true,
+                quantity: true,
+                reedemed: true,
               }
             },
-          },
-        },
+          }
+        }
       },
     });
     return {
       status: "success",
-      data: {
-        organization,
-      },
+      organization
     };
   } catch (error) {
     throw error;
