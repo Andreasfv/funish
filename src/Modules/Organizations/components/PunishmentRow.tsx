@@ -7,12 +7,13 @@ import theme from "../../../utils/theme";
 interface WrapperProps {
     open: boolean;
 }
+
+// TODO: MAKE THIS INTO GRID. IT'S A MESS.
 const Wrapper = styled.div<WrapperProps>`
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 2rem;
-    padding: 0.5rem;
     background-color: ${(props) => props.theme.colors.green};
     border-radius: 0.5rem;
     div {
@@ -22,15 +23,17 @@ const Wrapper = styled.div<WrapperProps>`
         height: 100%;
     }
 
-    ${props => props.open && `
-        height: 4rem;;
-    `
+    @media ${theme.media.largeMobile} {
+        height: 12rem;
+    }
 }
 `
 const LineWrapper = styled.div`
     display: flex;
     width: 100%;
     height: 100%;
+    min-height: 24px;
+    padding: 0.5rem;
     flex: 1;
 `
 const Button = styled.button`
@@ -44,10 +47,17 @@ position: absolute;
 height: 2rem;
 padding: 0 1rem;
 
-left: 0;
     background-color: ${(props) => props.theme.colors.lightDarkGreen};
     :hover {
         background-color: ${(props) => props.theme.colors.darkGreen};
+    }
+
+    @media ${theme.media.largeMobile} {
+        left: null;
+        right: 0;
+    }
+    @media !${theme.media.largeMobile} {
+        left: 0
     }
 `
 
@@ -91,14 +101,44 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({punishment, deletePunishme
         if(!mobile) return
         setOpen(!open)
     }
+
+    if (mobile) {
+        return (
+
+        <Wrapper onClick={openRow} open={open}>
+            <LineWrapper>
+            <div>{punishment.type.name}</div>
+            <div>{punishment.reason.name}</div>
+            {isAdmin &&
+                <ButtonWrapper>
+                    {!punishment.approved && <ApproveButton onClick={approvePunishment}> Y </ApproveButton>}
+                </ButtonWrapper>
+            }
+            </LineWrapper>
+            <LineWrapper>
+            <div>{punishment.createdBy.name}</div>
+            <div>{punishment.approved ? "Godkjent" : "Ikke godkjent"}</div>
+            <ButtonWrapper></ButtonWrapper>
+            </LineWrapper>
+            <LineWrapper>
+                <div>{punishment.description}</div>
+                {isAdmin && 
+                <ButtonWrapper>
+                    <DeleteButton onClick={deletePunishment}> X </DeleteButton>
+                </ButtonWrapper>
+                }
+            </LineWrapper>
+        </Wrapper>
+        )
+    }
+
     return (
         <Wrapper onClick={openRow} open={open}>
             <LineWrapper>
-
             <div>{punishment.type.name}</div>
             {!mobile && (<div>{punishment.reason.name}</div>)}
             <div>{punishment.createdBy.name}</div>
-            <div>{punishment.approved ? "Godkjent" : "Ikke godkjent"}</div>
+            {!mobile && <div>{punishment.approved ? "Godkjent" : "Ikke godkjent"}</div>}
             {isAdmin && 
             <ButtonWrapper>
                 {!punishment.approved && <ApproveButton onClick={approvePunishment}>

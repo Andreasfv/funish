@@ -85,20 +85,22 @@ const UserPunishments: React.FC<UserPunishmentsProps> = () => {
 
     const approvePunishment = useCallback((id: string) => {
         return () => {
-            updatePunishmentMutation({id: id, approved: true})
-            refetch()
-
-            .catch(err => console.log(err))
+            updatePunishmentMutation({id: id, approved: true}, {
+                onSuccess: () => {
+                    void refetch()
+                }
+            })
         }
     }, [refetch, updatePunishmentMutation])
 
 
     const deletePunishment = useCallback((id: string) => {
         return () => {
-            deletePunishmentMutation(id)
-            refetch()
-
-            .catch(err => console.log(err))
+            deletePunishmentMutation(id, {
+                onSuccess: () => {
+                    void refetch()
+                }
+            })
         }
     }, [deletePunishmentMutation, refetch])
 
