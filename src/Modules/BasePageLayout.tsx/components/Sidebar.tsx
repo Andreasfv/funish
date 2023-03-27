@@ -70,7 +70,9 @@ const Sidebar: React.FC = () => {
         <SidebarItem
           onClick={() => {
             router.push("/").catch((err) => console.log(err));
-            void signOut();
+            void signOut({
+              callbackUrl: `${window.location.origin}`,
+            });
           }}
         >
           Logout

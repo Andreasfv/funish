@@ -88,8 +88,10 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = ({toggleNavMenu, clickRef}) 
     const { data: me } = api.users.me.useQuery();
 
     function handleLogout() {
-        void signOut().then(() => {
-            router.push("").catch((err) => console.error(err))
+        void signOut({
+            callbackUrl: `${window.location.origin}`,
+          }).then(() => {
+            router.push("/").catch((err) => console.error(err))
         })
     }
 

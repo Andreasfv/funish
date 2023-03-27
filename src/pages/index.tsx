@@ -15,6 +15,7 @@ const Home: NextPage = () => {
   const router = useRouter();
   const { mutate, isLoading: meLoading } = api.users.addUserToOrganization.useMutation()
   const session = useSession()
+
   useEffect(() => {
     if (session?.data?.user?.id && !session?.data?.user?.organizationId && !meLoading) {
       if(wait) return
@@ -40,7 +41,7 @@ const Home: NextPage = () => {
         .catch((err) => console.warn(err));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [session])
 
   return (
     <>

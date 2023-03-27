@@ -15,12 +15,16 @@ const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
+
   const router = useRouter()
-    if (session?.user?.organizationId) {
+  useEffect(() => {
+    if (session !== null && !session?.user?.organizationId && router.pathname !== "/") {
       router
-        .push(`/`)
-        .catch((err) => console.warn(err));
+      .push(`/`)
+      .catch((err) => console.warn(err));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session])
 
   return (
       <SessionProvider session={session}>
