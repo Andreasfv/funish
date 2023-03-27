@@ -93,9 +93,13 @@ const Dashboard: NextPage = () => {
   const router = useRouter();
   const { organizationId } = router.query;
   const { data: userData, isLoading: userDataLoading } =
-    api.users.getComprehensiveUserData.useQuery(
-      session?.data?.user?.id ?? ""
-    );
+    api.users.getComprehensiveUserData.useQuery({
+      userId: session?.data?.user?.id ?? "",
+      where: {
+        approved: true,
+        redeemed: false,
+      }
+    });
 
   if (userDataLoading) {
     return <BasePageLayout>Loading...</BasePageLayout>;

@@ -22,10 +22,12 @@ const OrganizationPaper: React.FC<OrganizationPaperProps> = ({
   organizationId,
 }) => {
 
-  const { data: organization } = api.organizations.getOrganizationWithPunishmentData.useQuery(
-    organizationId
-  );
-    console.log(organization)
+  const { data: organization } = api.organizations.getOrganizationWithPunishmentData.useQuery({
+    organizationId,
+    approved: true,
+    redeemed: false,
+  });
+
   return (
     <Card>
       <p>{organization?.data?.organization?.name}</p>

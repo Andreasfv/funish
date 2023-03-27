@@ -88,8 +88,9 @@ const PunishmentDashboard: React.FC = () => {
   }
 
   const { data: organization, refetch } =
-    api.organizations.getOrganizationWithPunishmentData.useQuery(
-      organizationId as string,
+    api.organizations.getOrganizationWithPunishmentData.useQuery({
+      organizationId: organizationId as string
+    },
       { enabled: !!organizationId }
     );
   console.log(organization);

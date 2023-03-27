@@ -11,6 +11,7 @@ import {
 import {
   addUserToOrganizationSchema,
   createUserSchema,
+  getComprehensiveUserDataSchema,
   getUserSchema,
   organizationUsersSchema,
 } from "./schema";
@@ -32,7 +33,7 @@ export const usersRouter = createTRPCRouter({
     .input(getUserSchema)
     .query(({ ctx, input }) => getUserController({ ctx, userId: input })),
   getComprehensiveUserData: protectedProcedure
-    .input(getUserSchema)
+    .input(getComprehensiveUserDataSchema)
     .query(({ ctx, input }) =>
       getComprehensiveUserDataController({ ctx, input })
     ),

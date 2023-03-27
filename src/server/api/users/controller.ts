@@ -4,6 +4,7 @@ import type { Context } from "../trpc";
 import type {
   AddUserToOrganizationInput,
   CreateUserInput,
+  GetComprehensiveUserDataInput,
   GetUserInput,
   OrganizationUsersInput,
 } from "./schema";
@@ -253,7 +254,7 @@ export const getComprehensiveUserDataController = async ({
   input,
 }: {
   ctx: Context;
-  input: GetUserInput;
+  input: GetComprehensiveUserDataInput;
 }) => {
   try {
     const { prisma } = ctx;
@@ -267,7 +268,7 @@ export const getComprehensiveUserDataController = async ({
 
     const user = await prisma.user.findUnique({
       where: {
-        id: input,
+        id: input.userId,
       },
       include: {
         organization: {
@@ -276,7 +277,9 @@ export const getComprehensiveUserDataController = async ({
               include: {
                 Punishments: {
                   where: {
-                    userId: input,
+                    userId: input.userId,
+                    approved: input.where?.approved,
+                    reedemed: input.where?.redeemed
                   },
                 },
               },

@@ -70,8 +70,8 @@ const CreatePunishment: React.FC = () => {
   const params = router.query;
   const { data: me } = api.users.me.useQuery();
   const { data: organization } =
-    api.organizations.getOrganizationWithPunishmentData.useQuery(
-      me?.data?.user?.organizationId ?? ""
+    api.organizations.getOrganizationWithPunishmentData.useQuery({
+      organizationId: me?.data?.user?.organizationId ?? ""}
     );
 
   const {

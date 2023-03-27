@@ -42,7 +42,6 @@ const AllOrgUsersPunishments: React.FC = () => {
     const organizationId = session.data?.user.organizationId
     const { data: organization } = api.organizations.getOrganizationUsersWithPunishmentData.useQuery({
         organizationId: organizationId ?? "",
-        approved: true,
         redeemed: false,
     } , {
         enabled: !!organizationId,
