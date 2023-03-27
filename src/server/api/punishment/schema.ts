@@ -34,6 +34,7 @@ export const filterPunishmentSchema = z.object({
   typeId: z.string().optional(),
   userId: z.string().optional(),
   createdById: z.string().optional(),
+  redeemed: z.boolean().optional(),
   sort: z
     .enum([
       "type",

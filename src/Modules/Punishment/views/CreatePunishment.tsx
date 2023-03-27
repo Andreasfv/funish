@@ -1,17 +1,17 @@
-import React, { useEffect } from "react";
-import styled from "styled-components";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { api } from "../../../utils/api";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import FormInput from "../../../components/input/formInput";
-import { useTranslation } from "react-i18next";
-import FormSelect from "../../../components/input/formSelect";
 import { useRouter } from "next/router";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
+import styled from "styled-components";
+import { z } from "zod";
+import FormInput from "../../../components/input/formInput";
 import FormNumberInput from "../../../components/input/formNumberInput";
+import FormSelect from "../../../components/input/formSelect";
+import { api } from "../../../utils/api";
 import FormField from "../components/FormField";
 import SubmitButton from "../components/SubmitButton";
-import { toast } from "react-toastify";
 const Wrapper = styled.div`
   display: flex;
   width: 100%;
@@ -78,7 +78,6 @@ const CreatePunishment: React.FC = () => {
     handleSubmit,
     register,
     setValue,
-    getValues,
     reset: formReset,
     watch,
     formState: { errors },
@@ -98,12 +97,6 @@ const CreatePunishment: React.FC = () => {
     },
     resolver: zodResolver(formSchema),
   });
-
-  useEffect(() => {
-    register("userId");
-    register("reasonId");
-    register("typeId");
-  }, [register])
 
   const { mutate: createPunishment } =
     api.punishments.createPunishment.useMutation();
@@ -144,8 +137,9 @@ const CreatePunishment: React.FC = () => {
           reasonIdText: "",
           description: "",
           quantity: 1,
-        }, {
-          keepValues: false,
+          proof: data.proof,
+          createdById: data.createdById,
+          organizationId: data.organizationId,
         });
         toast("Punishment created", {
           type: "success",

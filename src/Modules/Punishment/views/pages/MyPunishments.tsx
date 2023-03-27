@@ -81,12 +81,15 @@ const MyPunishments: React.FC = () => {
       {
         userId: me?.data?.user?.id ?? "",
         organizationId: (organizationId as string) ?? "",
+        redeemed: false,
+        approved: true,
       },
       {
         enabled: !!organizationId && !!me?.data?.user?.id,
       }
     );
-  return (
+
+    return (
     <BasePageLayout>
       <Wrapper>
         <ContentWrapper>
@@ -106,7 +109,7 @@ const MyPunishments: React.FC = () => {
                   <div>{punishmentType.description}</div>
                   <div></div>
                 </div>
-                {punishmentType.Punishments.filter((punishment) => punishment.approved ).map((punishment) => (
+                {punishmentType.Punishments.map((punishment) => (
                   <PunishmentRow key={punishment.id} punishment={punishment} />
                 ))}
               </PunishmentTypeWrapper>

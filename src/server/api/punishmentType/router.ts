@@ -1,4 +1,4 @@
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { adminProcedure, createTRPCRouter, protectedProcedure } from "../trpc";
 
 import {
   createPunishmentTypeController,
@@ -7,6 +7,7 @@ import {
   getPunishmentTypesController,
   updatePunishmentTypeController,
   getPunishmentTypesWithPunishmentsForUser,
+  redeemPunishmentsController,
 } from "./controller";
 
 import {
@@ -16,6 +17,7 @@ import {
   getPunishmentTypeSchema,
   updatePunishmentTypeSchema,
   getPunishmentTypeWithPunishmentsForUserSchema,
+  redeemPunishmentsSchema,
 } from "./schema";
 
 export const punishmentTypeRouter = createTRPCRouter({
@@ -49,5 +51,11 @@ export const punishmentTypeRouter = createTRPCRouter({
     .input(deletePunishmentTypeSchema)
     .mutation(({ ctx, input }) =>
       deletePunishmentTypeController({ ctx, input })
+    ),
+
+    redeemPunishments: adminProcedure
+    .input(redeemPunishmentsSchema)
+    .mutation(({ ctx, input }) =>
+      redeemPunishmentsController({ ctx, input })
     ),
 });

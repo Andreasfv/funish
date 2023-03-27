@@ -1,3 +1,4 @@
+import type { Punishment } from "@prisma/client";
 import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import type { Context } from "../trpc";
@@ -8,6 +9,7 @@ import type {
   FilterPunishmentTypeInput,
   GetPunishmentTypeInput,
   GetPunishmentTypeWithPunishmentsForUserInput,
+  RedeemPunishmentsInput,
 } from "./schema";
 
 export const createPunishmentTypeController = async ({
@@ -217,6 +219,8 @@ export const getPunishmentTypesWithPunishmentsForUser = async ({
         Punishments: {
           where: {
             userId: input.userId,
+            reedemed: input.redeemed,
+            approved: input.approved,
           },
           include: {
             createdBy: true,
@@ -235,3 +239,115 @@ export const getPunishmentTypesWithPunishmentsForUser = async ({
     throw error;
   }
 };
+
+export const redeemPunishmentsController = async ({
+  ctx,
+  input,
+}: {
+  ctx: Context;
+  input: RedeemPunishmentsInput
+}) => {
+  try {
+    const { prisma, session } = ctx;
+    if (!session?.user?.organizationId) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message:
+          "Organization membership not found, or you are not a member of an organization",
+      });
+    }
+    const punishmentType = await prisma.punishmentType.findUnique({
+      where: {
+            id: input.punishmentTypeId,
+      },
+      include: {
+        Punishments: {
+          where: {
+            userId: input.userId,
+            approved: true,
+          },
+          include: {
+            createdBy: true,
+            reason: true,
+          },
+          orderBy: {
+            createdAt: "desc"
+          }
+        },
+      },
+    });
+
+    const punishmentsToRedeem: Punishment[] = []
+    console.log("IM Fired")
+    if (punishmentType?.Punishments && punishmentType.Punishments.length > 0) {
+      const {Punishments: punishments} = punishmentType 
+
+      const punishmentQuantity = punishments?.reduce(
+        (acc, cur) => acc + (cur?.approved ?? false ? (cur?.quantity ?? 0) : 0), 
+      0)
+
+      if (punishmentQuantity < input.quantity) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Not enough punishments to redeem",
+        });
+      }
+
+      let punishmentQuota = input.quantity
+      punishments.forEach((punishment) => {
+        if (punishmentQuota > 0) {
+          if (punishment.quantity <= punishmentQuota) {
+            punishmentsToRedeem.push(punishment)
+            punishmentQuota -= punishment.quantity
+          } else {
+            prisma.punishment.update({
+              where: {
+                id: punishment.id
+              },
+              data: {
+                quantity: punishment.quantity - punishmentQuota
+              }
+            }).catch((err: Error) => {
+              throw new TRPCError({
+                code: "INTERNAL_SERVER_ERROR",
+                message: err.message,
+              });
+            })
+            punishmentQuota = 0;
+            return;
+          }
+        }
+      })
+      } else {
+        if (!punishmentType?.Punishments) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "No punishments to redeem",
+          });
+        }
+
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Not enough punishments to redeem",
+        });
+      }
+
+      await prisma.punishment.updateMany({
+        where: {
+          id: {
+            in: punishmentsToRedeem.map((punishment) => punishment.id)
+          }
+        },
+        data: {
+          reedemed: true
+        }
+      })
+
+    return {
+      status: "success",
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+

@@ -30,7 +30,17 @@ export const getPunishmentTypeSchema = z.string();
 export const getPunishmentTypeWithPunishmentsForUserSchema = z.object({
   organizationId: z.string(),
   userId: z.string(),
+  redeemed: z.boolean().optional(),
+  approved: z.boolean().optional(),
 });
+
+export const redeemPunishmentsSchema = z.object({
+  userId: z.string(),
+  organizationId: z.string(),
+  punishmentTypeId: z.string(),
+  quantity: z.number(),
+})
+
 export type CreatePunishmentTypeInput = z.infer<
   typeof createPunishmentTypeSchema
 >;
@@ -51,3 +61,5 @@ export type GetPunishmentTypeInput = z.infer<typeof getPunishmentTypeSchema>;
 export type GetPunishmentTypeWithPunishmentsForUserInput = z.infer<
   typeof getPunishmentTypeWithPunishmentsForUserSchema
 >;
+
+export type RedeemPunishmentsInput = z.infer<typeof redeemPunishmentsSchema>;

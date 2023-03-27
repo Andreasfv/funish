@@ -206,6 +206,7 @@ export const getPunishmentsController = async ({
         userId: input.userId,
         approved: input.approved,
         createdById: input.createdById,
+        reedemed: input.redeemed,
       },
       include: {
         user: input.including?.user ?? false,
