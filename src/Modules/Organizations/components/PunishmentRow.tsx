@@ -118,7 +118,6 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({punishment, deletePunishme
             </LineWrapper>
             <LineWrapper>
             <div>{punishment.createdBy.name}</div>
-            <div>{punishment.user.name ?? "?"}</div>
             <div>{punishment.approved ? "Godkjent" : "Ikke godkjent"}</div>
             <ButtonWrapper></ButtonWrapper>
             </LineWrapper>
@@ -140,7 +139,6 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({punishment, deletePunishme
             <div>{punishment.type.name}</div>
             {!mobile && (<div>{punishment.reason.name}</div>)}
             <div>{punishment.createdBy.name}</div>
-            <div>{punishment.user.name ?? "?"}</div>
 
             {!mobile && <div>{punishment.approved ? "Godkjent" : "Ikke godkjent"}</div>}
             {isAdmin && 
