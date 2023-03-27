@@ -26,6 +26,13 @@ export const deleteOrganizationSchema = z.object({
 
 export const getOrganizationSchema = z.string();
 
+export const getOrganizationUsersWithPunishmentDataSchema = z.object({
+  organizationId: z.string(),
+  approved: z.boolean().optional(),
+  redeemed: z.boolean().optional(),
+})
+
+export type getOrganizationUsersWithPunishmentDataInput = z.infer<typeof getOrganizationUsersWithPunishmentDataSchema>;
 export type GetOrganizationInput = z.infer<typeof getOrganizationSchema>;
 export type FilterOrganizationInput = z.infer<typeof filterOrganizationSchema>;
 export type CreateOrganizationInput = z.infer<typeof createOrganizationSchema>;

@@ -40,7 +40,11 @@ const AllOrgUsersPunishments: React.FC = () => {
     const session = useSession()
     const router = useRouter()
     const organizationId = session.data?.user.organizationId
-    const { data: organization } = api.organizations.getOrganizationUsersWithPunishmentData.useQuery(organizationId ?? "", {
+    const { data: organization } = api.organizations.getOrganizationUsersWithPunishmentData.useQuery({
+        organizationId: organizationId ?? "",
+        approved: true,
+        redeemed: false,
+    } , {
         enabled: !!organizationId,
     })
 

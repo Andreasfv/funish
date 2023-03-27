@@ -7,6 +7,7 @@ import type {
   CreateOrganizationInput,
   UpdateOrganizationInput,
   FilterOrganizationInput,
+  getOrganizationUsersWithPunishmentDataInput,
 } from "./schema";
 
 export const createOrganizationController = async ({
@@ -260,14 +261,14 @@ export const getOrganizationUsersWithPunishmentDataController = async ({
   input,
 }: {
   ctx: Context;
-  input: string;
+  input: getOrganizationUsersWithPunishmentDataInput;
 }) => {
   try {
     const { prisma, session } = ctx;
 
     // Permission Handling other than logged in
     if (session?.user?.role !== "SUPER_ADMIN") {
-      if (session?.user?.organizationId !== input) {
+      if (session?.user?.organizationId !== input.organizationId) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
           message: "Not authorized",
@@ -276,7 +277,7 @@ export const getOrganizationUsersWithPunishmentDataController = async ({
     }
     const organization = await prisma.organization.findUnique({
       where: {
-        id: input,
+        id: input.organizationId,
       },
       select: {
         users: {
@@ -284,6 +285,10 @@ export const getOrganizationUsersWithPunishmentDataController = async ({
             id: true,
             name: true,
             givenPunishments: {
+              where: {
+                approved: input.approved,
+                reedemed: input.redeemed
+              },
               select: {
                 id: true,
                 type: true,

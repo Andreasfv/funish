@@ -143,8 +143,8 @@ const UserPunishments: React.FC<UserPunishmentsProps> = () => {
                 position: "bottom-center"
             })
         },
-        onError: () => {
-            toast("Failed to redeem punishments", {
+        onError: (err) => {
+            toast(err.message, {
                 type: "error",
                 position: "bottom-center"
             })
@@ -190,7 +190,6 @@ const UserPunishments: React.FC<UserPunishmentsProps> = () => {
     function redeemFormSubmit(){
         console.log()
         handleSubmit(redeemPunisments)()
-        
         .catch(() => {
             toast(
                 "Failed to redeem punishments",
