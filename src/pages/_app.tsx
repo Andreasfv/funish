@@ -15,19 +15,12 @@ const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
-  const {data: me, isFetching: fetching, isLoading: loading } = api.users.me.useQuery();
   const router = useRouter()
     if (session?.user?.organizationId) {
       router
         .push(`/`)
         .catch((err) => console.warn(err));
     }
-
-  useEffect(() => {
-    if (!fetching && !loading && !me?.data?.user?.organizationId) {
-      router.push("/").catch((err) => console.error(err));
-    }
-  }, [me, fetching, loading, router])
 
   return (
       <SessionProvider session={session}>

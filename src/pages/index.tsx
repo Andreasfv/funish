@@ -13,36 +13,34 @@ import { useRouter } from "next/router";
 const Home: NextPage = () => {
   const [wait, setWait] = useState(false)
   const router = useRouter();
-  const { data: me, isLoading } = api.users.me.useQuery();
   const { mutate, isLoading: meLoading } = api.users.addUserToOrganization.useMutation()
   const session = useSession()
   useEffect(() => {
-    if (me?.data?.user?.id && !me?.data?.user?.organizationId && !meLoading) {
-      if(isLoading || wait) return
+    if (session?.data?.user?.id && !session?.data?.user?.organizationId && !meLoading) {
+      if(wait) return
       setWait(true)
+      //TODO Handle this with JWT Link to SignIn page for associating organization
+      //with user on creation / first SignIn
       mutate({
-        userId: me?.data?.user?.id,
+        userId: session?.data?.user?.id ?? "",
         organizationId: "clfmhi3mg0000xron5petwdsp",
       }, {
         onSuccess: () => {
-          router
-            .push(`/[organizationId]/dashboard`, {
-              query: { organizationId: me?.data?.user?.organizationId },
-            })
-            .catch((err) => console.warn(err));
+          router.push(`/${session.data.user.organizationId}/dashboard`)
+          .catch((err) => console.warn(err));
         }
       })
     }
-  }, [isLoading, me?.data?.user?.id, me?.data?.user?.organizationId, meLoading, mutate, router, wait]);
+  }, [meLoading, mutate, router, session?.data?.user?.id, session?.data?.user?.organizationId, session.status, wait]);
 
   useEffect(() => {
-    console.log(session)
     if (session.data?.user.organizationId) {
       router
         .push(`/${session.data.user.organizationId}/dashboard`)
         .catch((err) => console.warn(err));
     }
-  }, [router, session])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <>
