@@ -88,9 +88,10 @@ const PunishmentDashboard: React.FC = () => {
   }
 
   const { data: organization, refetch } =
-    api.organizations.getOrganizationWithPunishmentData.useQuery({
-      organizationId: organizationId as string
-    },
+    api.organizations.getOrganizationWithPunishmentData.useQuery(
+      {
+        organizationId: organizationId as string,
+      },
       { enabled: !!organizationId }
     );
   console.log(organization);
@@ -100,7 +101,7 @@ const PunishmentDashboard: React.FC = () => {
     { label: "Reasons", href: "manage_punishment_reasons" },
   ];
 
-  const SwitchItems = true ? (
+  const SwitchItems = isAdmin ? (
     switchItems.map((item, index) => (
       <SwitchItem
         key={index}

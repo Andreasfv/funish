@@ -7,6 +7,7 @@ import {
 } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 import GoogleProvider from "next-auth/providers/google";
+import Auth0Provider from "next-auth/providers/auth0";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "../env/server.mjs";
 import { prisma } from "./db";
@@ -30,6 +31,7 @@ declare module "next-auth" {
     role: Role;
     name: string;
     email: string;
+    image: string;
   }
 }
 
@@ -41,11 +43,11 @@ declare module "next-auth" {
  **/
 export const authOptions: NextAuthOptions = {
   events: {
-    createUser({user}) {
-      console.log("createUser", user)
+    createUser({ user }) {
+      console.log("createUser", user);
     },
-    signIn({user}) {
-      return 
+    signIn({ user }) {
+      return;
     },
   },
   callbacks: {
@@ -59,6 +61,7 @@ export const authOptions: NextAuthOptions = {
         session.user.name = user.name;
         session.user.organizationId = user.organizationId;
         session.user.role = user.role;
+        session.user.image = user.image;
 
         // session.user.role = user.role; <-- put other properties on the session here
       }
@@ -75,15 +78,20 @@ export const authOptions: NextAuthOptions = {
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
       allowDangerousEmailAccountLinking: true,
-      
+
       authorization: {
         params: {
           prompt: "consent",
           access_type: "offline",
-          response_type: "code"
-        }
-      }
-    })
+          response_type: "code",
+        },
+      },
+    }),
+    Auth0Provider({
+      clientId: env.AUTH0_CLIENT_ID,
+      clientSecret: env.AUTH0_CLIENT_SECRET,
+      issuer: env.AUTH0_DOMAIN,
+    }),
     /**
      * ...add more providers here
      *
@@ -94,7 +102,7 @@ export const authOptions: NextAuthOptions = {
      * @see https://next-auth.js.org/providers/github
      **/
   ],
-  secret: env.JWT_SECRET
+  secret: env.JWT_SECRET,
 };
 
 /**

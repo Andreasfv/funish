@@ -1,5 +1,7 @@
-const UserProfile: React.FC = () => {
-  return <>userProfile</>;
+import { BasePageLayout } from "../../../Modules/BasePageLayout.tsx/BasePageLayout";
+
+const UserIndex: React.FC = () => {
+  return <BasePageLayout>asd</BasePageLayout>;
 };
 
-export default UserProfile;
+export default UserIndex;

@@ -39,8 +39,7 @@ const OrgContentWrapper = styled.div`
   width: 100%;
   flex-direction: column;
   margin-top: 1rem;
-
-`
+`;
 const Sidebar: React.FC = () => {
   const router = useRouter();
   const { data: me } = api.users.me.useQuery();
@@ -64,12 +63,14 @@ const Sidebar: React.FC = () => {
       <SidebarItem onClick={goTo("punishment/punish")}>Punish</SidebarItem>
       <SidebarItem onClick={goTo("my-punishments")}>My Punishments</SidebarItem>
       <OrgContentWrapper>
-        <SidebarItem onClick={goTo("all-users-punishments")}>Punishments Overview</SidebarItem>
+        <SidebarItem onClick={goTo("all-users-punishments")}>
+          Punishments Overview
+        </SidebarItem>
       </OrgContentWrapper>
       <SidebarBottomWrapper>
+        <SidebarItem onClick={goTo("my-account")}>My Account</SidebarItem>
         <SidebarItem
           onClick={() => {
-            router.push("/").catch((err) => console.log(err));
             void signOut({
               callbackUrl: `${window.location.origin}`,
             });

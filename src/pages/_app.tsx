@@ -9,30 +9,31 @@ import "../styles/globals.css";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
+import { partialUtil } from "zod/lib/helpers/partialUtil";
+import RouteGuard from "../components/RouteGuard";
+
+const publicPages = ["/", "/[[...index]]"];
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
-
-  const router = useRouter()
-  useEffect(() => {
-    if (session !== null && !session?.user?.organizationId && router.pathname !== "/") {
-      router
-      .push(`/`)
-      .catch((err) => console.warn(err));
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session])
+  const router = useRouter();
 
   return (
-      <SessionProvider session={session}>
-        <ThemeProvider theme={theme}>
+    <SessionProvider session={session}>
+      <ThemeProvider theme={theme}>
+        {publicPages.includes(router.pathname) ? (
           <Component {...pageProps} />
-          <ToastContainer />
-        </ThemeProvider>
-      </SessionProvider>
+        ) : (
+          <RouteGuard>
+            <Component {...pageProps} />
+          </RouteGuard>
+        )}
+        <ToastContainer />
+      </ThemeProvider>
+    </SessionProvider>
   );
 };
 
