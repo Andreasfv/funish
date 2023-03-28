@@ -205,7 +205,9 @@ const AccountInfo: React.FC<AccountInfoProps> = ({ user }) => {
               onClick={() => {
                 navigator.clipboard
                   .writeText(
-                    `${window.location.host}/&?${user?.organizationId ?? ""}`
+                    `${window.location.host}/&?organizationId=${
+                      user?.organizationId ?? ""
+                    }`
                   )
                   .then(() => {
                     toast("Copied to clipboard", {
