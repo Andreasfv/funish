@@ -52,6 +52,7 @@ const Home: NextPage = () => {
                 },
                 {
                   onSuccess: () => {
+                    setOrgAssignSuccessful(true);
                     session.data.user.organizationId = router.query
                       ?.organizationId as string;
                     router
@@ -79,8 +80,9 @@ const Home: NextPage = () => {
     mutate,
     refetch,
     router,
+    session?.data?.user,
     session?.data?.user?.id,
-    session.data?.user?.organizationId,
+    session?.data?.user?.organizationId,
     session.status,
     wait,
   ]);
