@@ -222,7 +222,7 @@ const AccountInfo: React.FC<AccountInfoProps> = ({ user }) => {
               }}
             >
               <label>Invite Link:{" (click to copy)"}</label>
-              <InviteLink>{`${window.location.host}/&?${
+              <InviteLink>{`${window.location.host}/&?organizationId=${
                 user?.organizationId ?? ""
               }`}</InviteLink>
             </FormField>
