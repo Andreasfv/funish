@@ -52,6 +52,8 @@ const Home: NextPage = () => {
                 },
                 {
                   onSuccess: () => {
+                    session.data.user.organizationId = router.query
+                      ?.organizationId as string;
                     router
                       .push(`/${session.data.user.organizationId}/dashboard`)
                       .catch((err) => console.warn(err));
