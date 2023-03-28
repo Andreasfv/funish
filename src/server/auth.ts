@@ -31,6 +31,7 @@ declare module "next-auth" {
     role: Role;
     name: string;
     email: string;
+    image: string;
   }
 }
 
@@ -60,6 +61,7 @@ export const authOptions: NextAuthOptions = {
         session.user.name = user.name;
         session.user.organizationId = user.organizationId;
         session.user.role = user.role;
+        session.user.image = user.image;
 
         // session.user.role = user.role; <-- put other properties on the session here
       }

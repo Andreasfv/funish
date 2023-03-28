@@ -13,7 +13,7 @@ const Wrapper = styled.div<WrapperProps>`
   display: flex;
   top: 4rem;
   width: 100%;
-  height: ${(props) => (props.open ? "300px" : "0%")};
+  height: ${(props) => (props.open ? "calc(100% - 4rem)" : "0%")};
   transition: height 0.5s ease-in-out;
   background: white;
   justify-content: center;
@@ -50,10 +50,10 @@ const BottomContentWrapper = styled.div`
 
 const MenuLink = styled(Link)`
   display: flex;
-  height: 2rem;
+  height: 3rem;
   padding: 0.5rem;
   background: ${(props) => props.theme.colors.green};
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.6rem;
   border-radius: 0.3rem;
   align-items: center;
   :hover {
@@ -84,6 +84,7 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
 }) => {
   const [opened, setOpened] = useState(false);
   const [routes, setRoutes] = useState<Route[]>([]);
+  const [bottomRoutes, setBottomRoutes] = useState<Route[]>([]);
   const router = useRouter();
   const { data: me } = api.users.me.useQuery();
 
@@ -126,7 +127,7 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
           path: `/${orgId}/dashboard`,
         },
         {
-          name: "Punishments",
+          name: "Punish",
           path: `/${orgId}/punishment/punish`,
         },
         {
@@ -138,7 +139,13 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
           path: `/${orgId}/all-users-punishments`,
         },
       ];
-      setRoutes(routes);
+      setRoutes([...routes]);
+      setBottomRoutes([
+        {
+          name: "My Account",
+          path: `/${orgId}/my-account`,
+        },
+      ]);
     } else {
       setRoutes([]);
     }
@@ -149,11 +156,18 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
       {route.name}
     </MenuLink>
   ));
+  const bottomLinks = bottomRoutes.map((route, index) => (
+    <MenuLink key={links.length + index} href={route.path}>
+      {route.name}
+    </MenuLink>
+  ));
+
   return (
     <Wrapper open={opened}>
       <ContentWrapper open={opened}>
         {links}
         <BottomContentWrapper>
+          {bottomLinks}
           <MenuLink href="/" onClick={handleLogout}>
             Logout
           </MenuLink>

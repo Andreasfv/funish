@@ -7,6 +7,7 @@ import type {
   GetComprehensiveUserDataInput,
   GetUserInput,
   OrganizationUsersInput,
+  UpdateUserInput,
 } from "./schema";
 
 // export const createOrganizationController = async ({
@@ -279,7 +280,7 @@ export const getComprehensiveUserDataController = async ({
                   where: {
                     userId: input.userId,
                     approved: input.where?.approved,
-                    reedemed: input.where?.redeemed
+                    reedemed: input.where?.redeemed,
                   },
                 },
               },
@@ -296,6 +297,50 @@ export const getComprehensiveUserDataController = async ({
       },
     };
   } catch (error) {
+    throw error;
+  }
+};
+
+export const updateUserController = async ({
+  ctx,
+  input,
+}: {
+  ctx: Context;
+  input: UpdateUserInput;
+}) => {
+  try {
+    const { prisma } = ctx;
+    const { id, ...data } = input;
+
+    if (!id) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "User not found",
+      });
+    }
+    console.log(data);
+    const user = await prisma.user.update({
+      where: {
+        id: id,
+      },
+      data: {
+        ...data,
+      },
+    });
+
+    return {
+      status: "success",
+      user,
+    };
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2002") {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Email already exists",
+        });
+      }
+    }
     throw error;
   }
 };

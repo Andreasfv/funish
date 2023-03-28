@@ -15,6 +15,7 @@ export const createUserSchema = z.object({
 });
 
 export const updateUserSchema = z.object({
+  id: z.string(),
   name: z.string().optional(),
   email: z.string().email().optional(),
   role: userTypeSchema.optional(),
@@ -49,10 +50,12 @@ export const getUserSchema = z.string();
 
 export const getComprehensiveUserDataSchema = z.object({
   userId: z.string(),
-  where: z.object({
-    approved: z.boolean().optional(),
-    redeemed: z.boolean().optional(),
-  }).optional(),
+  where: z
+    .object({
+      approved: z.boolean().optional(),
+      redeemed: z.boolean().optional(),
+    })
+    .optional(),
 });
 export type CreateUserInput = z.infer<typeof createUserSchema>;
 export type GetUserInput = z.infer<typeof getUserSchema>;

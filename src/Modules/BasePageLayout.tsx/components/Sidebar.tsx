@@ -68,6 +68,7 @@ const Sidebar: React.FC = () => {
         </SidebarItem>
       </OrgContentWrapper>
       <SidebarBottomWrapper>
+        <SidebarItem onClick={goTo("my-account")}>My Account</SidebarItem>
         <SidebarItem
           onClick={() => {
             void signOut({
