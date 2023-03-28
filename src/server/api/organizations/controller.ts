@@ -154,6 +154,37 @@ export const getOrganizationController = async ({
   }
 };
 
+export const organizationExists = async ({
+  ctx,
+  input,
+}: {
+  ctx: Context;
+  input: string;
+}) => {
+  try {
+    const { prisma } = ctx;
+    const organization = await prisma.organization.findUnique({
+      where: {
+        id: input,
+      },
+    });
+    if (organization) {
+      return {
+        status: true,
+      };
+    } else {
+      return {
+        status: false,
+      };
+    }
+  } catch (error) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Not authorized",
+    });
+  }
+};
+
 export const deleteOrganizationController = async ({
   ctx,
   input,
@@ -244,7 +275,7 @@ export const getOrganizationWithPunishmentDataController = async ({
           where: {
             approved: input.approved,
             reedemed: input.redeemed,
-          }
+          },
         },
         punishmentTypes: true,
         punishmentReasons: true,
@@ -293,7 +324,7 @@ export const getOrganizationUsersWithPunishmentDataController = async ({
             givenPunishments: {
               where: {
                 approved: input.approved,
-                reedemed: input.redeemed
+                reedemed: input.redeemed,
               },
               select: {
                 id: true,
@@ -304,17 +335,17 @@ export const getOrganizationUsersWithPunishmentDataController = async ({
                 approved: true,
                 quantity: true,
                 reedemed: true,
-              }
+              },
             },
-          }
-        }
+          },
+        },
       },
     });
     return {
       status: "success",
-      organization
+      organization,
     };
   } catch (error) {
     throw error;
   }
-}
+};

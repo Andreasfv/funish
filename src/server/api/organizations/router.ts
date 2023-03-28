@@ -12,7 +12,8 @@ import {
   updateOrganizationController,
   deleteOrganizationController,
   getOrganizationWithPunishmentDataController,
-  getOrganizationUsersWithPunishmentDataController
+  getOrganizationUsersWithPunishmentDataController,
+  organizationExists,
 } from "./controller";
 import {
   getOrganizationSchema,
@@ -54,4 +55,8 @@ export const organizationsRouter = createTRPCRouter({
   deleteOrganizationController: adminProcedure
     .input(deleteOrganizationSchema)
     .mutation(({ ctx, input }) => deleteOrganizationController({ ctx, input })),
+
+  organizationExists: protectedProcedure
+    .input(getOrganizationSchema)
+    .query(({ ctx, input }) => organizationExists({ ctx, input })),
 });
