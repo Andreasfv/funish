@@ -18,9 +18,14 @@
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { type Session } from "next-auth";
 
-import { getServerAuthSession } from "../auth";
 import { prisma } from "../db";
 import type * as trpc from "@trpc/server";
+
+import { getAuth, clerkClient } from "@clerk/nextjs/server";
+import type {
+  SignedInAuthObject,
+  SignedOutAuthObject,
+} from "@clerk/nextjs/dist/api";
 
 type CreateContextOptions = {
   session: Session | null;
@@ -36,9 +41,14 @@ type CreateContextOptions = {
  *
  * @see https://create.t3.gg/en/usage/trpc#-servertrpccontextts
  */
-const createInnerTRPCContext = (opts: CreateContextOptions) => {
+interface AuthContext {
+  auth: SignedInAuthObject | SignedOutAuthObject;
+  prisma: typeof prisma;
+}
+
+const createInnerTRPCContext = async ({ auth }: AuthContext) => {
   return {
-    session: opts.session,
+    auth,
     prisma,
   };
 };
@@ -49,18 +59,14 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
  *
  * @see https://trpc.io/docs/context
  */
-export const createTRPCContext = async (opts: CreateNextContextOptions) => {
-  const { req, res } = opts;
-
-  // Get the session from the server using the getServerSession wrapper function
-  const session = await getServerAuthSession({ req, res });
-
-  return createInnerTRPCContext({
-    session,
+export const createContext = async (opts: CreateNextContextOptions) => {
+  return await createInnerTRPCContext({
+    auth: getAuth(opts.req),
+    prisma: prisma,
   });
 };
 
-export type Context = trpc.inferAsyncReturnType<typeof createTRPCContext>;
+export type Context = trpc.inferAsyncReturnType<typeof createContext>;
 /**
  * 2. INITIALIZATION
  *
@@ -69,9 +75,9 @@ export type Context = trpc.inferAsyncReturnType<typeof createTRPCContext>;
  */
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
-// import { TrpcQueryOptionsForUseQueries } from "@trpc/react-query/dist/internals/useQueries";
+import { TrpcQueryOptionsForUseQueries } from "@trpc/react-query/dist/internals/useQueries";
 
-const t = initTRPC.context<typeof createTRPCContext>().create({
+const t = initTRPC.context<Context>().create({
   transformer: superjson,
   errorFormatter({ shape }) {
     return shape;
@@ -93,26 +99,17 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
 export const createTRPCRouter = t.router;
 
 /**
- * Public (unauthenticated) procedure
- *
- * This is the base piece you use to build new queries and mutations on your
- * tRPC API. It does not guarantee that a user querying is authorized, but you
- * can still access user session data if they are logged in.
- */
-export const publicProcedure = t.procedure;
-
-/**
  * Reusable middleware that enforces users are logged in before running the
  * procedure.
  */
-const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
-  if (!ctx.session || !ctx.session.user) {
+// check if the user is signed in, otherwise through a UNAUTHORIZED CODE
+const isAuthed = t.middleware(({ next, ctx }) => {
+  if (!ctx.auth.userId) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
   return next({
     ctx: {
-      // infers the `session` as non-nullable
-      session: { ...ctx.session, user: ctx.session.user },
+      auth: ctx.auth,
     },
   });
 });
@@ -126,43 +123,9 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+export const router = t.router;
 
-const enforceUserIsSuperAdmin = t.middleware(({ ctx, next }) => {
-  if (
-    !ctx.session ||
-    !ctx.session.user ||
-    ctx.session.user.role !== "SUPER_ADMIN"
-  ) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
-  }
-  return next({
-    ctx: {
-      // infers the `session` as non-nullable
-      session: { ...ctx.session, user: ctx.session.user },
-    },
-  });
-});
+export const publicProcedure = t.procedure;
 
-export const superAdminProcedure = t.procedure.use(enforceUserIsSuperAdmin);
-
-const enforceUserIsAdmin = t.middleware(({ ctx, next }) => {
-  if (
-    !ctx.session ||
-    !ctx.session.user ||
-    !(
-      ctx.session.user.role === "ORG_ADMIN" ||
-      ctx.session.user.role === "SUPER_ADMIN"
-    )
-  ) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
-  }
-  return next({
-    ctx: {
-      // infers the `session` as non-nullable
-      session: { ...ctx.session, user: ctx.session.user },
-    },
-  });
-});
-
-export const adminProcedure = t.procedure.use(enforceUserIsAdmin);
+// export this procedure to be used anywhere in your application
+export const protectedProcedure = t.procedure.use(isAuthed);

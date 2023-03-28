@@ -1,38 +1,56 @@
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
-import { SessionProvider, useSession } from "next-auth/react";
 import { ThemeProvider } from "styled-components";
 import theme from "../utils/theme";
 import "../i18";
-import { api } from "../utils/api";
 import "../styles/globals.css";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
-const MyApp: AppType<{ session: Session | null }> = ({
-  Component,
-  pageProps: { session, ...pageProps },
-}) => {
+import {
+  ClerkProvider,
+  RedirectToSignIn,
+  SignedIn,
+  SignedOut,
+} from "@clerk/nextjs";
+import Redirect from "../components/Redirect";
+import { api } from "../utils/api";
 
-  const router = useRouter()
-  useEffect(() => {
-    if (session !== null && !session?.user?.organizationId && router.pathname !== "/") {
-      router
-      .push(`/`)
-      .catch((err) => console.warn(err));
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session])
+const publicPages = [
+  "/",
+  "/redirect",
+  "/sign-in/[[...index]]",
+  "/sign-up/[[...index]]",
+  "/[organizationId]/sign-in/[[...index]]",
+];
+
+const clerk_pub_key = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+const MyApp: AppType = ({ Component, pageProps: { ...pageProps } }) => {
+  const router = useRouter();
 
   return (
-      <SessionProvider session={session}>
-        <ThemeProvider theme={theme}>
+    <ClerkProvider
+      navigate={(to) => router.push(to)}
+      publishableKey={clerk_pub_key}
+    >
+      <ThemeProvider theme={theme}>
+        {publicPages.includes(router.pathname) ? (
           <Component {...pageProps} />
-          <ToastContainer />
-        </ThemeProvider>
-      </SessionProvider>
+        ) : (
+          <>
+            <SignedIn>
+              <Component {...pageProps} />
+            </SignedIn>
+            <SignedOut>
+              <Redirect to="/" />
+            </SignedOut>
+          </>
+        )}
+        <ToastContainer />
+      </ThemeProvider>
+    </ClerkProvider>
   );
 };
 

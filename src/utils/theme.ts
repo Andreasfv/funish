@@ -1,5 +1,7 @@
 // https://colorhunt.co/palette/def5e5bcead59ed5c58ec3b0
 
+//taliwndcss.com/docs/customizing-colors - just to steal colors
+
 const theme = {
   colors: {
     lightGreen: "#DEF5E5",

@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { signIn, signOut, useSession,  } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import "../i18";
 
 import { api } from "../utils/api";
@@ -9,39 +9,31 @@ import { useTranslation } from "react-i18next";
 import { useAdmin } from "../utils/admin/useAdmin";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { SignIn, SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
+import styled from "styled-components";
+
+const LoginWrapper = styled.div`
+  display: flex;
+  background-color: white;
+  width: 9rem;
+  border-radius: 0.3rem;
+  height: 3rem;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+
+  &:hover {
+    cursor: pointer;
+    background: ${(props) => props.theme.colors.lightGreen};
+  }
+`;
 
 const Home: NextPage = () => {
-  const [wait, setWait] = useState(false)
+  const [wait, setWait] = useState(false);
   const router = useRouter();
-  const { mutate, isLoading: meLoading } = api.users.addUserToOrganization.useMutation()
-  const session = useSession()
-
-  useEffect(() => {
-    if (session?.data?.user?.id && !session?.data?.user?.organizationId && !meLoading) {
-      if(wait) return
-      setWait(true)
-      //TODO Handle this with JWT Link to SignIn page for associating organization
-      //with user on creation / first SignIn
-      mutate({
-        userId: session?.data?.user?.id ?? "",
-        organizationId: "clfmhi3mg0000xron5petwdsp",
-      }, {
-        onSuccess: () => {
-          router.push(`/${session.data.user.organizationId}/dashboard`)
-          .catch((err) => console.warn(err));
-        }
-      })
-    }
-  }, [meLoading, mutate, router, session?.data?.user?.id, session?.data?.user?.organizationId, session.status, wait]);
-
-  useEffect(() => {
-    if (session.data?.user.organizationId) {
-      router
-        .push(`/${session.data.user.organizationId}/dashboard`)
-        .catch((err) => console.warn(err));
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session])
+  const user = useUser();
+  const { mutate, isLoading: meLoading } =
+    api.users.addUserToOrganization.useMutation();
 
   return (
     <>
@@ -53,13 +45,13 @@ const Home: NextPage = () => {
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
           <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-            Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
+            Straffe<span className="text-[hsl(280,100%,70%)]">Pils</span>
           </h1>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 md:gap-8">
-          </div>
-          <div className="flex flex-col items-center gap-2">
-            <AuthShowcase />
-          </div>
+
+          <LoginWrapper>
+            {!user.isSignedIn && <SignInButton redirectUrl="/redirect" />}
+            {!!user.isSignedIn && <SignOutButton />}
+          </LoginWrapper>
         </div>
       </main>
     </>
@@ -67,36 +59,3 @@ const Home: NextPage = () => {
 };
 
 export default Home;
-
-const AuthShowcase: React.FC = () => {
-  const { data: sessionData } = useSession();
-
-  const { data: secretMessage } = api.example.getSecretMessage.useQuery(
-    undefined, // no input
-    { enabled: sessionData?.user !== undefined }
-  );
-
-  const { mutate } = api.users.addUserToOrganization.useMutation()
-
-  return (
-    <div className="flex flex-col items-center justify-center gap-4">
-      <p className="text-center text-2xl text-white">
-        {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
-        {secretMessage && <span> - {secretMessage}</span>}
-      </p>
-      <button
-        className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-        onClick={
-          sessionData
-            ? () => void signOut()
-            : () =>
-                void signIn().then((user) => {
-                  console.log(user)
-                })
-        }
-      >
-        {sessionData ? "Sign out" : "Sign in"}
-      </button>
-    </div>
-  );
-};

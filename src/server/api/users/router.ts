@@ -1,4 +1,9 @@
-import { adminProcedure, createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import {
+  adminProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "../trpc";
 import {
   addUserToOrganizationController,
   createUserController,
@@ -6,6 +11,7 @@ import {
   getUserController,
   getOrganizationUsersController,
   getComprehensiveUserDataController,
+  addOrganizationToClerkUserController,
 } from "./controller";
 
 import {
@@ -36,5 +42,10 @@ export const usersRouter = createTRPCRouter({
     .input(getComprehensiveUserDataSchema)
     .query(({ ctx, input }) =>
       getComprehensiveUserDataController({ ctx, input })
+    ),
+  addOrganizationToClerkUser: protectedProcedure
+    .input(addUserToOrganizationSchema)
+    .mutation(({ ctx, input }) =>
+      addOrganizationToClerkUserController({ ctx, input })
     ),
 });

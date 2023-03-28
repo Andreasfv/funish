@@ -2,6 +2,7 @@ import {
   adminProcedure,
   createTRPCRouter,
   protectedProcedure,
+  publicProcedure,
   superAdminProcedure,
 } from "../trpc";
 import {
@@ -12,7 +13,7 @@ import {
   updateOrganizationController,
   deleteOrganizationController,
   getOrganizationWithPunishmentDataController,
-  getOrganizationUsersWithPunishmentDataController
+  getOrganizationUsersWithPunishmentDataController,
 } from "./controller";
 import {
   getOrganizationSchema,
@@ -28,7 +29,7 @@ export const organizationsRouter = createTRPCRouter({
   getOrganization: protectedProcedure
     .input(getOrganizationSchema)
     .query(({ ctx, input }) => getOrganizationController({ ctx, input })),
-  getOrganizations: protectedProcedure
+  getOrganizations: publicProcedure
     .input(filterOrganizationSchema)
     .query(({ ctx, input }) => getOrganizationsController({ ctx, input })),
   getOrganizationWithPunishmentData: protectedProcedure

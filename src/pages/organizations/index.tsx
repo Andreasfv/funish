@@ -6,18 +6,18 @@ import { useRouter } from "next/router";
 import { OrganizationsTable } from "../../Modules/Organizations/OrganizationsTable";
 
 const Organizations: NextPage = () => {
-  const session = useSession();
   const router = useRouter();
+  // const session = useSession();
 
-  useEffect(() => {
-    if (session.data?.user.role !== "SUPER_ADMIN") {
-      if (session.data?.user.organizationId) {
-        router
-          .push(`/organizations/${session.data?.user.organizationId}`)
-          .catch((err) => console.error(err));
-      }
-    }
-  }, [session, router]);
+  // useEffect(() => {
+  //   if (session.data?.user.role !== "SUPER_ADMIN") {
+  //     if (session.data?.user.organizationId) {
+  //       router
+  //         .push(`/organizations/${session.data?.user.organizationId}`)
+  //         .catch((err) => console.error(err));
+  //     }
+  //   }
+  // }, [session, router]);
 
   return (
     <>

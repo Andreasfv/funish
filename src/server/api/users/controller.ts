@@ -1,8 +1,10 @@
+import { clerkClient } from "@clerk/nextjs/server";
 import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import type { Context } from "../trpc";
-import type {
+import {
   AddUserToOrganizationInput,
+  addUserToOrganizationSchema,
   CreateUserInput,
   GetComprehensiveUserDataInput,
   GetUserInput,
@@ -48,16 +50,16 @@ import type {
 
 export const getMeController = async ({ ctx }: { ctx: Context }) => {
   try {
-    const { prisma, session } = ctx;
+    const { prisma, auth } = ctx;
 
-    if (!session?.user?.id) {
+    if (!auth.userId) {
       throw new TRPCError({
         code: "NOT_FOUND",
         message: "User not found",
       });
     }
     const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
+      where: { id: auth.userId },
     });
 
     return {
@@ -79,7 +81,7 @@ export const getOrganizationUsersController = async ({
   input: OrganizationUsersInput;
 }) => {
   try {
-    const { prisma } = ctx;
+    const { prisma, auth } = ctx;
     const { organizationId } = input;
 
     if (!organizationId) {
@@ -88,7 +90,8 @@ export const getOrganizationUsersController = async ({
         message: "Organization not found",
       });
     }
-    if (ctx.session?.user.role !== "SUPER_ADMIN") {
+
+    if (prisma.user.findFirst(auth?.userId) !== "SUPER_ADMIN") {
       throw new TRPCError({
         code: "FORBIDDEN",
         message: "You are not authorized to perform this action",
@@ -279,7 +282,7 @@ export const getComprehensiveUserDataController = async ({
                   where: {
                     userId: input.userId,
                     approved: input.where?.approved,
-                    reedemed: input.where?.redeemed
+                    reedemed: input.where?.redeemed,
                   },
                 },
               },
@@ -294,6 +297,45 @@ export const getComprehensiveUserDataController = async ({
       data: {
         user,
       },
+    };
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const addOrganizationToClerkUserController = async ({
+  ctx,
+  input,
+}: {
+  ctx: Context;
+  input: AddUserToOrganizationInput;
+}) => {
+  try {
+    const { prisma } = ctx;
+    const { userId, organizationId } = input;
+
+    if (!organizationId || !userId) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Organization or user not found",
+      });
+    }
+
+    const clerkUser = await clerkClient.users.updateUser(userId, {
+      publicMetadata: {
+        organizationId: organizationId,
+      },
+    });
+
+    if (!clerkUser) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Clerk user not found",
+      });
+    }
+
+    return {
+      status: "success",
     };
   } catch (error) {
     throw error;
