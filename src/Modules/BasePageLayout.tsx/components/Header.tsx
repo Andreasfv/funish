@@ -1,3 +1,5 @@
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import { useRef } from "react";
 import styled from "styled-components";
 import { useMediaQuery } from "../../../utils/media/useMedia";
@@ -43,6 +45,8 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ toggleNavMenu, open }) => {
   const mobile = useMediaQuery(theme.media.largeMobile);
   const headerRef = useRef<HTMLDivElement>(null);
+  const session = useSession();
+  const router = useRouter();
   return (
     <Wrapper ref={headerRef}>
       {open && (
@@ -50,7 +54,17 @@ const Header: React.FC<HeaderProps> = ({ toggleNavMenu, open }) => {
       )}
 
       <ContentWrapper>
-        <h1>Header</h1>
+        <h1
+          className="text-1l font-extrabold tracking-tight text-white sm:text-[3rem]"
+          onClick={() => {
+            if (!session?.data?.user?.organizationId) return;
+            void router.push(
+              `/${session?.data?.user?.organizationId}/dashboard`
+            );
+          }}
+        >
+          Straffe<span className="text-[hsl(280,100%,60%)]">Pils</span>
+        </h1>
         {mobile && <MenuIcon onClick={toggleNavMenu}>Menu</MenuIcon>}
       </ContentWrapper>
     </Wrapper>
