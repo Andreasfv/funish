@@ -1,17 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { Role } from "@prisma/client";
 import type { GetServerSidePropsContext } from "next";
 import {
   getServerSession,
-  type NextAuthOptions,
   type DefaultSession,
+  type NextAuthOptions
 } from "next-auth";
+import Auth0Provider from "next-auth/providers/auth0";
+import Credentials from "next-auth/providers/credentials";
 import DiscordProvider from "next-auth/providers/discord";
 import GoogleProvider from "next-auth/providers/google";
-import Auth0Provider from "next-auth/providers/auth0";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "../env/server.mjs";
 import { prisma } from "./db";
-import type { Role } from "@prisma/client";
 
 /**
  * Module augmentation for `next-auth` types.
@@ -92,6 +93,88 @@ export const authOptions: NextAuthOptions = {
       clientSecret: env.AUTH0_CLIENT_SECRET,
       issuer: env.AUTH0_DOMAIN,
     }),
+    // Custom credentials providers against KSG-nett graphql API
+    Credentials({
+      name: "Credentials",
+      credentials: {
+        email: {
+          label: "E-post",
+          type: "text",
+          placeholder: "Din KSG-nett e-post",
+        },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials, req) {
+        if (credentials == undefined) return null;
+
+        const { email, password } = credentials;
+
+        if (!email || !password) {
+          return null;
+        }
+
+        await fetch(`${env.KSG_NETT_AUTH_URL}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            query: KSG_NETT_LOGIN_QUERY,
+            variables: {
+              username: credentials.email,
+              password: credentials.password,
+            },
+          }),
+        })
+          .then((res) => res.json())
+          // .then(async (res: KSGNettAPIResponse) => { // if awaiting prisma upsert
+          .then((res: KSGNettAPIResponse) => {
+            const {
+              data: {
+                // Doing nothing with token now but can be attached to session
+                // or in some authorization header? But only required if we
+                // want to make subsequent requests to KSG-nett API beyond
+                // just third party auth.
+                login: { ok, token, user },
+              },
+            } = res;
+            if (!ok) return null;
+
+            // If ok is true, then user and token should be defined.
+            // But compiler isn't smart enough to know that.
+            if (!user) return null;
+
+            return {
+              // According to docs this is set in the session.user property
+              // NextAuth then uses its own JWT? We already get a token from
+              // KSG-nett so ideally we could derive the JWT from that. But not sure
+              // how to go about doing that
+              id: user.id,
+              name: user.fullName,
+              email: credentials.email,
+            }
+
+            /**
+            ** Not sure if this even works. Couldn't bother installing mysql.
+            ** But probably something along these lines. Remember to make call async.
+           return await prisma.user.upsert({
+              where: {
+                id: user.id,
+              },
+              update: {},
+              create: {
+                id: user.id,
+                name: user.fullName,
+                email: credentials.email,
+                role: Role.ORG_MEMBER,
+              },
+            });
+            */
+          });
+
+        return null;
+      },
+    }),
     /**
      * ...add more providers here
      *
@@ -116,4 +199,31 @@ export const getServerAuthSession = (ctx: {
   res: GetServerSidePropsContext["res"];
 }) => {
   return getServerSession(ctx.req, ctx.res, authOptions);
+};
+
+// Put this somewhere else maybe?
+const KSG_NETT_LOGIN_QUERY = `
+mutation Login($username: String!, $password: String!) {
+  login(username: $username, password: $password) {
+    ok
+    token
+    user {
+      id
+      fullName
+    }
+  }
+}
+`;
+// Same as above
+type KSGNettAPIResponse = {
+  data: {
+    login: {
+      ok: boolean;
+      token: string | null;
+      user: {
+        id: string;
+        fullName: string;
+      } | null;
+    };
+  };
 };
