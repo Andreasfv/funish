@@ -14,6 +14,7 @@ const Wrapper = styled.div`
   padding: 0.5rem;
   justify-content: center;
   background-color: ${(props) => props.theme.colors.lightDarkGreen};
+  border-bottom: 1px solid ${(props) => props.theme.colors.lightDarkGreen};
 `;
 
 const ContentWrapper = styled.div`
@@ -39,12 +40,14 @@ interface HeaderProps {
   toggleNavMenu: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({toggleNavMenu, open}) => {
-   const mobile = useMediaQuery(theme.media.largeMobile)
-   const headerRef = useRef<HTMLDivElement>(null)
+const Header: React.FC<HeaderProps> = ({ toggleNavMenu, open }) => {
+  const mobile = useMediaQuery(theme.media.largeMobile);
+  const headerRef = useRef<HTMLDivElement>(null);
   return (
     <Wrapper ref={headerRef}>
-      {open && <MobileNavMenu  toggleNavMenu={toggleNavMenu} clickRef={headerRef}/>}
+      {open && (
+        <MobileNavMenu toggleNavMenu={toggleNavMenu} clickRef={headerRef} />
+      )}
 
       <ContentWrapper>
         <h1>Header</h1>

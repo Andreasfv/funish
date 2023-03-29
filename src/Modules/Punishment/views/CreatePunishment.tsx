@@ -15,7 +15,6 @@ import SubmitButton from "../components/SubmitButton";
 const Wrapper = styled.div`
   display: flex;
   width: 100%;
-  height: 100%;
   justify-content: center;
 `;
 
@@ -24,18 +23,17 @@ const ContentWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  height: 100%;
   max-width: 500px;
   background-color: white;
   border-radius: 0.5rem;
   padding: 1rem;
+  border: 1px solid ${(props) => props.theme.colors.lightDarkGreen};
 `;
 
 const FormWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
   justify-content: center;
   align-items: center;
 `;
@@ -71,8 +69,8 @@ const CreatePunishment: React.FC = () => {
   const { data: me } = api.users.me.useQuery();
   const { data: organization } =
     api.organizations.getOrganizationWithPunishmentData.useQuery({
-      organizationId: me?.data?.user?.organizationId ?? ""}
-    );
+      organizationId: me?.data?.user?.organizationId ?? "",
+    });
 
   const {
     handleSubmit,
@@ -143,10 +141,10 @@ const CreatePunishment: React.FC = () => {
         });
         toast("Punishment created", {
           type: "success",
-          position: "bottom-center"
-        })
+          position: "bottom-center",
+        });
       },
-      onError: (e) => toast(e.message, { type: "error" })
+      onError: (e) => toast(e.message, { type: "error" }),
     });
   };
 

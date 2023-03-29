@@ -18,6 +18,8 @@ const ContentWrapper = styled.div`
   background-color: ${(props) => props.theme.colors.lightGreen};
   padding: 1rem;
   gap: 1rem;
+  border: 1px solid ${(props) => props.theme.colors.lightDarkGreen};
+  box-shadow: ${(props) => props.theme.shadow.wrapperShadow};
 `;
 
 const PunishmentWrapper = styled.div`
@@ -26,9 +28,10 @@ const PunishmentWrapper = styled.div`
   width: 100%;
   border-radius: 0.5rem;
   background-color: white;
-
+  height: 100%;
   padding: 1rem;
   gap: 1rem;
+  border: 1px solid ${(props) => props.theme.colors.lightDarkGreen};
 `;
 
 const PunishmentTypeWrapper = styled.div`
@@ -40,9 +43,11 @@ const PunishmentTypeWrapper = styled.div`
   background-color: ${(props) => props.theme.colors.lightGreen};
   padding: 0 1rem 1rem 1rem;
   gap: 0.2rem;
-
-  height: 400px;
+  height: 100%;
+  min-height: 200px;
+  max-height: 500px;
   overflow-y: scroll;
+  border: 1px solid ${(props) => props.theme.colors.lightDarkGreen};
 
   & > :first-child {
     position: sticky;
@@ -89,7 +94,7 @@ const MyPunishments: React.FC = () => {
       }
     );
 
-    return (
+  return (
     <BasePageLayout>
       <Wrapper>
         <ContentWrapper>

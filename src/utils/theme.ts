@@ -27,6 +27,7 @@ const theme = {
   },
   shadow: {
     cardShadow: "0 2px 2px 1px rgba(0,0,0,0.2)",
+    wrapperShadow: "0px 3px 10px 0px rgba(0, 0, 0, 0.2)",
   },
   media: {
     mobile: "only screen and (max-width: 600px)",

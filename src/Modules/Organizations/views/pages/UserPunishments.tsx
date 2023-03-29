@@ -22,11 +22,27 @@ const Wrapper = styled.div`
   gap: 1rem;
   width: 100%;
   height: 100%;
-  justify-content: center;
+  justify-content: flex-start;
+
   padding: 1rem;
 `;
 
 const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  padding: 1rem;
+  overflow-y: auto;
+  background-color: ${(props) => props.theme.colors.lightGreen};
+  gap: 0.4rem;
+  max-height: 600px;
+  border: 1px solid ${(props) => props.theme.colors.lightDarkGreen};
+  box-shadow: ${(props) => props.theme.shadow.wrapperShadow};
+  border-radius: 0.5rem;
+`;
+
+const ActionsContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -34,8 +50,9 @@ const ContentWrapper = styled.div`
   overflow-y: auto;
   background-color: ${(props) => props.theme.colors.lightGreen};
   gap: 0.4rem;
-  max-height: 600px;
   border-radius: 0.5rem;
+  border: 1px solid ${(props) => props.theme.colors.lightDarkGreen};
+  box-shadow: ${(props) => props.theme.shadow.wrapperShadow};
 `;
 
 const FormWrapper = styled.div`
@@ -75,10 +92,12 @@ const HeaderRow = styled.div`
 
 const ActionsButton = styled.button`
   display: flex;
+  min-width: 150px;
+  max-width: 200px;
   width: 100%;
-  color: ${(props) => props.theme.colors.lightDarkGreen};
-  padding: 1rem;
-  font-size: 1.2rem;
+  background-color: ${(props) => props.theme.colors.lightDarkGreen};
+  font-size: 1rem;
+  padding: 0.5rem;
   font-weight: 600;
   justify-content: center;
   align-items: center;
@@ -135,6 +154,16 @@ const UserPunishments: React.FC<UserPunishmentsProps> = () => {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     }
   );
+
+  const { data: punishmentTypes } =
+    api.punishmentTypes.getPunishmentTypes.useQuery(
+      {
+        organizationId: organizationId as string,
+      },
+      {
+        enabled: !!organizationId && isAdmin && isOpen,
+      }
+    );
 
   function handleRefetch() {
     void refetch();
@@ -226,15 +255,16 @@ const UserPunishments: React.FC<UserPunishmentsProps> = () => {
       <Wrapper>
         {isAdmin && (
           <>
-            <ContentWrapper>
+            <ActionsContentWrapper>
               <FormWrapper>
                 <ActionsButton onClick={open}>Redeem Punishments</ActionsButton>
               </FormWrapper>
-            </ContentWrapper>
+            </ActionsContentWrapper>
             <Modal>
               <RedeemPunishmentsModal
                 userId={userId as string}
                 organizationId={organizationId as string}
+                punishmentTypes={punishmentTypes?.data?.punishmentTypes ?? []}
                 refetch={handleRefetch}
                 close={close}
               />

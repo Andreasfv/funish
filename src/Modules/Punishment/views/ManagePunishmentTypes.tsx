@@ -20,6 +20,7 @@ const ContentWrapper = styled.div`
   max-width: 500px;
   padding: 1rem;
   width: 100%;
+  border: 1px solid ${(props) => props.theme.colors.lightDarkGreen};
 `;
 
 const FormWrapper = styled.div`
@@ -61,7 +62,7 @@ const ManagePunishmentTypes: React.FC<ManagePunishmentTypesProps> = ({
           quantity: 1,
           description: "",
         });
-      }
+      },
     });
   const {
     handleSubmit,
