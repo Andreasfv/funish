@@ -14,13 +14,21 @@ const Wrapper = styled.div`
   justify-content: center;
   flex-direction: column;
 `;
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  border: 1px solid ${(props) => props.theme.colors.lightDarkGreen};
+  box-shadow: ${(props) => props.theme.shadow.wrapperShadow};
+  margin: 1rem;
+  border-radius: 0.5rem;
+`;
 
 const TopContentWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   width: 100%;
-  padding: 1rem 1rem 0rem 1rem;
 `;
 
 const SwitchWrapper = styled.div`
@@ -57,7 +65,6 @@ const BottomContentWrapper = styled.div`
   align-items: center;
   width: 100%;
   height: 100%;
-  padding: 0rem 1rem 1rem 1rem;
 `;
 
 const DashboardWrapper = styled.div`
@@ -150,12 +157,14 @@ const PunishmentDashboard: React.FC = () => {
     <>
       <BasePageLayout>
         <Wrapper>
-          <TopContentWrapper>
-            <SwitchWrapper>{SwitchItems}</SwitchWrapper>
-          </TopContentWrapper>
-          <BottomContentWrapper>
-            <DashboardWrapper>{contentSwitch(switchItem)}</DashboardWrapper>
-          </BottomContentWrapper>
+          <ContentWrapper>
+            <TopContentWrapper>
+              <SwitchWrapper>{SwitchItems}</SwitchWrapper>
+            </TopContentWrapper>
+            <BottomContentWrapper>
+              <DashboardWrapper>{contentSwitch(switchItem)}</DashboardWrapper>
+            </BottomContentWrapper>
+          </ContentWrapper>
         </Wrapper>
       </BasePageLayout>
     </>

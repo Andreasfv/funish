@@ -19,6 +19,9 @@ const Wrapper = styled.div`
     flex: 1;
     display: flex;
     align-items: center;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
   :hover {
     background-color: ${(props) => props.theme.colors.green};

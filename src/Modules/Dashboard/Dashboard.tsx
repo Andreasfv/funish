@@ -11,8 +11,8 @@ import Link from "next/link";
 const Wrapper = styled.div`
   display: flex;
   width: 100%;
-  height: 100%;
   padding: 1rem;
+  height: 100%;
   gap: 1rem;
 `;
 
@@ -20,12 +20,10 @@ const InnerWrapper = styled.div`
   display: flex;
   width: 100%;
   gap: 1rem;
-  height: 100%;
 
- @media ${(props) => props.theme.media.largeMobile } {
+  @media ${(props) => props.theme.media.largeMobile} {
     flex-direction: column;
   }
-
 `;
 
 const ContentWrapper = styled.div`
@@ -33,7 +31,6 @@ const ContentWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  height: 100%;
   gap: 1rem;
 `;
 
@@ -65,7 +62,7 @@ const LogWrapper = styled.div`
   background-color: ${(props) => props.theme.colors.lightGreen};
   box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.2);
 
-  @media ${(props) => props.theme.media.largeMobile } {
+  @media ${(props) => props.theme.media.largeMobile} {
     width: 100%;
   }
 `;
@@ -86,8 +83,7 @@ const BigButton = styled(Link)`
   :hover {
     background-color: ${(props) => props.theme.colors.darkGreen};
   }
-
-`
+`;
 const Dashboard: NextPage = () => {
   const session = useSession();
   const router = useRouter();
@@ -98,7 +94,7 @@ const Dashboard: NextPage = () => {
       where: {
         approved: true,
         redeemed: false,
-      }
+      },
     });
 
   if (userDataLoading) {
@@ -114,7 +110,9 @@ const Dashboard: NextPage = () => {
             <InnerWrapper>
               <ContentWrapper>
                 <CardsWrapper>
-                  <BigButton href={`/${organization.id}/punishment/punish`}>PUNISH!!</BigButton>
+                  <BigButton href={`/${organization.id}/punishment/punish`}>
+                    PUNISH!!
+                  </BigButton>
                 </CardsWrapper>
                 <CardsWrapper>
                   {userData.data?.user?.organizationId &&
@@ -123,7 +121,12 @@ const Dashboard: NextPage = () => {
                         <PunishmentCard
                           key={index}
                           punishmentType={punishmentType.name}
-                          count={punishmentType.Punishments.reduce((acc, punishment) => acc +( punishment.approved ? punishment.quantity : 0), 0)}
+                          count={punishmentType.Punishments.reduce(
+                            (acc, punishment) =>
+                              acc +
+                              (punishment.approved ? punishment.quantity : 0),
+                            0
+                          )}
                         />
                       )
                     )}
@@ -131,7 +134,7 @@ const Dashboard: NextPage = () => {
                 {userData.data?.user?.organizationId && (
                   <CardsWrapper>
                     <OrganizationPaper
-                      organizationId={organizationId as string ?? ""}
+                      organizationId={(organizationId as string) ?? ""}
                     />
                   </CardsWrapper>
                 )}

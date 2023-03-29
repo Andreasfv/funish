@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { PunishmentType } from "@prisma/client";
 import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -14,7 +15,9 @@ import FormField from "../../Punishment/components/FormField";
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 90vw;
+  max-width: 500px;
+  min-width: 300px;
   padding: 1rem;
   overflow-y: auto;
   background-color: ${(props) => props.theme.colors.lightGreen};
@@ -51,6 +54,7 @@ type redeemFormType = z.infer<typeof redeemFormSchema>;
 interface RedeemPunishmentsModalProps {
   userId: string;
   organizationId: string;
+  punishmentTypes: PunishmentType[];
   refetch: () => void;
   close: () => void;
 }
@@ -58,6 +62,7 @@ interface RedeemPunishmentsModalProps {
 export const RedeemPunishmentsModal: React.FC<RedeemPunishmentsModalProps> = ({
   userId,
   organizationId,
+  punishmentTypes,
   refetch,
   close,
 }) => {
@@ -72,17 +77,12 @@ export const RedeemPunishmentsModal: React.FC<RedeemPunishmentsModalProps> = ({
     };
   }
 
-  const { data: punishmentTypes } =
-    api.punishmentTypes.getPunishmentTypes.useQuery({
-      organizationId: organizationId,
-    });
-
   const typeOptions: {
     value: string;
     label: string;
   }[] = useMemo(() => {
     if (!punishmentTypes) return [];
-    return punishmentTypes?.data?.punishmentTypes.map((type) => {
+    return punishmentTypes.map((type) => {
       return {
         value: type.id,
         label: type.name,
@@ -93,6 +93,7 @@ export const RedeemPunishmentsModal: React.FC<RedeemPunishmentsModalProps> = ({
   const { mutate: redeemPunishmentsMutation } =
     api.punishmentTypes.redeemPunishments.useMutation({
       onSuccess: () => {
+        close();
         toast("Punishments redeemed! WOP", {
           type: "success",
           position: "bottom-center",
@@ -113,7 +114,6 @@ export const RedeemPunishmentsModal: React.FC<RedeemPunishmentsModalProps> = ({
       userId: userId,
       organizationId: organizationId,
     };
-    console.log(input);
     redeemPunishmentsMutation(input, {
       onSuccess: () => {
         void refetch();
@@ -122,7 +122,6 @@ export const RedeemPunishmentsModal: React.FC<RedeemPunishmentsModalProps> = ({
   };
 
   function redeemFormSubmit() {
-    console.log("asd");
     handleSubmit(redeemPunisments)().catch(() => {
       toast("Failed to redeem punishments", {
         type: "error",
@@ -137,12 +136,12 @@ export const RedeemPunishmentsModal: React.FC<RedeemPunishmentsModalProps> = ({
         <RedemptionTitle>Redeem Punishments</RedemptionTitle>
         <FormField>
           <label>Punishment Type</label>
-          {/* <FormSelect
+          <FormSelect
             text={watch("typeString") ?? ""}
             options={typeOptions}
             handleChange={handleChange("type")}
             handleTextChange={handleChange("typeString")}
-          /> */}
+          />
         </FormField>
         <FormField>
           <label>Quantity</label>

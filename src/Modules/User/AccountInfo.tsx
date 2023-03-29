@@ -30,6 +30,8 @@ const ContentWrapper = styled.div`
   gap: 1rem;
 
   background-color: ${(props) => props.theme.colors.lightGreen};
+  border: 1px solid ${(props) => props.theme.colors.lightDarkGreen};
+  box-shadow: ${(props) => props.theme.shadow.wrapperShadow};
 `;
 
 const AccountContentWrapper = styled.div`
@@ -43,6 +45,7 @@ const AccountContentWrapper = styled.div`
   gap: 1rem;
 
   background-color: ${(props) => props.theme.colors.green};
+  border: 1px solid ${(props) => props.theme.colors.lightDarkGreen};
 `;
 
 const TitleWrapper = styled.div`
@@ -68,6 +71,7 @@ const FormWrapper = styled.div`
   padding: 1rem;
   background-color: white;
   border-radius: 0.5rem;
+  border: 1px solid ${(props) => props.theme.colors.lightDarkGreen};
 `;
 const FormFieldRow = styled.div`
   display: flex;
