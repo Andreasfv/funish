@@ -1,9 +1,8 @@
-import { api } from "../api";
+import { useSession } from "next-auth/react";
 
 export const useAdmin = () => {
-  const { data } = api.users.me.useQuery();
+  const { data } = useSession();
   const admin =
-    data?.data.user?.role === "SUPER_ADMIN" ||
-    data?.data.user?.role === "ORG_ADMIN";
+    data?.user?.role === "SUPER_ADMIN" || data?.user?.role === "ORG_ADMIN";
   return admin;
 };
