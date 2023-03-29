@@ -321,7 +321,7 @@ export const getOrganizationUsersWithPunishmentDataController = async ({
           select: {
             id: true,
             name: true,
-            givenPunishments: {
+            receivedPunishments: {
               where: {
                 approved: input.approved,
                 reedemed: input.redeemed,

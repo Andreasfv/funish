@@ -57,7 +57,7 @@ model User {
     emailVerified DateTime?
 
     punishments  Punishment[] @relation("givenPunishments")
-    givenPunishments Punishment[] @relation("receivedPunishments")
+    receivedPunishments Punishment[] @relation("receivedPunishments")
 
     role          Role     @default(ORG_MEMBER)
     image         String?
@@ -72,10 +72,10 @@ model User {
 }
 
 model PunishmentType {
-    id        String   @id @default(cuid())
+    id        String   @default(cuid()) @unique
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    name      String   @unique
+    name      String   
     description String?
     quantityToFulfill  Int
     organization Organization @relation(fields: [organizationId], references: [id])
@@ -83,12 +83,14 @@ model PunishmentType {
     Punishments Punishment[]
     PunishmentFromConversion PunishmentConversion[] @relation("PunishmentConversionFrom")
     PunishmentToConversion PunishmentConversion[] @relation("PunishmentConversionTo")
-
+    
+    @@unique([name, organizationId])
+    @@id([id, name, organizationId])
     @@index([organizationId])
 }
 
 model PunishmentConversion {
-    id        String   @id @default(cuid())
+    id        String   @default(cuid()) @unique
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     organization Organization @relation(fields: [organizationId], references: [id])
@@ -99,21 +101,24 @@ model PunishmentConversion {
     toId      String
     rate      Float
 
+    @@id([id, organizationId])
     @@unique([fromId, toId, organizationId])
     @@index([toId])
     @@index([organizationId])
 }
 
 model PunishmentReason {
-    id        String   @id @default(cuid())
+    id        String   @default(cuid()) @unique
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    name      String   @unique
+    name      String   
     organization Organization @relation(fields: [organizationId], references: [id])
     organizationId String
     description String?
     Punishments Punishment[]
 
+    @@id([id, organizationId])
+    @@unique([name, organizationId])
     @@index([organizationId])
 }
 

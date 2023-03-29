@@ -31,6 +31,8 @@ const MyApp: AppType<{ session: Session | null }> = ({
             <Component {...pageProps} />
           </RouteGuard>
         )}
+        {/* Root is for modal */}
+        <div id="root" />
         <ToastContainer />
       </ThemeProvider>
     </SessionProvider>
