@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import { api } from "../../../../utils/api";
-import { BasePageLayout } from "../../../BasePageLayout.tsx/BasePageLayout";
+import { BasePageLayout } from "../../../BasePageLayout.tsx/view/BasePageLayout";
 import PunishmentRow from "../../components/PunishmentRow";
 
 const Wrapper = styled.div`

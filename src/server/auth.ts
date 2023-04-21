@@ -5,7 +5,7 @@ import type { GetServerSidePropsContext } from "next";
 import {
   getServerSession,
   type DefaultSession,
-  type NextAuthOptions
+  type NextAuthOptions,
 } from "next-auth";
 import Auth0Provider from "next-auth/providers/auth0";
 import Credentials from "next-auth/providers/credentials";
@@ -70,6 +70,7 @@ export const authOptions: NextAuthOptions = {
     },
   },
   adapter: PrismaAdapter(prisma),
+  debug: true,
   providers: [
     DiscordProvider({
       clientId: env.DISCORD_CLIENT_ID,
@@ -128,7 +129,7 @@ export const authOptions: NextAuthOptions = {
         })
           .then((res) => res.json())
           // .then(async (res: KSGNettAPIResponse) => { // if awaiting prisma upsert
-          .then((res: KSGNettAPIResponse) => {
+          .then(async (res: KSGNettAPIResponse) => {
             const {
               data: {
                 // Doing nothing with token now but can be attached to session
@@ -138,11 +139,86 @@ export const authOptions: NextAuthOptions = {
                 login: { ok, token, user },
               },
             } = res;
+            console.log("?");
             if (!ok) return null;
-
+            console.log("??");
             // If ok is true, then user and token should be defined.
             // But compiler isn't smart enough to know that.
             if (!user) return null;
+            //async function that checks if account exists for user
+            //if not, create account
+
+            const account = await prisma.account.findFirst({
+              where: {
+                id: user.id,
+                provider: "ksg-nett",
+              },
+            });
+
+            if (!account) {
+              const organization = await prisma.organization.findUnique({
+                where: {
+                  name: "Lyche Dev",
+                },
+              });
+
+              if (!organization) {
+                throw new Error("Organization not found, whopsie!");
+              }
+
+              let siteUser = await prisma.user.findUnique({
+                where: {
+                  id: user.id,
+                },
+              });
+
+              if (!siteUser) {
+                console.log("Ohayoo");
+                siteUser = await prisma.user.create({
+                  data: {
+                    id: user.id,
+                    name: user.fullName,
+                    email: credentials.email,
+                    organizationId: organization.id,
+                  },
+                });
+              }
+
+              if (!siteUser) {
+                throw new Error("User failed to be created");
+              }
+
+              await prisma.account.create({
+                data: {
+                  id: user.id,
+                  userId: siteUser.id,
+                  providerAccountId: user.id,
+                  access_token: token,
+                  type: "ksg-nett",
+                  provider: "ksg-nett",
+                },
+              });
+
+              return {
+                id: siteUser.id,
+                name: user.fullName,
+                email: credentials.email,
+              };
+            }
+
+            if (account) {
+              const siteUser = await prisma.user.findUnique({
+                where: {
+                  id: user.id,
+                },
+              });
+
+              if (!siteUser) {
+                throw new Error("User something wrong");
+              }
+
+              return siteUser;
+            }
 
             return {
               // According to docs this is set in the session.user property
@@ -152,24 +228,23 @@ export const authOptions: NextAuthOptions = {
               id: user.id,
               name: user.fullName,
               email: credentials.email,
-            }
+            };
 
             /**
-            ** Not sure if this even works. Couldn't bother installing mysql.
-            ** But probably something along these lines. Remember to make call async.
-           return await prisma.user.upsert({
-              where: {
-                id: user.id,
-              },
-              update: {},
-              create: {
-                id: user.id,
-                name: user.fullName,
-                email: credentials.email,
-                role: Role.ORG_MEMBER,
-              },
-            });
-            */
+             ** Not sure if this even works. Couldn't bother installing mysql.
+             ** But probably something along these lines. Remember to make call async. */
+            // await prisma.user.upsert({
+            //   where: {
+            //     id: user.id,
+            //   },
+            //   update: {},
+            //   create: {
+            //     id: user.id,
+            //     name: user.fullName,
+            //     email: credentials.email,
+            //     role: Role.ORG_MEMBER,
+            //   },
+            // });
           });
 
         return null;

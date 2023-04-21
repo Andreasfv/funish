@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import { useAdmin } from "../../../../utils/admin/useAdmin";
 import { api } from "../../../../utils/api";
-import { BasePageLayout } from "../../../BasePageLayout.tsx/BasePageLayout";
+import { BasePageLayout } from "../../../BasePageLayout.tsx/view/BasePageLayout";
 import CreatePunishment from "../CreatePunishment";
 import ManagePunishmentReasons from "../ManagePunishmenReasons";
 import ManagePunishmentTypes from "../ManagePunishmentTypes";

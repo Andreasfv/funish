@@ -49,7 +49,7 @@ export const serverEnv = {
   AUTH0_CLIENT_SECRET: process.env.AUTH0_CLIENT_SECRET,
   AUTH0_DOMAIN: process.env.AUTH0_DOMAIN,
   JWT_SECRET: process.env.JWT_SECRET,
-  
+
   KSG_NETT_AUTH_URL: process.env.KSG_NETT_AUTH_URL,
 };
 

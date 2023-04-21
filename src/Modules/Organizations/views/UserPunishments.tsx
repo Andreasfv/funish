@@ -8,13 +8,13 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useModal } from "react-hooks-use-modal";
 import styled from "styled-components";
-import { useAdmin } from "../../../../utils/admin/useAdmin";
-import { api } from "../../../../utils/api";
-import { useMediaQuery } from "../../../../utils/media/useMedia";
-import theme from "../../../../utils/theme";
-import { BasePageLayout } from "../../../BasePageLayout.tsx/BasePageLayout";
-import PunishmentRow from "../../components/PunishmentRow";
-import RedeemPunishmentsModal from "../../components/RedeemPunishmentsModal";
+import { useAdmin } from "../../../utils/admin/useAdmin";
+import { api } from "../../../utils/api";
+import { useMediaQuery } from "../../../utils/media/useMedia";
+import theme from "../../../utils/theme";
+import { BasePageLayout } from "../../BasePageLayout.tsx/view/BasePageLayout";
+import PunishmentRow from "../components/PunishmentRow";
+import RedeemPunishmentsModal from "../components/RedeemPunishmentsModal";
 
 const Wrapper = styled.div`
   display: flex;
