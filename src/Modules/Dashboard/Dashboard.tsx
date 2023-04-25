@@ -91,7 +91,7 @@ const Dashboard: NextPage = () => {
   const { organizationId } = router.query;
   const { data: userData, isLoading: userDataLoading } =
     api.users.getComprehensiveUserData.useQuery({
-      userId: session?.data?.user?.id ?? "",
+      userId: session.status == "authenticated" ? session?.data?.user?.id : "",
       where: {
         approved: true,
         redeemed: false,

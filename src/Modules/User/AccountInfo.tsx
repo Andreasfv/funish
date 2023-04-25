@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { User } from "@prisma/client";
-import { useRouter } from "next/router";
+import type { User } from "@prisma/client";
+import Image from "next/image";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -110,7 +110,6 @@ interface AccountInfoProps {
 
 const AccountInfo: React.FC<AccountInfoProps> = ({ user }) => {
   const [edit, setEdit] = useState(false);
-  const router = useRouter();
   const { mutate: updateUser } = api.users.updateUser.useMutation({
     onSuccess: () => {
       toast("Data saved", {
@@ -193,7 +192,13 @@ const AccountInfo: React.FC<AccountInfoProps> = ({ user }) => {
             </FormFieldRow>
             <FormFieldRow>
               <FormField>
-                <label>Profile Picture Inc.</label>
+                <label>Profile Picture</label>
+                <Image
+                  src={user.image ?? ""}
+                  width={200}
+                  height={200}
+                  alt="No profile pic ;("
+                />
               </FormField>
             </FormFieldRow>
             {edit && (
@@ -219,7 +224,7 @@ const AccountInfo: React.FC<AccountInfoProps> = ({ user }) => {
                       position: "bottom-center",
                     });
                   })
-                  .catch((err) => {
+                  .catch(() => {
                     toast("Failed to copy to clipboard", {
                       type: "error",
                       position: "bottom-center",

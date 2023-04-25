@@ -21,7 +21,7 @@ export const serverSchema = z.object({
   ),
 
   JWT_SECRET: z.string(),
-  KSG_NETT_AUTH_URL: z.string().url(),
+  KSG_NETT_API_URL: z.string().url(),
   DISCORD_CLIENT_ID: z.string(),
   DISCORD_CLIENT_SECRET: z.string(),
   GOOGLE_CLIENT_ID: z.string(),
@@ -50,7 +50,7 @@ export const serverEnv = {
   AUTH0_DOMAIN: process.env.AUTH0_DOMAIN,
   JWT_SECRET: process.env.JWT_SECRET,
 
-  KSG_NETT_AUTH_URL: process.env.KSG_NETT_AUTH_URL,
+  KSG_NETT_API_URL: process.env.KSG_NETT_API_URL,
 };
 
 /**

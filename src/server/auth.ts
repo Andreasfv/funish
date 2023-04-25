@@ -1,18 +1,22 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { Role } from "@prisma/client";
+import type { Organization, Role } from "@prisma/client";
 import type { GetServerSidePropsContext } from "next";
+import type { Session, User } from "next-auth";
+import jwt, { JWTEncodeParams } from "next-auth/jwt";
 import {
   getServerSession,
   type DefaultSession,
   type NextAuthOptions,
 } from "next-auth";
-import Auth0Provider from "next-auth/providers/auth0";
-import Credentials from "next-auth/providers/credentials";
-import DiscordProvider from "next-auth/providers/discord";
-import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { env } from "../env/server.mjs";
 import { prisma } from "./db";
+import {
+  KSGUserResponse,
+  KSG_NETT_LOGIN_QUERY,
+  KSG_NETT_USER_QUERY,
+} from "./ksgQueries";
 
 /**
  * Module augmentation for `next-auth` types.
@@ -33,6 +37,7 @@ declare module "next-auth" {
     name: string;
     email: string;
     image: string;
+    ksgNettToken: string;
   }
 }
 
@@ -47,56 +52,46 @@ export const authOptions: NextAuthOptions = {
     createUser({ user }) {
       console.log("createUser", user);
     },
-    signIn({ user }) {
-      return;
-    },
   },
   callbacks: {
+    // eslint-disable-next-line @typescript-eslint/require-await
+    jwt: async ({ token, user }) => {
+      if (user) {
+        token = {
+          id: user.id,
+          organizationId: user.organizationId,
+          role: user.role,
+          name: user.name,
+          email: user.email,
+          image: user.image ?? null,
+          ksgNettToken: user.ksgNettToken,
+        };
+      }
+      return Promise.resolve(token);
+    },
     signIn({ user, account, profile, email, credentials }) {
       return true;
     },
-    session({ session, user }) {
-      if (session.user) {
-        session.user.id = user.id;
-        session.user.email = user.email;
-        session.user.name = user.name;
-        session.user.organizationId = user.organizationId;
-        session.user.role = user.role;
-        session.user.image = user.image;
+    session({ session, token, user }) {
+      if (token) {
+        session.user.id = token.id as string;
+        session.user.email = (token.email as string) ?? "";
+        session.user.name = (token.name as string) ?? "";
+        session.user.organizationId = (token.organizationId as string) ?? "";
+        session.user.role = (token.role as Role) ?? "";
+        session.user.image = (token.image as string) ?? "";
+        session.user.ksgNettToken = (token.ksgNettToken as string) ?? "";
 
         // session.user.role = user.role; <-- put other properties on the session here
       }
-      return session;
+      return Promise.resolve(session);
     },
   },
   adapter: PrismaAdapter(prisma),
   debug: true,
   providers: [
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
-    }),
-    GoogleProvider({
-      clientId: env.GOOGLE_CLIENT_ID,
-      clientSecret: env.GOOGLE_CLIENT_SECRET,
-      allowDangerousEmailAccountLinking: true,
-
-      authorization: {
-        params: {
-          prompt: "consent",
-          access_type: "offline",
-          response_type: "code",
-        },
-      },
-    }),
-    Auth0Provider({
-      clientId: env.AUTH0_CLIENT_ID,
-      clientSecret: env.AUTH0_CLIENT_SECRET,
-      issuer: env.AUTH0_DOMAIN,
-    }),
     // Custom credentials providers against KSG-nett graphql API
-    Credentials({
-      name: "Credentials",
+    CredentialsProvider({
       credentials: {
         email: {
           label: "E-post",
@@ -107,14 +102,13 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials, req) {
         if (credentials == undefined) return null;
-
+        console.log(credentials);
         const { email, password } = credentials;
 
         if (!email || !password) {
           return null;
         }
-
-        await fetch(`${env.KSG_NETT_AUTH_URL}`, {
+        const fetchResult = await fetch(`${env.KSG_NETT_API_URL}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -126,126 +120,150 @@ export const authOptions: NextAuthOptions = {
               password: credentials.password,
             },
           }),
-        })
-          .then((res) => res.json())
-          // .then(async (res: KSGNettAPIResponse) => { // if awaiting prisma upsert
-          .then(async (res: KSGNettAPIResponse) => {
-            const {
-              data: {
-                // Doing nothing with token now but can be attached to session
-                // or in some authorization header? But only required if we
-                // want to make subsequent requests to KSG-nett API beyond
-                // just third party auth.
-                login: { ok, token, user },
-              },
-            } = res;
-            console.log("?");
-            if (!ok) return null;
-            console.log("??");
-            // If ok is true, then user and token should be defined.
-            // But compiler isn't smart enough to know that.
-            if (!user) return null;
-            //async function that checks if account exists for user
-            //if not, create account
+        });
 
-            const account = await prisma.account.findFirst({
-              where: {
+        const response: KSGNettAPIResponse = await fetchResult.json();
+        const { ok, token, user } = response.data.login;
+
+        if (!ok) return null;
+        if (!user) return null;
+        if (!token) return null;
+        let gangCreated = false;
+        let gangName: string | undefined = "";
+        const fetchKSGUser = await fetch(`${env.KSG_NETT_API_URL}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            query: KSG_NETT_USER_QUERY,
+            variables: {
+              id: user.id,
+            },
+          }),
+        });
+        const ksgUserResponse: KSGUserResponse = await fetchKSGUser.json();
+        gangName = ksgUserResponse.data.user.ksgStatus.split(":")[0];
+        // Find user's gang in ksg-nett
+        const account = await prisma.account.findFirst({
+          where: {
+            id: user.id,
+            provider: "ksg-nett",
+          },
+        });
+
+        if (!account) {
+          // Check if user's ksg gang exists in db
+          const fetchKSGUser = await fetch(`${env.KSG_NETT_API_URL}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              query: KSG_NETT_USER_QUERY,
+              variables: {
                 id: user.id,
-                provider: "ksg-nett",
+              },
+            }),
+          });
+          const ksgUserResponse: KSGUserResponse = await fetchKSGUser.json();
+          gangName = ksgUserResponse.data.user.ksgStatus.split(":")[0];
+          console.log(gangName);
+
+          // Check if ksg gang has an organization in db
+          const organization = await prisma.organization.findUnique({
+            where: {
+              name: env.NODE_ENV === "development" ? gangName : gangName,
+            },
+          });
+          console.log(organization);
+          // if ksg gang does not have an organization create the organization
+          let createdGang: Organization | null = null;
+          if (!organization && gangName) {
+            console.log("creating gang??");
+            createdGang = await prisma.organization.create({
+              data: {
+                name: gangName,
               },
             });
+            gangCreated = true;
+          }
 
-            if (!account) {
-              const organization = await prisma.organization.findUnique({
-                where: {
-                  name: "Lyche Dev",
-                },
-              });
-
-              if (!organization) {
-                throw new Error("Organization not found, whopsie!");
-              }
-
-              let siteUser = await prisma.user.findUnique({
-                where: {
-                  id: user.id,
-                },
-              });
-
-              if (!siteUser) {
-                console.log("Ohayoo");
-                siteUser = await prisma.user.create({
-                  data: {
-                    id: user.id,
-                    name: user.fullName,
-                    email: credentials.email,
-                    organizationId: organization.id,
-                  },
-                });
-              }
-
-              if (!siteUser) {
-                throw new Error("User failed to be created");
-              }
-
-              await prisma.account.create({
-                data: {
-                  id: user.id,
-                  userId: siteUser.id,
-                  providerAccountId: user.id,
-                  access_token: token,
-                  type: "ksg-nett",
-                  provider: "ksg-nett",
-                },
-              });
-
-              return {
-                id: siteUser.id,
-                name: user.fullName,
-                email: credentials.email,
-              };
-            }
-
-            if (account) {
-              const siteUser = await prisma.user.findUnique({
-                where: {
-                  id: user.id,
-                },
-              });
-
-              if (!siteUser) {
-                throw new Error("User something wrong");
-              }
-
-              return siteUser;
-            }
-
-            return {
-              // According to docs this is set in the session.user property
-              // NextAuth then uses its own JWT? We already get a token from
-              // KSG-nett so ideally we could derive the JWT from that. But not sure
-              // how to go about doing that
+          let siteUser = await prisma.user.findUnique({
+            where: {
               id: user.id,
-              name: user.fullName,
-              email: credentials.email,
-            };
-
-            /**
-             ** Not sure if this even works. Couldn't bother installing mysql.
-             ** But probably something along these lines. Remember to make call async. */
-            // await prisma.user.upsert({
-            //   where: {
-            //     id: user.id,
-            //   },
-            //   update: {},
-            //   create: {
-            //     id: user.id,
-            //     name: user.fullName,
-            //     email: credentials.email,
-            //     role: Role.ORG_MEMBER,
-            //   },
-            // });
+            },
           });
+
+          if (!createdGang && !organization)
+            throw new Error("Error creating organization");
+
+          const orgId = createdGang ? createdGang.id : organization?.id ?? "";
+          if (!siteUser) {
+            siteUser = await prisma.user.create({
+              data: {
+                id: user.id,
+                name: ksgUserResponse.data.user.fullName,
+                email: credentials.email,
+                organizationId: orgId,
+                image: ksgUserResponse.data.user.profileImage ?? "",
+                role: createdGang ? "ORG_ADMIN" : "ORG_MEMBER",
+              },
+            });
+          }
+
+          if (!siteUser) {
+            throw new Error("User failed to be created");
+          }
+
+          await prisma.account.create({
+            data: {
+              id: user.id,
+              userId: siteUser.id,
+              providerAccountId: user.id,
+              access_token: token,
+              type: "ksg-nett",
+              provider: "ksg-nett",
+            },
+          });
+
+          const resultUser: User = {
+            id: siteUser.id,
+            name: user.fullName,
+            email: credentials.email,
+            organizationId: orgId,
+            role: siteUser.role,
+            image: siteUser.image ?? "",
+            ksgNettToken: token,
+          };
+          return resultUser;
+        }
+
+        if (account) {
+          const siteUser = await prisma.user.findUnique({
+            where: {
+              id: user.id,
+            },
+          });
+
+          if (!siteUser || !siteUser.email || !siteUser.organizationId) {
+            return null;
+          }
+
+          const resultUser: User = {
+            id: siteUser.id,
+            name: siteUser.name ?? "",
+            email: siteUser.email,
+            organizationId: siteUser.organizationId,
+            role: siteUser.role,
+            image: siteUser.image ?? "",
+            ksgNettToken: token,
+          };
+
+          return resultUser;
+        }
 
         return null;
       },
@@ -261,6 +279,10 @@ export const authOptions: NextAuthOptions = {
      **/
   ],
   secret: env.JWT_SECRET,
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
 };
 
 /**
@@ -277,18 +299,7 @@ export const getServerAuthSession = (ctx: {
 };
 
 // Put this somewhere else maybe?
-const KSG_NETT_LOGIN_QUERY = `
-mutation Login($username: String!, $password: String!) {
-  login(username: $username, password: $password) {
-    ok
-    token
-    user {
-      id
-      fullName
-    }
-  }
-}
-`;
+
 // Same as above
 type KSGNettAPIResponse = {
   data: {
