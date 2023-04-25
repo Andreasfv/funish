@@ -9,7 +9,8 @@ import { useTranslation } from "react-i18next";
 import { useAdmin } from "../utils/admin/useAdmin";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { Label } from "../Modules/IndexPage/components/components";
+import { Input, Label } from "../Modules/IndexPage/components/components";
+import { useKeydown } from "../utils/hooks/useKeydown";
 
 const Home: NextPage = () => {
   const [wait, setWait] = useState(false);
@@ -51,6 +52,10 @@ const Home: NextPage = () => {
       });
   };
 
+  useKeydown("Enter", () => {
+    void onSubmit();
+  });
+
   useEffect(() => {
     if (session.data?.user.organizationId) {
       router
@@ -77,12 +82,14 @@ const Home: NextPage = () => {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 md:gap-8"></div>
           <div className="flex flex-col items-center gap-2">
             <Label>Log in med KSG-nett bruker</Label>
-            <input
+            <Input
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              placeholder="Brukernavn"
             />
-            <input
+            <Input
               type="password"
+              placeholder="Passord"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
