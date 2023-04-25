@@ -127,22 +127,22 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
           path: `/${orgId}/dashboard`,
         },
         {
-          name: "Punish",
+          name: "Meld SP!",
           path: `/${orgId}/punishment/punish`,
         },
         {
-          name: "My Punishments",
+          name: "Mine SP",
           path: `/${orgId}/my-punishments`,
         },
         {
-          name: "Punishments Overview",
+          name: "SP Oversikt",
           path: `/${orgId}/all-users-punishments`,
         },
       ];
       setRoutes([...routes]);
       setBottomRoutes([
         {
-          name: "My Account",
+          name: "Min Bruker",
           path: `/${orgId}/my-account`,
         },
       ]);
