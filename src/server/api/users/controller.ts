@@ -303,7 +303,7 @@ export const getComprehensiveUserDataController = async ({
   }
 };
 
-export const updateUserFromKSGController = async ({
+export const updateUserController = async ({
   ctx,
   input,
 }: {
