@@ -22,7 +22,7 @@ const config = {
   },
   compiler: { styledComponents: true },
   images: {
-    domains: ["ksg-nett.samfundet.no"],
+    domains: ["ksg-nett.samfundet.no", "lh3.googleusercontent.com"],
     remotePatterns: [
       {
         protocol: "https",

@@ -37,3 +37,63 @@ export const KSG_NETT_USER_QUERY = `
         __typename
 }
 `;
+export interface KSGInternalGroupResponse {
+  data: {
+    internalGroup: {
+      id: string;
+      name: string;
+      membershipData: {
+        internalGroupPositionName: string;
+        users: {
+          id: string;
+          fullName: string;
+          profileImage: string;
+          email: string;
+        }[];
+      }[];
+    };
+  };
+}
+
+export const KSG_NETT_HOVMESTER_QUERY = `
+  query InternalGroup($id: ID!) {
+    internalGroup(id: $id) {
+      id
+      name
+      membershipData {
+        internalGroupPositionName
+        users {
+          id
+          fullName
+          profileImage
+          email
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+  } `;
+
+export interface KSGInternalGangsResponse {
+  data: {
+    internalGroups: {
+      id: string;
+      name: string;
+      type: string;
+      groupIcon: string;
+    }[];
+  };
+}
+
+export const KSG_NETT_INTERNAL_GANGS_QUERY = `
+  query allInternalGroupsByTypeQuery {
+    internalGroups: allInternalGroupsByType(internalGroupType: INTERNAL_GROUP) {
+      id
+      name
+      type
+      groupIcon
+      __typename
+    }
+  }
+`;

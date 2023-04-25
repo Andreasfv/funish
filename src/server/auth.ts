@@ -175,7 +175,7 @@ export const authOptions: NextAuthOptions = {
           // Check if ksg gang has an organization in db
           const organization = await prisma.organization.findUnique({
             where: {
-              name: env.NODE_ENV === "development" ? "Lyche Dev" : gangName,
+              name: env.NODE_ENV === "development" ? gangName : gangName,
             },
           });
           console.log(organization);

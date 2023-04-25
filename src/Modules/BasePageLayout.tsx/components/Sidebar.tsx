@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import { api } from "../../../utils/api";
 import { signOut } from "next-auth/react";
+import { useAdmin } from "../../../utils/admin/useAdmin";
 
 const Wrapper = styled.div`
   position: sticky;
@@ -43,7 +44,7 @@ const OrgContentWrapper = styled.div`
 const Sidebar: React.FC = () => {
   const router = useRouter();
   const { data: me } = api.users.me.useQuery();
-
+  const isAdmin = useAdmin();
   function goTo(path: string) {
     if (!me?.data?.user?.organizationId) return;
 
@@ -68,6 +69,11 @@ const Sidebar: React.FC = () => {
         </SidebarItem>
       </OrgContentWrapper>
       <SidebarBottomWrapper>
+        {isAdmin && (
+          <SidebarItem onClick={goTo("manage-organization")}>
+            Gjeng Instillinger{" "}
+          </SidebarItem>
+        )}
         <SidebarItem onClick={goTo("my-account")}>Min Konto</SidebarItem>
         <SidebarItem
           onClick={() => {

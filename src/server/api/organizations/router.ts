@@ -14,6 +14,7 @@ import {
   getOrganizationWithPunishmentDataController,
   getOrganizationUsersWithPunishmentDataController,
   organizationExists,
+  populateOrganizationWithUsersFromKSGNettController,
 } from "./controller";
 import {
   getOrganizationSchema,
@@ -23,6 +24,7 @@ import {
   deleteOrganizationSchema,
   getOrganizationUsersWithPunishmentDataSchema,
   getOrganizationWithPunishmentDataSchema,
+  populateOrganizationWithUsersFromKSGNettInput,
 } from "./schema";
 
 export const organizationsRouter = createTRPCRouter({
@@ -59,4 +61,9 @@ export const organizationsRouter = createTRPCRouter({
   organizationExists: protectedProcedure
     .input(getOrganizationSchema)
     .query(({ ctx, input }) => organizationExists({ ctx, input })),
+  populateOrganizationWithUsersFromKSGNett: protectedProcedure
+    .input(populateOrganizationWithUsersFromKSGNettInput)
+    .mutation(({ ctx, input }) =>
+      populateOrganizationWithUsersFromKSGNettController({ ctx, input })
+    ),
 });

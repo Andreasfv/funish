@@ -14,6 +14,7 @@ const Wrapper = styled.div`
   justify-content: center;
   flex-direction: column;
 `;
+
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
