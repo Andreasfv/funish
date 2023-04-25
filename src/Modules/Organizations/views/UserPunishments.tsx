@@ -257,7 +257,7 @@ const UserPunishments: React.FC<UserPunishmentsProps> = () => {
           <>
             <ActionsContentWrapper>
               <FormWrapper>
-                <ActionsButton onClick={open}>Redeem Punishments</ActionsButton>
+                <ActionsButton onClick={open}>Redeem SP</ActionsButton>
               </FormWrapper>
             </ActionsContentWrapper>
             <Modal>
@@ -283,7 +283,7 @@ const UserPunishments: React.FC<UserPunishmentsProps> = () => {
               </>
             ) : (
               <>
-                <div>Punishments</div>
+                <div>Straffepils</div>
               </>
             )}
           </HeaderRow>
