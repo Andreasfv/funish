@@ -20,7 +20,7 @@ const InnerWrapper = styled.div`
   display: flex;
   width: 100%;
   gap: 1rem;
-
+  padding-bottom: 1rem;
   @media ${(props) => props.theme.media.largeMobile} {
     flex-direction: column;
   }
@@ -112,7 +112,7 @@ const Dashboard: NextPage = () => {
               <ContentWrapper>
                 <CardsWrapper>
                   <BigButton href={`/${organization.id}/punishment/punish`}>
-                    PUNISH!!
+                    MELD SP!!
                   </BigButton>
                 </CardsWrapper>
                 <CardsWrapper>

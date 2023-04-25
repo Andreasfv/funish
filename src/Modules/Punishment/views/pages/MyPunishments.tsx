@@ -56,8 +56,17 @@ const PunishmentTypeWrapper = styled.div`
     background-color: ${(props) => props.theme.colors.lightGreen};
     padding: 0.5rem;
     top: 0;
-    div {
-      flex: 1;
+    & > div {
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    & > div:last-child {
+      text-align: right;
+    }
+
+    @media ${(props) => props.theme.media.largeMobile} {
+      align-items: space-between;
     }
   }
 
@@ -98,7 +107,7 @@ const MyPunishments: React.FC = () => {
     <BasePageLayout>
       <Wrapper>
         <ContentWrapper>
-          <TitleBar>My Punishments</TitleBar>
+          <TitleBar>Mine SP</TitleBar>
           <PunishmentWrapper>
             {punishments?.data?.punishmentTypes.map((punishmentType) => (
               <PunishmentTypeWrapper key={punishmentType.id}>
@@ -111,8 +120,6 @@ const MyPunishments: React.FC = () => {
                       0
                     )}
                   </div>
-                  <div>{punishmentType.description}</div>
-                  <div></div>
                 </div>
                 {punishmentType.Punishments.map((punishment) => (
                   <PunishmentRow key={punishment.id} punishment={punishment} />

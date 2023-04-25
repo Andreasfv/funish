@@ -31,7 +31,7 @@ const OrganizationPaper: React.FC<OrganizationPaperProps> = ({
   return (
     <Card>
       <p>{organization?.data?.organization?.name}</p>
-      <p>{`Total Punishments: ${
+      <p>{`Total SP: ${
         organization?.data?.organization?.punishments.reduce(
           (acc, punishment) =>
             acc + (punishment.approved ? punishment.quantity : 0),
