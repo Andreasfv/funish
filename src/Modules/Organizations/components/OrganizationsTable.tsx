@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { api } from "../../utils/api";
+import { api } from "../../../utils/api";
 import styled from "styled-components";
 
-import type { SortOrganizationsInput } from "../../server/api/organizations/schema";
+import type { SortOrganizationsInput } from "../../../server/api/organizations/schema";
 
 const Wrapper = styled.div`
   display: flex;

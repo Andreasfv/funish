@@ -1,9 +1,9 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import { api } from "../../../../utils/api";
-import { BasePageLayout } from "../../../BasePageLayout.tsx/BasePageLayout";
-import UserPunishmentsRow from "../../components/UserPunishmentsRow";
+import { api } from "../../../utils/api";
+import { BasePageLayout } from "../../BasePageLayout.tsx/view/BasePageLayout";
+import UserPunishmentsRow from "../components/UserPunishmentsRow";
 
 const Wrapper = styled.div`
   display: flex;

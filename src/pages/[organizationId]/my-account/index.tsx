@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-import { BasePageLayout } from "../../../Modules/BasePageLayout.tsx/BasePageLayout";
+import { BasePageLayout } from "../../../Modules/BasePageLayout.tsx/view/BasePageLayout";
 import AccountInfo from "../../../Modules/User/AccountInfo";
 
 const MyAccount: React.FC = () => {

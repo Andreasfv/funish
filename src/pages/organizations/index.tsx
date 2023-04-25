@@ -3,7 +3,7 @@ import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { OrganizationsTable } from "../../Modules/Organizations/OrganizationsTable";
+import { OrganizationsTable } from "../../Modules/Organizations/components/OrganizationsTable";
 
 const Organizations: NextPage = () => {
   const session = useSession();

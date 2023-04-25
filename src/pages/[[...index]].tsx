@@ -9,12 +9,17 @@ import { useTranslation } from "react-i18next";
 import { useAdmin } from "../utils/admin/useAdmin";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { Input, Label } from "../Modules/IndexPage/components/components";
+import { useKeydown } from "../utils/hooks/useKeydown";
 
 const Home: NextPage = () => {
   const [wait, setWait] = useState(false);
   const [orgAssignSuccessful, setOrgAssignSuccessful] = useState(true);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const router = useRouter();
   const session = useSession();
+  console.log(session);
   const { mutate, isLoading: meLoading } =
     api.users.addUserToOrganization.useMutation();
 
@@ -28,64 +33,28 @@ const Home: NextPage = () => {
           !!router.query?.organizationId !== undefined,
       }
     );
+
   const sessionData = session.data;
 
-  useEffect(() => {
-    if (
-      session?.data?.user?.id &&
-      !session?.data?.user?.organizationId &&
-      !meLoading
-    ) {
-      if (wait) return;
-      setWait(true);
-      // TODO Handle this with JWT Link to SignIn page for associating organization
-      // with user on creation / first SignIn
-      console.log(router.query);
-      if (router.query?.organizationId) {
-        refetch()
-          .then((organizationExists) => {
-            if (organizationExists?.data?.status) {
-              mutate(
-                {
-                  userId: session?.data?.user?.id ?? "",
-                  organizationId: router.query?.organizationId as string,
-                },
-                {
-                  onSuccess: () => {
-                    setOrgAssignSuccessful(true);
-                    session.data.user.organizationId = router.query
-                      ?.organizationId as string;
-                    router
-                      .push(`/${session.data.user.organizationId}/dashboard`)
-                      .catch((err) => console.warn(err));
-                  },
-                  onError: () => {
-                    setTimeout(() => {
-                      void signOut();
-                    }, 6000);
-                  },
-                }
-              );
-            } else {
-              setTimeout(() => {
-                void signOut();
-              }, 6000);
-            }
-          })
-          .catch((err) => console.warn(err));
-      }
-    }
-  }, [
-    meLoading,
-    mutate,
-    refetch,
-    router,
-    session?.data?.user,
-    session?.data?.user?.id,
-    session?.data?.user?.organizationId,
-    session.status,
-    wait,
-  ]);
+  const onSubmit = async () => {
+    await signIn("credentials", {
+      email: username,
+      password: password,
+      redirect: false,
+      callbackUrl: `/${session?.data?.user?.organizationId ?? ""}/dashboard`,
+    })
+      .then((res) => {
+        console.log(res);
+        console.log(sessionData);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useKeydown("Enter", () => {
+    void onSubmit();
+  });
 
   useEffect(() => {
     if (session.data?.user.organizationId) {
@@ -112,6 +81,19 @@ const Home: NextPage = () => {
           </h1>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 md:gap-8"></div>
           <div className="flex flex-col items-center gap-2">
+            <Label>Log in med KSG-nett bruker</Label>
+            <Input
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Brukernavn"
+            />
+            <Input
+              type="password"
+              placeholder="Passord"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+
             <p className="text-center text-white">
               {!orgAssignSuccessful && "Organization login link is invalid"}
               {session.status == "authenticated" &&
@@ -129,14 +111,9 @@ const Home: NextPage = () => {
             </p>
             <button
               className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-              onClick={
-                sessionData
-                  ? () => void signOut()
-                  : () =>
-                      void signIn("", {}, {}).then((user) => {
-                        console.log(user);
-                      })
-              }
+              onClick={() => {
+                void onSubmit();
+              }}
             >
               {sessionData ? "Sign out" : "Sign in"}
             </button>

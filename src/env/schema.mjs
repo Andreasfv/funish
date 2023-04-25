@@ -19,6 +19,9 @@ export const serverSchema = z.object({
     // VERCEL_URL doesn't include `https` so it cant be validated as a URL
     process.env.VERCEL ? z.string() : z.string().url()
   ),
+
+  JWT_SECRET: z.string(),
+  KSG_NETT_API_URL: z.string().url(),
   DISCORD_CLIENT_ID: z.string(),
   DISCORD_CLIENT_SECRET: z.string(),
   GOOGLE_CLIENT_ID: z.string(),
@@ -26,7 +29,6 @@ export const serverSchema = z.object({
   AUTH0_CLIENT_ID: z.string(),
   AUTH0_CLIENT_SECRET: z.string(),
   AUTH0_DOMAIN: z.string(),
-  JWT_SECRET: z.string(),
 });
 
 /**
@@ -47,6 +49,8 @@ export const serverEnv = {
   AUTH0_CLIENT_SECRET: process.env.AUTH0_CLIENT_SECRET,
   AUTH0_DOMAIN: process.env.AUTH0_DOMAIN,
   JWT_SECRET: process.env.JWT_SECRET,
+
+  KSG_NETT_API_URL: process.env.KSG_NETT_API_URL,
 };
 
 /**
