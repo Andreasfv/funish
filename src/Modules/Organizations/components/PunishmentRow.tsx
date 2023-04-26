@@ -1,7 +1,7 @@
 import type {
   Punishment,
-  PunishmentType,
   PunishmentReason,
+  PunishmentType,
   User,
 } from "@prisma/client";
 import { useState } from "react";
@@ -74,6 +74,17 @@ const DeleteButton = styled(Button)`
   }
 `;
 
+const ProofButton = styled(Button)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 1rem;
+  background-color: ${(props) => props.theme.colors.lightDarkGreen};
+  :hover {
+    background-color: ${(props) => props.theme.colors.darkGreen};
+  }
+`;
+
 const ButtonWrapper = styled.div`
   position: relative;
   flex: 1;
@@ -104,19 +115,20 @@ interface PunishmentRowProps {
   };
   deletePunishment: () => void;
   approvePunishment: () => void;
+  openProof: (image: string) => void;
 }
 
 const PunishmentRow: React.FC<PunishmentRowProps> = ({
   punishment,
   deletePunishment,
   approvePunishment,
+  openProof,
 }) => {
   const isAdmin = useAdmin();
   const mobile = useMediaQuery(theme.media.largeMobile);
   const [open, setOpen] = useState(false);
 
   function openRow() {
-    if (!mobile) return;
     setOpen(!open);
   }
 
@@ -145,6 +157,15 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({
         </LineWrapper>
         <LineWrapper>
           <div>{punishment.description}</div>
+          {punishment.proof && punishment.proof !== "" && (
+            <ProofButton
+              onClick={() => {
+                openProof(punishment.proof ?? "");
+              }}
+            >
+              Vis Bevis
+            </ProofButton>
+          )}
           {isAdmin && (
             <ButtonWrapper>
               <DeleteButton onClick={deletePunishment}> X </DeleteButton>
@@ -165,6 +186,17 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({
         </div>
 
         {!mobile && <div>{punishment.reason.name}</div>}
+        {punishment.proof && punishment.proof !== "" && (
+          <div>
+            <ProofButton
+              onClick={() => {
+                openProof(punishment.proof ?? "");
+              }}
+            >
+              Vis Bevis
+            </ProofButton>
+          </div>
+        )}
         <div>{punishment.createdBy.name}</div>
 
         {!mobile && (
@@ -184,10 +216,15 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({
         )}
       </LineWrapper>
       {open && (
-        <LineWrapper>
-          <div>Reason: {punishment.reason.name}</div>
-          <div>Quantity: {punishment.quantity}</div>
-        </LineWrapper>
+        <>
+          <LineWrapper>
+            <div>For: {punishment.reason.name}</div>
+            <div>Antall: {punishment.quantity}</div>
+          </LineWrapper>
+          {punishment.description && (
+            <LineWrapper>{punishment.description}</LineWrapper>
+          )}
+        </>
       )}
     </Wrapper>
   );

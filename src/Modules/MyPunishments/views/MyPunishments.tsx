@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import { api } from "../../../utils/api";
+import { useImageModal } from "../../../utils/hooks/useImageModal";
 import { BasePageLayout } from "../../BasePageLayout.tsx/view/BasePageLayout";
 import PunishmentRow from "../components/PunishmentRow";
 
@@ -88,6 +89,8 @@ const TitleBar = styled.div`
 
 const MyPunishments: React.FC = () => {
   const router = useRouter();
+  const [ImageModal, openImage] = useImageModal();
+
   const { organizationId } = router.query;
   const { data: me } = api.users.me.useQuery();
   const { data: punishments } =
@@ -107,6 +110,7 @@ const MyPunishments: React.FC = () => {
     <BasePageLayout>
       <Wrapper>
         <ContentWrapper>
+          <ImageModal />
           <TitleBar>Mine SP</TitleBar>
           <PunishmentWrapper>
             {punishments?.data?.punishmentTypes.map((punishmentType) => (
@@ -122,7 +126,11 @@ const MyPunishments: React.FC = () => {
                   </div>
                 </div>
                 {punishmentType.Punishments.map((punishment) => (
-                  <PunishmentRow key={punishment.id} punishment={punishment} />
+                  <PunishmentRow
+                    openImage={openImage}
+                    key={punishment.id}
+                    punishment={punishment}
+                  />
                 ))}
               </PunishmentTypeWrapper>
             ))}

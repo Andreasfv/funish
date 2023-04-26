@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CldImage, CldUploadWidget } from "next-cloudinary";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
@@ -66,6 +67,7 @@ const CreatePunishment: React.FC = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const params = router.query;
+  const [fileName, setFileName] = useState("");
   const { data: me } = api.users.me.useQuery();
   const { data: organization } =
     api.organizations.getOrganizationWithPunishmentData.useQuery({
@@ -90,12 +92,11 @@ const CreatePunishment: React.FC = () => {
         me?.data.user?.organizationId ??
         "",
       quantity: 1,
-      proof: "Not implemented",
+      proof: "",
       description: "",
     },
     resolver: zodResolver(formSchema),
   });
-
   const { mutate: createPunishment } =
     api.punishments.createPunishment.useMutation();
 
@@ -111,6 +112,9 @@ const CreatePunishment: React.FC = () => {
     });
   }
 
+  useEffect(() => {
+    console.log(errors);
+  }, [errors]);
   const onSubmit = (data: formType) => {
     const createPunishmentData = {
       userId: data.userId ?? "",
@@ -126,6 +130,8 @@ const CreatePunishment: React.FC = () => {
 
     createPunishment(createPunishmentData, {
       onSuccess: () => {
+        //Reset everythang for next sp
+        setFileName("");
         formReset({
           userId: "",
           userIdText: "",
@@ -135,7 +141,7 @@ const CreatePunishment: React.FC = () => {
           reasonIdText: "",
           description: "",
           quantity: 1,
-          proof: data.proof,
+          proof: "",
           createdById: data.createdById,
           organizationId: data.organizationId,
         });
@@ -168,6 +174,9 @@ const CreatePunishment: React.FC = () => {
       })
     ) ?? [];
 
+  const fileLabel = fileName
+    ? `File uploaded: ${fileName}`
+    : "No file selected";
   return (
     <>
       <Wrapper>
@@ -233,7 +242,37 @@ const CreatePunishment: React.FC = () => {
               />
             </FormField>
             <FormField>
-              <label>TODO: Upload pic?</label>
+              <label>{fileLabel}</label>
+              <CldUploadWidget
+                uploadPreset="sp_proof"
+                options={{
+                  maxFiles: 1,
+                  folder: organization?.data.organization?.name,
+                }}
+                onUpload={(idk: {
+                  event: string;
+                  info: {
+                    path: string;
+                    original_filename: string;
+                  } | null;
+                }) => {
+                  if (idk?.event == "success" && idk.info?.path) {
+                    handleChange("proof")(idk.info?.path);
+                    setFileName(idk.info?.original_filename ?? "");
+                  }
+                  console.log(idk);
+                }}
+              >
+                {({ open }) => {
+                  function handleOnClick(
+                    e: React.MouseEvent<HTMLButtonElement>
+                  ) {
+                    e.preventDefault();
+                    open();
+                  }
+                  return <button onClick={handleOnClick}>Upload</button>;
+                }}
+              </CldUploadWidget>
             </FormField>
             <div>
               {Object.entries(errors).length > 0 && (
@@ -241,6 +280,18 @@ const CreatePunishment: React.FC = () => {
               )}
             </div>
             <SubmitButton onClick={submit}>Submit</SubmitButton>
+            {watch("proof") && (
+              <>
+                <br></br>
+                <label>Preview</label>
+                <CldImage
+                  src={watch("proof")}
+                  width={300}
+                  height={300}
+                  alt=""
+                />
+              </>
+            )}
           </FormWrapper>
         </ContentWrapper>
       </Wrapper>

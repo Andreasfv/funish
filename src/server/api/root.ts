@@ -6,6 +6,7 @@ import { punishmentConversionRouter } from "./punishmentConversion/router";
 import { punishmentReasonRouter } from "./punishmentReason/router";
 import { punishmentTypeRouter } from "./punishmentType/router";
 import { punishmentRouter } from "./punishment/router";
+import { imageRouter } from "./images/router";
 
 /**
  * This is the primary router for your server.
@@ -20,6 +21,7 @@ export const appRouter = createTRPCRouter({
   punishmentReasons: punishmentReasonRouter,
   punishmentTypes: punishmentTypeRouter,
   punishments: punishmentRouter,
+  image: imageRouter,
 });
 
 // export type definition of API

@@ -11,6 +11,7 @@ import { useModal } from "react-hooks-use-modal";
 import styled from "styled-components";
 import { useAdmin } from "../../../utils/admin/useAdmin";
 import { api } from "../../../utils/api";
+import { useImageModal } from "../../../utils/hooks/useImageModal";
 import { useMediaQuery } from "../../../utils/media/useMedia";
 import theme from "../../../utils/theme";
 import { BasePageLayout } from "../../BasePageLayout.tsx/view/BasePageLayout";
@@ -45,12 +46,14 @@ const UserPunishments: React.FC<UserPunishmentsProps> = () => {
   const isAdmin = useAdmin();
   const router = useRouter();
   const mobile = useMediaQuery(theme.media.largeMobile);
+  const [ImageModal, openImage] = useImageModal();
   const [Modal, open, close, isOpen] = useModal("root", {
     preventScroll: true,
     focusTrapOptions: {
       clickOutsideDeactivates: true,
     },
   });
+
   const [punishmentRows, setPunishmentRows] = useState<JSX.Element[]>([]);
 
   const { userId, organizationId } = router.query;
@@ -142,13 +145,14 @@ const UserPunishments: React.FC<UserPunishmentsProps> = () => {
               punishment={punishment}
               approvePunishment={approvePunishment(punishment.id)}
               deletePunishment={deletePunishment(punishment.id)}
+              openProof={openImage}
             />
           );
         });
       })
       .flat();
     setPunishmentRows(punishmentRows);
-  }, [approvePunishment, data, deletePunishment]);
+  }, [approvePunishment, data, deletePunishment, openImage]);
 
   function doFetchNextPage() {
     console.log("fetchin!");
@@ -181,6 +185,7 @@ const UserPunishments: React.FC<UserPunishmentsProps> = () => {
   return (
     <BasePageLayout>
       <Wrapper>
+        <ImageModal />
         <>
           <ActionsContentWrapper>
             <FormWrapper>
