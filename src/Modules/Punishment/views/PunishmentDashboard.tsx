@@ -3,9 +3,9 @@ import styled from "styled-components";
 import { useAdmin } from "../../../utils/admin/useAdmin";
 import { api } from "../../../utils/api";
 import { BasePageLayout } from "../../BasePageLayout.tsx/view/BasePageLayout";
-import CreatePunishment from "../components/CreatePunishment";
-import ManagePunishmentReasons from "../components/ManagePunishmenReasons";
-import ManagePunishmentTypes from "../components/ManagePunishmentTypes";
+import CreatePunishment from "./subviews/CreatePunishment";
+import ManagePunishmentReasons from "./subviews/ManagePunishmenReasons";
+import ManagePunishmentTypes from "./subviews/ManagePunishmentTypes";
 
 const Wrapper = styled.div`
   display: flex;

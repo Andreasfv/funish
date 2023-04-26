@@ -408,41 +408,48 @@ export const populateOrganizationWithUsersFromKSGNettController = async ({
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const data: KSGInternalGroupResponse = await response.json();
-
+  const funkeGjenger = {
+    "Lyche Bar": "Hovmester",
+    Styret: true,
+  };
   for (const group of data?.data?.internalGroup?.membershipData) {
     console.log(group.internalGroupPositionName);
-    if (group.internalGroupPositionName !== "Hovmester") {
-      continue;
-    }
-    for (const member of group.users) {
-      await prisma.user
-        .upsert({
-          where: {
-            email: member.email,
-          },
-          update: {
-            id: member.id,
-            name: member.fullName,
-            image: member.profileImage,
-            email: member.email,
-            organizationId: organizationId,
-          },
-          create: {
-            id: member.id,
-            name: member.fullName,
-            image: member.profileImage,
-            email: member.email,
-            role: "ORG_MEMBER",
-            organizationId: organizationId,
-          },
-        })
-        .catch((error) => {
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
+    if (
+      group.internalGroupPositionName ==
+        funkeGjenger[ksgGangName as keyof typeof funkeGjenger] ||
+      funkeGjenger[ksgGangName as keyof typeof funkeGjenger] === true
+    ) {
+      for (const member of group.users) {
+        await prisma.user
+          .upsert({
+            where: {
+              email: member.email,
+            },
+            update: {
+              id: member.id,
+              name: member.fullName,
+              image: member.profileImage,
+              email: member.email,
+              organizationId: organizationId,
+            },
+            create: {
+              id: member.id,
+              name: member.fullName,
+              image: member.profileImage,
+              email: member.email,
+              role: "ORG_MEMBER",
+              organizationId: organizationId,
+            },
+          })
+          .catch((error) => {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+            });
           });
-        });
+      }
     }
   }
+
   return {
     ok: true,
   };

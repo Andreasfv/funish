@@ -107,6 +107,7 @@ const ManageOrganization: React.FC = () => {
         <ContentWrapper>
           <h1>Manage Organization</h1>
           <ActionsPaper actions={actions} />
+          <h1>Medlemmer</h1>
           <OrganizationUsersPaper
             users={users?.data?.users ?? []}
             isLoading={usersLoading}

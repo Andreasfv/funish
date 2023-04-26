@@ -58,7 +58,13 @@ interface UserPaperProps {
 const UserPaper: React.FC<UserPaperProps> = ({ user }) => {
   return (
     <UserPaperWrapper>
-      <UserImage width={16} height={16} src={user.image ?? ""} alt=":)" />
+      <UserImage
+        width={16}
+        height={16}
+        src={user.image ?? ""}
+        alt=":)"
+        unoptimized
+      />
       <div>{user.name}</div>
     </UserPaperWrapper>
   );

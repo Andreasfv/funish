@@ -1,3 +1,3 @@
-import ManageOrganization from "../../../Modules/Organizations/views/ManageOrganization";
+import ManageOrganization from "../../../Modules/ManageOrganization/views/ManageOrganization";
 
 export default ManageOrganization;

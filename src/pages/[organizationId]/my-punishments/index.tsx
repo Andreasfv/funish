@@ -1,3 +1,3 @@
-import MyPunishments from "../../../Modules/Punishment/views/MyPunishments";
+import MyPunishments from "../../../Modules/MyPunishments/views/MyPunishments";
 
 export default MyPunishments;
