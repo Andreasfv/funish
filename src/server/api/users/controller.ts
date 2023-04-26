@@ -82,7 +82,7 @@ export const getOrganizationUsersController = async ({
   input: OrganizationUsersInput;
 }) => {
   try {
-    const { prisma } = ctx;
+    const { prisma, session } = ctx;
     const { organizationId } = input;
 
     if (!organizationId) {
@@ -91,11 +91,13 @@ export const getOrganizationUsersController = async ({
         message: "Organization not found",
       });
     }
-    if (ctx.session?.user.role !== "SUPER_ADMIN") {
-      throw new TRPCError({
-        code: "FORBIDDEN",
-        message: "You are not authorized to perform this action",
-      });
+    if (session?.user.organizationId !== organizationId) {
+      if (ctx.session?.user.role !== "SUPER_ADMIN") {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not authorized to perform this action",
+        });
+      }
     }
 
     const orderBy: Prisma.Enumerable<Prisma.UserOrderByWithRelationInput> = {

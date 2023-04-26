@@ -1,10 +1,12 @@
 import type { Punishment, PunishmentReason, User } from "@prisma/client";
+import Image from "next/image";
 import { useState } from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
+  align-items: center;
   width: 100%;
   padding: 0.3rem;
   border-radius: 0.3rem;
@@ -12,7 +14,6 @@ const Wrapper = styled.div`
   flex-wrap: wrap;
   overflow: wrap;
   div {
-    order: 1;
     flex: 1 1 160px;
     min-width: 135px;
     white-space: nowrap;
@@ -37,7 +38,7 @@ const OpenWrapper = styled.div`
     background-color: ${(props) => props.theme.colors.darkGreen};
     cursor: pointer;
   }
-`
+`;
 
 const LineWrapper = styled.div`
   display: flex;
@@ -46,7 +47,7 @@ const LineWrapper = styled.div`
   div {
     flex: 1;
   }
-`
+`;
 
 const TextWrapper = styled.div`
   display: flex;
@@ -55,7 +56,13 @@ const TextWrapper = styled.div`
   padding: 0.3rem;
   border-radius: 0.3rem;
   background-color: white;
-`
+`;
+
+const UserImage = styled(Image)`
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+`;
 
 interface PunishmentRowProps {
   punishment: Punishment & {
@@ -64,7 +71,6 @@ interface PunishmentRowProps {
   };
 }
 const PunishmentRow: React.FC<PunishmentRowProps> = ({ punishment }) => {
-
   const [open, setOpen] = useState(false);
 
   function handleOnClick() {
@@ -84,15 +90,20 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({ punishment }) => {
           <div>{punishment.description}</div>
         </TextWrapper>
       </OpenWrapper>
-    )
+    );
   }
 
   return (
     <Wrapper onClick={handleOnClick}>
       <div>{punishment.reason.name}</div>
-      <div>Antall: {punishment.quantity}</div>
-      <div>Fra: {punishment.createdBy.name}</div>
-      <div>Besk: {punishment.description}</div>
+      <div>{punishment.quantity}</div>
+      <UserImage
+        width={16}
+        height={16}
+        src={punishment.createdBy.image ?? ""}
+        alt=":)"
+        unoptimized
+      />
     </Wrapper>
   );
 };

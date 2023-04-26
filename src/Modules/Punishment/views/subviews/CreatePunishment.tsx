@@ -6,12 +6,12 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import { z } from "zod";
-import FormInput from "../../../components/input/formInput";
-import FormNumberInput from "../../../components/input/formNumberInput";
-import FormSelect from "../../../components/input/formSelect";
-import { api } from "../../../utils/api";
-import FormField from "../components/FormField";
-import SubmitButton from "../components/SubmitButton";
+import FormInput from "../../../../components/input/formInput";
+import FormNumberInput from "../../../../components/input/formNumberInput";
+import FormSelect from "../../../../components/input/formSelect";
+import { api } from "../../../../utils/api";
+import FormField from "../../components/FormField";
+import SubmitButton from "../../components/SubmitButton";
 const Wrapper = styled.div`
   display: flex;
   width: 100%;

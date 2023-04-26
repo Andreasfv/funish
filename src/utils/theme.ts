@@ -21,6 +21,11 @@ const theme = {
     gray11: "#f7f8fc",
 
     red: "#880d1e",
+
+    success: "#41644A",
+    error: "#E74646",
+    loading: "#B0DAFF",
+    info: "#393646",
   },
   borders: {
     cardBorder: "1px solid lightgrey",

@@ -1,3 +1,3 @@
-import PunishmentDashboard from "../../../../Modules/Punishment/views/pages/PunishmentDashboard";
+import PunishmentDashboard from "../../../../Modules/Punishment/views/PunishmentDashboard";
 
 export default PunishmentDashboard;

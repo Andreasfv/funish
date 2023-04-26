@@ -1,5 +1,12 @@
 import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
+import { env } from "../../../env/server.mjs";
+import {
+  KSGInternalGangsResponse,
+  KSGInternalGroupResponse,
+  KSG_NETT_HOVMESTER_QUERY,
+  KSG_NETT_INTERNAL_GANGS_QUERY,
+} from "../../ksgQueries";
 import type { Context } from "../trpc";
 import { usersRouter } from "../users/router";
 
@@ -9,6 +16,7 @@ import type {
   FilterOrganizationInput,
   getOrganizationUsersWithPunishmentDataInput,
   getOrganizationWithPunishmentDataInput,
+  PopulateOrganizationWithUsersFromKSGNettInput,
 } from "./schema";
 
 export const createOrganizationController = async ({
@@ -348,4 +356,101 @@ export const getOrganizationUsersWithPunishmentDataController = async ({
   } catch (error) {
     throw error;
   }
+};
+
+export const populateOrganizationWithUsersFromKSGNettController = async ({
+  ctx,
+  input,
+}: {
+  ctx: Context;
+  input: PopulateOrganizationWithUsersFromKSGNettInput;
+}) => {
+  const { prisma, session } = ctx;
+  const { organizationId, ksgGangName } = input;
+  const internalGangsResponse = await fetch(env.KSG_NETT_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${session?.user.ksgNettToken ?? ""}`,
+    },
+    body: JSON.stringify({
+      query: KSG_NETT_INTERNAL_GANGS_QUERY,
+    }),
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const internalGangsData: KSGInternalGangsResponse =
+    await internalGangsResponse.json();
+
+  let internalGangId = "";
+  //This is janky as shits, but I couldn't be arsed to download KSG-nett or find their dev-graphql endpoint and figure it out.
+  //TODO UNJANK THIS SHIT
+  for (const gang of internalGangsData?.data?.internalGroups) {
+    console.log(gang.name);
+    if (gang.name.toLowerCase() === ksgGangName.toLowerCase()) {
+      internalGangId = gang.id;
+    }
+  }
+
+  const response = await fetch(env.KSG_NETT_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${session?.user.ksgNettToken ?? ""}`,
+    },
+    body: JSON.stringify({
+      query: KSG_NETT_HOVMESTER_QUERY,
+      variables: {
+        id: internalGangId,
+      },
+    }),
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const data: KSGInternalGroupResponse = await response.json();
+  const funkeGjenger = {
+    "Lyche Bar": "Hovmester",
+    Styret: true,
+  };
+  for (const group of data?.data?.internalGroup?.membershipData) {
+    console.log(group.internalGroupPositionName);
+    if (
+      group.internalGroupPositionName ==
+        funkeGjenger[ksgGangName as keyof typeof funkeGjenger] ||
+      funkeGjenger[ksgGangName as keyof typeof funkeGjenger] === true
+    ) {
+      for (const member of group.users) {
+        await prisma.user
+          .upsert({
+            where: {
+              email: member.email,
+            },
+            update: {
+              id: member.id,
+              name: member.fullName,
+              image: member.profileImage,
+              email: member.email,
+              organizationId: organizationId,
+            },
+            create: {
+              id: member.id,
+              name: member.fullName,
+              image: member.profileImage,
+              email: member.email,
+              role: "ORG_MEMBER",
+              organizationId: organizationId,
+            },
+          })
+          .catch((error) => {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+            });
+          });
+      }
+    }
+  }
+
+  return {
+    ok: true,
+  };
 };

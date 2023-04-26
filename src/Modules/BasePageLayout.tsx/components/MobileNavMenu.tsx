@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useAdmin } from "../../../utils/admin/useAdmin";
 import { api } from "../../../utils/api";
 
 interface WrapperProps {
@@ -86,6 +87,7 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
   const [routes, setRoutes] = useState<Route[]>([]);
   const [bottomRoutes, setBottomRoutes] = useState<Route[]>([]);
   const router = useRouter();
+  const isAdmin = useAdmin();
   const { data: me } = api.users.me.useQuery();
 
   function handleLogout() {
@@ -140,11 +142,20 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
         },
       ];
       setRoutes([...routes]);
+
+      const adminRoutes = [
+        {
+          name: "Gjeng Instillinger",
+          path: `/${orgId}/manage-organization`,
+        },
+      ];
+
       setBottomRoutes([
         {
           name: "Min Bruker",
           path: `/${orgId}/my-account`,
         },
+        ...(isAdmin ? adminRoutes : []),
       ]);
     } else {
       setRoutes([]);
