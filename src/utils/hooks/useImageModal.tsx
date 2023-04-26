@@ -1,5 +1,5 @@
 import { CldImage } from "next-cloudinary";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useModal } from "react-hooks-use-modal";
 import styled from "styled-components";
 
@@ -11,7 +11,7 @@ const Image = styled(CldImage)`
   object-fit: contain;
 `;
 
-const Close = styled.div`
+const Close = styled.button`
   font-size: 2.5rem;
   position: fixed;
   display: flex;
@@ -37,26 +37,32 @@ type ImageModalReturn = [
   boolean
 ];
 export const useImageModal = (): ImageModalReturn => {
-  const [Modal, open, close, isOpen] = useModal("root", {
-    preventScroll: true,
-    focusTrapOptions: {
-      clickOutsideDeactivates: true,
-    },
-  });
+  const [Modal, open, close, isOpen] = useModal("image-modal", {});
   const [image, setImage] = useState("");
 
-  function openModal(image: string) {
-    if (!image || image === "") return;
-    setImage(image);
-    open();
-  }
+  const openModal = useCallback(
+    (image: string) => {
+      if (!image || image === "") return;
+      setImage(image);
+      open();
+    },
+    [open, setImage]
+  );
+
+  const closeModal = useCallback(() => {
+    close();
+  }, [close]);
 
   const ImageModal: React.FC = () => {
     return (
       <Modal>
         <Wrapper>
           <Image src={image} alt="" width={700} height={700} />
-          <Close onClick={close} tabIndex={0}>
+          <Close
+            onClick={() => {
+              close();
+            }}
+          >
             X
           </Close>
         </Wrapper>
@@ -64,5 +70,5 @@ export const useImageModal = (): ImageModalReturn => {
     );
   };
 
-  return [ImageModal, openModal, close, isOpen];
+  return [ImageModal, openModal, closeModal, isOpen];
 };

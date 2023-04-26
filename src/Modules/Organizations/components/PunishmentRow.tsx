@@ -116,8 +116,6 @@ interface PunishmentRowProps {
   deletePunishment: () => void;
   approvePunishment: () => void;
   openProof: (image: string) => void;
-  closeProof: () => void;
-  proofOpen: boolean;
 }
 
 const PunishmentRow: React.FC<PunishmentRowProps> = ({

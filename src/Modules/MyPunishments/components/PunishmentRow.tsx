@@ -100,10 +100,13 @@ interface PunishmentRowProps {
     createdBy: User;
     reason: PunishmentReason;
   };
+  openImage: (image: string) => void;
 }
-const PunishmentRow: React.FC<PunishmentRowProps> = ({ punishment }) => {
+const PunishmentRow: React.FC<PunishmentRowProps> = ({
+  punishment,
+  openImage,
+}) => {
   const [open, setOpen] = useState(false);
-  const [ImageModal, openImage] = useImageModal();
 
   function handleOnClick() {
     setOpen(!open);
@@ -112,8 +115,6 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({ punishment }) => {
   if (open) {
     return (
       <OpenWrapper onClick={!open ? handleOnClick : () => null} open={open}>
-        <ImageModal />
-
         <LineWrapper>
           <div>{punishment.reason.name}</div>
           <div>Antall: {punishment.quantity}</div>
@@ -127,7 +128,7 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({ punishment }) => {
           {punishment.proof ? (
             <FooterButton
               onClick={() => {
-                openImage(punishment.proof ?? "");
+                openImage(punishment.proof!);
               }}
             >
               Se Bevis

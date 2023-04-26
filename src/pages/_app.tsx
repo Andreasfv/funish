@@ -31,6 +31,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
         )}
         {/* Root is for modal */}
         <div id="root" />
+        <div id="image-modal" />
         <ToastContainer />
       </ThemeProvider>
     </SessionProvider>

@@ -46,14 +46,13 @@ const UserPunishments: React.FC<UserPunishmentsProps> = () => {
   const isAdmin = useAdmin();
   const router = useRouter();
   const mobile = useMediaQuery(theme.media.largeMobile);
+  const [ImageModal, openImage] = useImageModal();
   const [Modal, open, close, isOpen] = useModal("root", {
     preventScroll: true,
     focusTrapOptions: {
       clickOutsideDeactivates: true,
     },
   });
-
-  const [ImageModal, openImage, closeImage, imageIsOpen] = useImageModal();
 
   const [punishmentRows, setPunishmentRows] = useState<JSX.Element[]>([]);
 
@@ -147,22 +146,13 @@ const UserPunishments: React.FC<UserPunishmentsProps> = () => {
               approvePunishment={approvePunishment(punishment.id)}
               deletePunishment={deletePunishment(punishment.id)}
               openProof={openImage}
-              closeProof={closeImage}
-              proofOpen={imageIsOpen}
             />
           );
         });
       })
       .flat();
     setPunishmentRows(punishmentRows);
-  }, [
-    approvePunishment,
-    closeImage,
-    data,
-    deletePunishment,
-    imageIsOpen,
-    openImage,
-  ]);
+  }, [approvePunishment, data, deletePunishment, openImage]);
 
   function doFetchNextPage() {
     console.log("fetchin!");
