@@ -7,9 +7,9 @@ import styled from "styled-components";
 import { z } from "zod";
 import FormInput from "../../../components/input/formInput";
 import { api } from "../../../utils/api";
-import FormField from "../components/FormField";
-import PunishmentReasonRow from "../components/PunishmentReasonRow";
-import SubmitButton from "../components/SubmitButton";
+import FormField from "./FormField";
+import PunishmentReasonRow from "./PunishmentReasonRow";
+import SubmitButton from "./SubmitButton";
 
 const ContentWrapper = styled.div`
   display: flex;

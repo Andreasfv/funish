@@ -10,8 +10,8 @@ import FormInput from "../../../components/input/formInput";
 import FormNumberInput from "../../../components/input/formNumberInput";
 import FormSelect from "../../../components/input/formSelect";
 import { api } from "../../../utils/api";
-import FormField from "../components/FormField";
-import SubmitButton from "../components/SubmitButton";
+import FormField from "./FormField";
+import SubmitButton from "./SubmitButton";
 const Wrapper = styled.div`
   display: flex;
   width: 100%;

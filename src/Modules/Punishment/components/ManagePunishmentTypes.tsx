@@ -8,9 +8,9 @@ import { z } from "zod";
 import FormInput from "../../../components/input/formInput";
 import FormNumberInput from "../../../components/input/formNumberInput";
 import { api } from "../../../utils/api";
-import FormField from "../components/FormField";
-import PunishmentTypeRow from "../components/PunishmentTypeRow";
-import SubmitButton from "../components/SubmitButton";
+import FormField from "./FormField";
+import PunishmentTypeRow from "./PunishmentTypeRow";
+import SubmitButton from "./SubmitButton";
 
 const ContentWrapper = styled.div`
   display: flex;
