@@ -1,7 +1,10 @@
 import type { Punishment, PunishmentReason, User } from "@prisma/client";
+import { CldImage } from "next-cloudinary";
 import Image from "next/image";
 import { useState } from "react";
 import styled from "styled-components";
+import css from "styled-jsx/css";
+import { useImageModal } from "../../../utils/hooks/useImageModal";
 
 const Wrapper = styled.div`
   display: flex;
@@ -29,23 +32,41 @@ const Wrapper = styled.div`
   }
 `;
 
-const OpenWrapper = styled.div`
+interface OpenWrapperProps {
+  open: boolean;
+}
+const OpenWrapper = styled.div<OpenWrapperProps>`
   background-color: ${(props) => props.theme.colors.green};
   display: flex;
   flex-direction: column;
   width: 100%;
   padding: 0.3rem;
   border-radius: 0.3rem;
-  :hover {
-    background-color: ${(props) => props.theme.colors.darkGreen};
-    cursor: pointer;
-  }
+  gap: 0.3rem;
+  ${(props) =>
+    !props.open &&
+    `
+      :hover {
+        background-color: ${props.theme.colors.darkGreen};
+        cursor: pointer;
+      }
+    `}
 `;
 
 const LineWrapper = styled.div`
   display: flex;
   flex-direction: row
   width: 100%;
+  div {
+    flex: 1;
+  }
+`;
+
+const FooterWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 0.3rem;
   div {
     flex: 1;
   }
@@ -66,6 +87,16 @@ const UserImage = styled(Image)`
   height: 2.5rem;
 `;
 
+const FooterButton = styled.button`
+  background-color: ${(props) => props.theme.colors.lightDarkGreen};
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.3rem;
+  border: 1px solid ${(props) => props.theme.colors.darkGreen};
+  :hover {
+    background-color: ${(props) => props.theme.colors.darkGreen};
+  }
+`;
+
 interface PunishmentRowProps {
   punishment: Punishment & {
     createdBy: User;
@@ -74,6 +105,7 @@ interface PunishmentRowProps {
 }
 const PunishmentRow: React.FC<PunishmentRowProps> = ({ punishment }) => {
   const [open, setOpen] = useState(false);
+  const [ImageModal, openImage, closeImage, imageOpen] = useImageModal();
 
   function handleOnClick() {
     setOpen(!open);
@@ -81,16 +113,31 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({ punishment }) => {
 
   if (open) {
     return (
-      <OpenWrapper onClick={handleOnClick}>
+      <OpenWrapper onClick={!open ? handleOnClick : () => null} open={open}>
+        <ImageModal />
+
         <LineWrapper>
           <div>{punishment.reason.name}</div>
           <div>Antall: {punishment.quantity}</div>
           <div>Fra: {punishment.createdBy.name}</div>
-          <div></div>
         </LineWrapper>
         <TextWrapper>
           <div>{punishment.description}</div>
         </TextWrapper>
+        <FooterWrapper>
+          <FooterButton onClick={handleOnClick}>Lukk</FooterButton>
+          {punishment.proof ? (
+            <FooterButton
+              onClick={() => {
+                openImage(punishment.proof ?? "");
+              }}
+            >
+              Se Bevis
+            </FooterButton>
+          ) : (
+            <span>Bevis ikke vedlagt</span>
+          )}
+        </FooterWrapper>
       </OpenWrapper>
     );
   }

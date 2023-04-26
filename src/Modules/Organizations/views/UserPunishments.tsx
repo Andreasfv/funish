@@ -11,6 +11,7 @@ import { useModal } from "react-hooks-use-modal";
 import styled from "styled-components";
 import { useAdmin } from "../../../utils/admin/useAdmin";
 import { api } from "../../../utils/api";
+import { useImageModal } from "../../../utils/hooks/useImageModal";
 import { useMediaQuery } from "../../../utils/media/useMedia";
 import theme from "../../../utils/theme";
 import { BasePageLayout } from "../../BasePageLayout.tsx/view/BasePageLayout";
@@ -51,6 +52,9 @@ const UserPunishments: React.FC<UserPunishmentsProps> = () => {
       clickOutsideDeactivates: true,
     },
   });
+
+  const [ImageModal, openImage, closeImage, imageIsOpen] = useImageModal();
+
   const [punishmentRows, setPunishmentRows] = useState<JSX.Element[]>([]);
 
   const { userId, organizationId } = router.query;
@@ -142,6 +146,9 @@ const UserPunishments: React.FC<UserPunishmentsProps> = () => {
               punishment={punishment}
               approvePunishment={approvePunishment(punishment.id)}
               deletePunishment={deletePunishment(punishment.id)}
+              openProof={openImage}
+              closeProof={closeImage}
+              proofOpen={imageIsOpen}
             />
           );
         });
@@ -181,6 +188,7 @@ const UserPunishments: React.FC<UserPunishmentsProps> = () => {
   return (
     <BasePageLayout>
       <Wrapper>
+        <ImageModal />
         <>
           <ActionsContentWrapper>
             <FormWrapper>

@@ -20,6 +20,10 @@ export const serverSchema = z.object({
     process.env.VERCEL ? z.string() : z.string().url()
   ),
 
+  CLOUDINARY_URL: z.string(),
+  CLOUDINARY_API_KEY: z.string(),
+  CLOUDINARY_API_SECRET: z.string(),
+
   JWT_SECRET: z.string(),
   KSG_NETT_API_URL: z.string().url(),
   DISCORD_CLIENT_ID: z.string(),
@@ -50,6 +54,10 @@ export const serverEnv = {
   AUTH0_DOMAIN: process.env.AUTH0_DOMAIN,
   JWT_SECRET: process.env.JWT_SECRET,
 
+  CLOUDINARY_URL: process.env.CLOUDINARY_URL,
+  CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
+
   KSG_NETT_API_URL: process.env.KSG_NETT_API_URL,
 };
 
@@ -59,6 +67,7 @@ export const serverEnv = {
  * To expose them to the client, prefix them with `NEXT_PUBLIC_`.
  */
 export const clientSchema = z.object({
+  NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: z.string(),
   // NEXT_PUBLIC_CLIENTVAR: z.string(),
 });
 
@@ -70,4 +79,6 @@ export const clientSchema = z.object({
  */
 export const clientEnv = {
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
+  NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME:
+    process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
 };
