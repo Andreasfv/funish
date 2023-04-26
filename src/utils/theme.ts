@@ -23,7 +23,9 @@ const theme = {
     red: "#880d1e",
 
     success: "#41644A",
+    lightSuccess: "#DEF5E5",
     error: "#E74646",
+    lightError: "#FA9884",
     loading: "#B0DAFF",
     info: "#393646",
   },

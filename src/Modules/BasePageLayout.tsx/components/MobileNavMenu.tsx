@@ -1,6 +1,5 @@
 import { signOut } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useAdmin } from "../../../utils/admin/useAdmin";
@@ -86,7 +85,6 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
   const [opened, setOpened] = useState(false);
   const [routes, setRoutes] = useState<Route[]>([]);
   const [bottomRoutes, setBottomRoutes] = useState<Route[]>([]);
-  const router = useRouter();
   const isAdmin = useAdmin();
   const { data: me } = api.users.me.useQuery();
 
@@ -151,16 +149,16 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
       ];
 
       setBottomRoutes([
+        ...(isAdmin ? adminRoutes : []),
         {
           name: "Min Bruker",
           path: `/${orgId}/my-account`,
         },
-        ...(isAdmin ? adminRoutes : []),
       ]);
     } else {
       setRoutes([]);
     }
-  }, [me]);
+  }, [me, isAdmin]);
 
   const links = routes.map((route, index) => (
     <MenuLink key={index} href={route.path}>

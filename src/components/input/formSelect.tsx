@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -45,6 +44,8 @@ const DropDownContainer = styled.div`
 const DropDownListContainer = styled.ul`
   position: absolute;
   width: 100%;
+  max-height: 250px;
+  overflow-y: auto;
   padding: 0;
   margin: 0;
   padding-bottom: 0.5rem;
@@ -92,7 +93,6 @@ const FormSelect: React.FC<FormSelectProps> = ({
   handleChange,
   handleTextChange,
 }) => {
-  const { t } = useTranslation();
   const [filteredOptions, setFilteredOptions] = useState<Option[]>(options); // [
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);

@@ -20,21 +20,6 @@ const ContentWrapper = styled.div`
   width: 100%;
 `;
 
-const TableHeader = styled.div`
-  display: flex;
-  width: 100%;
-  height: 3rem;
-  background-color: ${(props) => props.theme.colors.lightDarkGreen};
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-  div {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    font-weight: 600;
-  }
-`;
-
 const AllOrgUsersPunishments: React.FC = () => {
   const session = useSession();
   const router = useRouter();
@@ -73,14 +58,7 @@ const AllOrgUsersPunishments: React.FC = () => {
   return (
     <BasePageLayout>
       <Wrapper>
-        <ContentWrapper>
-          <TableHeader>
-            <div>Username</div>
-            <div>Approved</div>
-            <div>Unapproved</div>
-          </TableHeader>
-          {userCards}
-        </ContentWrapper>
+        <ContentWrapper>{userCards}</ContentWrapper>
       </Wrapper>
     </BasePageLayout>
   );

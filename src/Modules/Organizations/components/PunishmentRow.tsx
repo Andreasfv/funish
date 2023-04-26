@@ -18,20 +18,20 @@ const Wrapper = styled.div<WrapperProps>`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 2rem;
   background-color: ${(props) => props.theme.colors.green};
   border-radius: 0.5rem;
-  div {
+  padding: 1rem;
+  gap: 0.5rem;
+
+  & > div > div {
     flex: 1 2;
     display: flex;
+    justify-content: flex-start;
     align-items: center;
+    justify-content
     height: 100%;
     white-space: nowrap;
     text-overflow: ellipsis;
-  }
-
-  @media ${theme.media.largeMobile} {
-    height: 12rem;
   }
 `;
 const LineWrapper = styled.div`
@@ -39,7 +39,6 @@ const LineWrapper = styled.div`
   width: 100%;
   height: 100%;
   min-height: 24px;
-  padding: 0.5rem;
   flex: 1;
 `;
 const Button = styled.button`
@@ -85,6 +84,17 @@ const ButtonWrapper = styled.div`
   }
 `;
 
+const TypeWrapper = styled.div<{ approved: boolean }>`
+  display: flex;
+  padding: 0 0.5rem;
+  width: auto;
+  background-color: ${(props) =>
+    props.approved
+      ? props.theme.colors.lightSuccess
+      : props.theme.colors.lightError};
+  border-radius: 1rem;
+`;
+
 interface PunishmentRowProps {
   punishment: Punishment & {
     type: PunishmentType;
@@ -114,7 +124,11 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({
     return (
       <Wrapper onClick={openRow} open={open}>
         <LineWrapper>
-          <div>{punishment.type.name}</div>
+          <div>
+            <TypeWrapper approved={punishment.approved ? true : false}>
+              {punishment.type.name} x {punishment.quantity}
+            </TypeWrapper>
+          </div>
           <div>{punishment.reason.name}</div>
           {isAdmin && (
             <ButtonWrapper>
@@ -144,7 +158,12 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({
   return (
     <Wrapper onClick={openRow} open={open}>
       <LineWrapper>
-        <div>{punishment.type.name}</div>
+        <div>
+          <TypeWrapper approved={punishment.approved ? true : false}>
+            {punishment.type.name} x {punishment.quantity}
+          </TypeWrapper>
+        </div>
+
         {!mobile && <div>{punishment.reason.name}</div>}
         <div>{punishment.createdBy.name}</div>
 
@@ -168,8 +187,6 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({
         <LineWrapper>
           <div>Reason: {punishment.reason.name}</div>
           <div>Quantity: {punishment.quantity}</div>
-          <div></div>
-          <div></div>
         </LineWrapper>
       )}
     </Wrapper>

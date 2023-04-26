@@ -1,20 +1,16 @@
-import type {
-  Punishment,
-  PunishmentReason,
-  PunishmentType,
-  User,
-} from "@prisma/client";
+import type { PunishmentReason, PunishmentType, User } from "@prisma/client";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { api } from "../../../utils/api";
 
 const Wrapper = styled.div`
   display: flex;
   width: 100%;
-  height: 2rem;
+  height: 2.5rem;
   background-color: ${(props) => props.theme.colors.lightGreen};
   padding: 0.5rem;
   border-radius: 0.5rem;
+  align-items: center;
   div {
     flex: 1;
     display: flex;
@@ -30,15 +26,22 @@ const Wrapper = styled.div`
 
   @media ${(props) => props.theme.media.largeMobile} {
     height: 3rem;
-    & > :first-child {
+    & > :nth-child(2) {
       flex: 2;
     }
   }
 `;
 
+const UserImage = styled(Image)`
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  margin-right: 5px;
+`;
 interface UserPunishmentsRowProps {
   user: {
     id: string;
+    image: string | null;
     receivedPunishments: {
       user: User;
       id: string;
@@ -74,6 +77,13 @@ const UserPunishmentsRow: React.FC<UserPunishmentsRowProps> = ({
 
   return (
     <Wrapper onClick={onClick}>
+      <UserImage
+        width={16}
+        height={16}
+        src={user.image ?? ""}
+        alt=":)"
+        unoptimized
+      />
       <div>{user.name}</div>
       <div>A: {approvedCount}</div>
       <div>U: {disaprovedCount}</div>
