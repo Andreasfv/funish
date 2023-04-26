@@ -1,8 +1,9 @@
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import { api } from "../../../../utils/api";
-import { BasePageLayout } from "../../../BasePageLayout.tsx/BasePageLayout";
-import PunishmentRow from "../../components/PunishmentRow";
+import { api } from "../../../utils/api";
+import { useImageModal } from "../../../utils/hooks/useImageModal";
+import { BasePageLayout } from "../../BasePageLayout.tsx/view/BasePageLayout";
+import PunishmentRow from "../components/PunishmentRow";
 
 const Wrapper = styled.div`
   display: flex;
@@ -56,8 +57,17 @@ const PunishmentTypeWrapper = styled.div`
     background-color: ${(props) => props.theme.colors.lightGreen};
     padding: 0.5rem;
     top: 0;
-    div {
-      flex: 1;
+    & > div {
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    & > div:last-child {
+      text-align: right;
+    }
+
+    @media ${(props) => props.theme.media.largeMobile} {
+      align-items: space-between;
     }
   }
 
@@ -79,6 +89,8 @@ const TitleBar = styled.div`
 
 const MyPunishments: React.FC = () => {
   const router = useRouter();
+  const [ImageModal, openImage] = useImageModal();
+
   const { organizationId } = router.query;
   const { data: me } = api.users.me.useQuery();
   const { data: punishments } =
@@ -98,7 +110,8 @@ const MyPunishments: React.FC = () => {
     <BasePageLayout>
       <Wrapper>
         <ContentWrapper>
-          <TitleBar>My Punishments</TitleBar>
+          <ImageModal />
+          <TitleBar>Mine SP</TitleBar>
           <PunishmentWrapper>
             {punishments?.data?.punishmentTypes.map((punishmentType) => (
               <PunishmentTypeWrapper key={punishmentType.id}>
@@ -111,11 +124,13 @@ const MyPunishments: React.FC = () => {
                       0
                     )}
                   </div>
-                  <div>{punishmentType.description}</div>
-                  <div></div>
                 </div>
                 {punishmentType.Punishments.map((punishment) => (
-                  <PunishmentRow key={punishment.id} punishment={punishment} />
+                  <PunishmentRow
+                    openImage={openImage}
+                    key={punishment.id}
+                    punishment={punishment}
+                  />
                 ))}
               </PunishmentTypeWrapper>
             ))}

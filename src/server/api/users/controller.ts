@@ -1,11 +1,13 @@
 import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
+import { env } from "../../../env/server.mjs";
+import type { KSGUserResponse } from "../../ksgQueries";
+import { KSG_NETT_USER_QUERY } from "../../ksgQueries";
 import type { Context } from "../trpc";
 import type {
   AddUserToOrganizationInput,
   CreateUserInput,
   GetComprehensiveUserDataInput,
-  GetUserInput,
   OrganizationUsersInput,
   UpdateUserInput,
 } from "./schema";
@@ -80,7 +82,7 @@ export const getOrganizationUsersController = async ({
   input: OrganizationUsersInput;
 }) => {
   try {
-    const { prisma } = ctx;
+    const { prisma, session } = ctx;
     const { organizationId } = input;
 
     if (!organizationId) {
@@ -89,11 +91,13 @@ export const getOrganizationUsersController = async ({
         message: "Organization not found",
       });
     }
-    if (ctx.session?.user.role !== "SUPER_ADMIN") {
-      throw new TRPCError({
-        code: "FORBIDDEN",
-        message: "You are not authorized to perform this action",
-      });
+    if (session?.user.organizationId !== organizationId) {
+      if (ctx.session?.user.role !== "SUPER_ADMIN") {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not authorized to perform this action",
+        });
+      }
     }
 
     const orderBy: Prisma.Enumerable<Prisma.UserOrderByWithRelationInput> = {
@@ -343,4 +347,44 @@ export const updateUserController = async ({
     }
     throw error;
   }
+};
+
+export const updateMyProfileFromKSG = async ({
+  ctx,
+}: {
+  ctx: Context;
+  input: string;
+}) => {
+  try {
+    const { prisma, session } = ctx;
+    const fetchKSGUser = await fetch(`${env.KSG_NETT_API_URL}`, {
+      method: "POST",
+      headers: {
+        "CONTENT-TYPE": "application/json",
+        Authorization: `Bearer ${session?.user?.ksgNettToken ?? ""}`,
+      },
+      body: JSON.stringify({
+        query: KSG_NETT_USER_QUERY,
+        variables: {
+          id: session?.user.id,
+        },
+      }),
+    });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const responseKSGUser: KSGUserResponse = await fetchKSGUser.json();
+    const {
+      data: { user },
+    } = responseKSGUser;
+
+    await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        name: user.fullName,
+        image: user.profileImage,
+      },
+    });
+    if (!user) throw new Error("User not found");
+  } catch {}
 };

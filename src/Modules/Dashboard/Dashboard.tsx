@@ -2,8 +2,8 @@ import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import { BasePageLayout } from "../../Modules/BasePageLayout.tsx/BasePageLayout";
-import OrganizationPaper from "../../Modules/Organizations/OrganizationPaper";
+import { BasePageLayout } from "../BasePageLayout.tsx/view/BasePageLayout";
+import OrganizationPaper from "../Organizations/components/OrganizationPaper";
 import PunishmentCard from "../Punishment/components/PunishmentCard";
 import { api } from "../../utils/api";
 import Link from "next/link";
@@ -20,7 +20,7 @@ const InnerWrapper = styled.div`
   display: flex;
   width: 100%;
   gap: 1rem;
-
+  padding-bottom: 1rem;
   @media ${(props) => props.theme.media.largeMobile} {
     flex-direction: column;
   }
@@ -87,10 +87,11 @@ const BigButton = styled(Link)`
 const Dashboard: NextPage = () => {
   const session = useSession();
   const router = useRouter();
+  console.log(session.data);
   const { organizationId } = router.query;
   const { data: userData, isLoading: userDataLoading } =
     api.users.getComprehensiveUserData.useQuery({
-      userId: session?.data?.user?.id ?? "",
+      userId: session.status == "authenticated" ? session?.data?.user?.id : "",
       where: {
         approved: true,
         redeemed: false,
@@ -111,7 +112,7 @@ const Dashboard: NextPage = () => {
               <ContentWrapper>
                 <CardsWrapper>
                   <BigButton href={`/${organization.id}/punishment/punish`}>
-                    PUNISH!!
+                    MELD SP!!
                   </BigButton>
                 </CardsWrapper>
                 <CardsWrapper>

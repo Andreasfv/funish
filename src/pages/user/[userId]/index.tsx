@@ -1,4 +1,4 @@
-import { BasePageLayout } from "../../../Modules/BasePageLayout.tsx/BasePageLayout";
+import { BasePageLayout } from "../../../Modules/BasePageLayout.tsx/view/BasePageLayout";
 
 const UserIndex: React.FC = () => {
   return <BasePageLayout>asd</BasePageLayout>;

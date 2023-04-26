@@ -1,11 +1,11 @@
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import { useAdmin } from "../../../../utils/admin/useAdmin";
-import { api } from "../../../../utils/api";
-import { BasePageLayout } from "../../../BasePageLayout.tsx/BasePageLayout";
-import CreatePunishment from "../CreatePunishment";
-import ManagePunishmentReasons from "../ManagePunishmenReasons";
-import ManagePunishmentTypes from "../ManagePunishmentTypes";
+import { useAdmin } from "../../../utils/admin/useAdmin";
+import { api } from "../../../utils/api";
+import { BasePageLayout } from "../../BasePageLayout.tsx/view/BasePageLayout";
+import CreatePunishment from "./subviews/CreatePunishment";
+import ManagePunishmentReasons from "./subviews/ManagePunishmenReasons";
+import ManagePunishmentTypes from "./subviews/ManagePunishmentTypes";
 
 const Wrapper = styled.div`
   display: flex;
@@ -14,6 +14,7 @@ const Wrapper = styled.div`
   justify-content: center;
   flex-direction: column;
 `;
+
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -103,9 +104,9 @@ const PunishmentDashboard: React.FC = () => {
     );
   console.log(organization);
   const switchItems = [
-    { label: "Punish", href: "punish" },
-    { label: "Types", href: "manage_punishment_types" },
-    { label: "Reasons", href: "manage_punishment_reasons" },
+    { label: "Meld", href: "punish" },
+    { label: "Typer", href: "manage_punishment_types" },
+    { label: "Grunnlag", href: "manage_punishment_reasons" },
   ];
 
   const SwitchItems = isAdmin ? (

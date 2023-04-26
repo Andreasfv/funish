@@ -1,17 +1,15 @@
-import { type AppType } from "next/app";
 import { type Session } from "next-auth";
-import { SessionProvider, useSession } from "next-auth/react";
-import { ThemeProvider } from "styled-components";
-import theme from "../utils/theme";
-import "../i18";
-import { api } from "../utils/api";
-import "../styles/globals.css";
+import { SessionProvider } from "next-auth/react";
+import { type AppType } from "next/app";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { partialUtil } from "zod/lib/helpers/partialUtil";
+import { ThemeProvider } from "styled-components";
 import RouteGuard from "../components/RouteGuard";
+import "../i18";
+import "../styles/globals.css";
+import { api } from "../utils/api";
+import theme from "../utils/theme";
 
 const publicPages = ["/", "/[[...index]]"];
 
@@ -33,6 +31,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
         )}
         {/* Root is for modal */}
         <div id="root" />
+        <div id="image-modal" />
         <ToastContainer />
       </ThemeProvider>
     </SessionProvider>

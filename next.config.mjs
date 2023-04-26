@@ -21,5 +21,15 @@ const config = {
     defaultLocale: "en",
   },
   compiler: { styledComponents: true },
+  images: {
+    domains: ["ksg-nett.samfundet.no", "lh3.googleusercontent.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "ksg-nett.samfundet.no",
+        pathname: "/media/*",
+      },
+    ],
+  },
 };
 export default config;

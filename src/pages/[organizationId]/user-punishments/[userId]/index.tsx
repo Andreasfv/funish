@@ -1,3 +1,3 @@
-import UserPunishments from "../../../../Modules/Organizations/views/pages/UserPunishments";
+import UserPunishments from "../../../../Modules/Organizations/views/UserPunishments";
 
 export default UserPunishments;

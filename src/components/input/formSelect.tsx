@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -45,6 +44,8 @@ const DropDownContainer = styled.div`
 const DropDownListContainer = styled.ul`
   position: absolute;
   width: 100%;
+  max-height: 250px;
+  overflow-y: auto;
   padding: 0;
   margin: 0;
   padding-bottom: 0.5rem;
@@ -81,7 +82,7 @@ interface FormSelectProps {
   options: Option[];
   placeholder?: string;
   handleChange: (value: string) => void;
-  text: string
+  text: string;
   handleTextChange: (value: string) => void;
 }
 
@@ -90,24 +91,23 @@ const FormSelect: React.FC<FormSelectProps> = ({
   placeholder,
   text,
   handleChange,
-  handleTextChange
+  handleTextChange,
 }) => {
-  const { t } = useTranslation();
   const [filteredOptions, setFilteredOptions] = useState<Option[]>(options); // [
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const toggling = () => setIsOpen(!isOpen);
 
   useEffect(() => {
-    if(text !== "") return
+    if (text !== "") return;
     setFilteredOptions(options);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [options])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [options]);
 
   const handleSearch = (e: React.FormEvent<HTMLInputElement>) => {
     //We use a const so that the update is immediatedly. setState can be slow.
-    handleTextChange(e.currentTarget.value)
-    console.log(e.currentTarget.value)
+    handleTextChange(e.currentTarget.value);
+    console.log(e.currentTarget.value);
     const filteredOptions = options.filter((option) => {
       return option.label
         .toLowerCase()
@@ -121,7 +121,7 @@ const FormSelect: React.FC<FormSelectProps> = ({
     setFilteredOptions(options);
     setIsOpen(false);
     handleChange(value.value);
-    handleTextChange(value.label)
+    handleTextChange(value.label);
   };
 
   useEffect(() => {

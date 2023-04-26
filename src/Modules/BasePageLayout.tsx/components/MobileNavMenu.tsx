@@ -1,8 +1,8 @@
 import { signOut } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useAdmin } from "../../../utils/admin/useAdmin";
 import { api } from "../../../utils/api";
 
 interface WrapperProps {
@@ -85,7 +85,7 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
   const [opened, setOpened] = useState(false);
   const [routes, setRoutes] = useState<Route[]>([]);
   const [bottomRoutes, setBottomRoutes] = useState<Route[]>([]);
-  const router = useRouter();
+  const isAdmin = useAdmin();
   const { data: me } = api.users.me.useQuery();
 
   function handleLogout() {
@@ -127,29 +127,38 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
           path: `/${orgId}/dashboard`,
         },
         {
-          name: "Punish",
+          name: "Meld SP!",
           path: `/${orgId}/punishment/punish`,
         },
         {
-          name: "My Punishments",
+          name: "Mine SP",
           path: `/${orgId}/my-punishments`,
         },
         {
-          name: "Punishments Overview",
+          name: "SP Oversikt",
           path: `/${orgId}/all-users-punishments`,
         },
       ];
       setRoutes([...routes]);
-      setBottomRoutes([
+
+      const adminRoutes = [
         {
-          name: "My Account",
+          name: "Gjeng Instillinger",
+          path: `/${orgId}/manage-organization`,
+        },
+      ];
+
+      setBottomRoutes([
+        ...(isAdmin ? adminRoutes : []),
+        {
+          name: "Min Bruker",
           path: `/${orgId}/my-account`,
         },
       ]);
     } else {
       setRoutes([]);
     }
-  }, [me]);
+  }, [me, isAdmin]);
 
   const links = routes.map((route, index) => (
     <MenuLink key={index} href={route.path}>

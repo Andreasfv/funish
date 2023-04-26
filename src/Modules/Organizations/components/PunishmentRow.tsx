@@ -1,7 +1,7 @@
 import type {
   Punishment,
-  PunishmentType,
   PunishmentReason,
+  PunishmentType,
   User,
 } from "@prisma/client";
 import { useState } from "react";
@@ -18,20 +18,20 @@ const Wrapper = styled.div<WrapperProps>`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 2rem;
   background-color: ${(props) => props.theme.colors.green};
   border-radius: 0.5rem;
-  div {
+  padding: 1rem;
+  gap: 0.5rem;
+
+  & > div > div {
     flex: 1 2;
     display: flex;
+    justify-content: flex-start;
     align-items: center;
+    justify-content
     height: 100%;
     white-space: nowrap;
     text-overflow: ellipsis;
-  }
-
-  @media ${theme.media.largeMobile} {
-    height: 12rem;
   }
 `;
 const LineWrapper = styled.div`
@@ -39,7 +39,6 @@ const LineWrapper = styled.div`
   width: 100%;
   height: 100%;
   min-height: 24px;
-  padding: 0.5rem;
   flex: 1;
 `;
 const Button = styled.button`
@@ -75,6 +74,17 @@ const DeleteButton = styled(Button)`
   }
 `;
 
+const ProofButton = styled(Button)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 1rem;
+  background-color: ${(props) => props.theme.colors.lightDarkGreen};
+  :hover {
+    background-color: ${(props) => props.theme.colors.darkGreen};
+  }
+`;
+
 const ButtonWrapper = styled.div`
   position: relative;
   flex: 1;
@@ -83,6 +93,17 @@ const ButtonWrapper = styled.div`
     min-width: 85px;
     max-width: 90px;
   }
+`;
+
+const TypeWrapper = styled.div<{ approved: boolean }>`
+  display: flex;
+  padding: 0 0.5rem;
+  width: auto;
+  background-color: ${(props) =>
+    props.approved
+      ? props.theme.colors.lightSuccess
+      : props.theme.colors.lightError};
+  border-radius: 1rem;
 `;
 
 interface PunishmentRowProps {
@@ -94,19 +115,20 @@ interface PunishmentRowProps {
   };
   deletePunishment: () => void;
   approvePunishment: () => void;
+  openProof: (image: string) => void;
 }
 
 const PunishmentRow: React.FC<PunishmentRowProps> = ({
   punishment,
   deletePunishment,
   approvePunishment,
+  openProof,
 }) => {
   const isAdmin = useAdmin();
   const mobile = useMediaQuery(theme.media.largeMobile);
   const [open, setOpen] = useState(false);
 
   function openRow() {
-    if (!mobile) return;
     setOpen(!open);
   }
 
@@ -114,7 +136,11 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({
     return (
       <Wrapper onClick={openRow} open={open}>
         <LineWrapper>
-          <div>{punishment.type.name}</div>
+          <div>
+            <TypeWrapper approved={punishment.approved ? true : false}>
+              {punishment.type.name} x {punishment.quantity}
+            </TypeWrapper>
+          </div>
           <div>{punishment.reason.name}</div>
           {isAdmin && (
             <ButtonWrapper>
@@ -131,6 +157,15 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({
         </LineWrapper>
         <LineWrapper>
           <div>{punishment.description}</div>
+          {punishment.proof && punishment.proof !== "" && (
+            <ProofButton
+              onClick={() => {
+                openProof(punishment.proof ?? "");
+              }}
+            >
+              Vis Bevis
+            </ProofButton>
+          )}
           {isAdmin && (
             <ButtonWrapper>
               <DeleteButton onClick={deletePunishment}> X </DeleteButton>
@@ -144,8 +179,24 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({
   return (
     <Wrapper onClick={openRow} open={open}>
       <LineWrapper>
-        <div>{punishment.type.name}</div>
+        <div>
+          <TypeWrapper approved={punishment.approved ? true : false}>
+            {punishment.type.name} x {punishment.quantity}
+          </TypeWrapper>
+        </div>
+
         {!mobile && <div>{punishment.reason.name}</div>}
+        {punishment.proof && punishment.proof !== "" && (
+          <div>
+            <ProofButton
+              onClick={() => {
+                openProof(punishment.proof ?? "");
+              }}
+            >
+              Vis Bevis
+            </ProofButton>
+          </div>
+        )}
         <div>{punishment.createdBy.name}</div>
 
         {!mobile && (
@@ -165,12 +216,15 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({
         )}
       </LineWrapper>
       {open && (
-        <LineWrapper>
-          <div>Reason: {punishment.reason.name}</div>
-          <div>Quantity: {punishment.quantity}</div>
-          <div></div>
-          <div></div>
-        </LineWrapper>
+        <>
+          <LineWrapper>
+            <div>For: {punishment.reason.name}</div>
+            <div>Antall: {punishment.quantity}</div>
+          </LineWrapper>
+          {punishment.description && (
+            <LineWrapper>{punishment.description}</LineWrapper>
+          )}
+        </>
       )}
     </Wrapper>
   );

@@ -1,15 +1,16 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { PunishmentReason } from "@prisma/client";
+import type { PunishmentType } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import { z } from "zod";
-import FormInput from "../../../components/input/formInput";
-import { api } from "../../../utils/api";
-import FormField from "../components/FormField";
-import PunishmentReasonRow from "../components/PunishmentReasonRow";
-import SubmitButton from "../components/SubmitButton";
+import FormInput from "../../../../components/input/formInput";
+import FormNumberInput from "../../../../components/input/formNumberInput";
+import { api } from "../../../../utils/api";
+import FormField from "../../components/FormField";
+import PunishmentTypeRow from "../../components/PunishmentTypeRow";
+import SubmitButton from "../../components/SubmitButton";
 
 const ContentWrapper = styled.div`
   display: flex;
@@ -29,42 +30,44 @@ const FormWrapper = styled.div`
   height: 100%;
 `;
 
-interface ManagePunishmentReasonsProps {
-  punishmentReasons: PunishmentReason[];
+interface ManagePunishmentTypesProps {
+  punishmentTypes: PunishmentType[];
   refetch: () => void;
 }
 
 const formSchema = z.object({
   name: z.string(),
+  quantity: z.number(),
   description: z.string().optional(),
 });
 
 type formType = z.infer<typeof formSchema>;
 
-const ManagePunishmentReasons: React.FC<ManagePunishmentReasonsProps> = ({
-  punishmentReasons,
+const ManagePunishmentTypes: React.FC<ManagePunishmentTypesProps> = ({
+  punishmentTypes,
   refetch,
 }) => {
   const router = useRouter();
   const { organizationId } = router.query;
   const { mutate: createPunishmentType } =
-    api.punishmentReasons.createPunishmentReason.useMutation({
+    api.punishmentTypes.createPunishmentType.useMutation({
       onSuccess: () => {
-        toast("Punishment reason created", {
+        toast("Punishment type created", {
           type: "success",
           position: "bottom-center",
         });
+
         resetForm({
-          description: "",
           name: "",
+          quantity: 1,
+          description: "",
         });
       },
     });
-
   const {
     handleSubmit,
-    register,
     reset: resetForm,
+    register,
   } = useForm<formType>({
     defaultValues: {
       description: "",
@@ -72,11 +75,11 @@ const ManagePunishmentReasons: React.FC<ManagePunishmentReasonsProps> = ({
     resolver: zodResolver(formSchema),
   });
 
-  const rows = punishmentReasons.map((punishmentReason, index) => {
+  const rows = punishmentTypes.map((punishmentType, index) => {
     return (
-      <PunishmentReasonRow
+      <PunishmentTypeRow
         key={index}
-        punishmentReason={punishmentReason}
+        punishmentType={punishmentType}
         refetch={refetch}
       />
     );
@@ -96,6 +99,7 @@ const ManagePunishmentReasons: React.FC<ManagePunishmentReasonsProps> = ({
     const submitData = {
       ...data,
       organizationId: organizationId as string,
+      quantityToFulfill: data.quantity,
       description: data.description ?? "",
     };
     console.log("HELP?");
@@ -108,6 +112,14 @@ const ManagePunishmentReasons: React.FC<ManagePunishmentReasonsProps> = ({
         <FormField>
           <label htmlFor="name">Name</label>
           <FormInput register={register("name")} />
+        </FormField>
+        <FormField>
+          <label htmlFor="quantity">Quantity</label>
+          <FormNumberInput
+            register={register("quantity", {
+              valueAsNumber: true,
+            })}
+          />
         </FormField>
         <FormField>
           <label htmlFor="description">Description</label>
@@ -123,4 +135,4 @@ const ManagePunishmentReasons: React.FC<ManagePunishmentReasonsProps> = ({
   );
 };
 
-export default ManagePunishmentReasons;
+export default ManagePunishmentTypes;

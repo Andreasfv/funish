@@ -1,9 +1,9 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import { api } from "../../../../utils/api";
-import { BasePageLayout } from "../../../BasePageLayout.tsx/BasePageLayout";
-import UserPunishmentsRow from "../../components/UserPunishmentsRow";
+import { api } from "../../../utils/api";
+import { BasePageLayout } from "../../BasePageLayout.tsx/view/BasePageLayout";
+import UserPunishmentsRow from "../components/UserPunishmentsRow";
 
 const Wrapper = styled.div`
   display: flex;
@@ -18,21 +18,6 @@ const ContentWrapper = styled.div`
   flex-direction: column;
   gap: 0.5rem;
   width: 100%;
-`;
-
-const TableHeader = styled.div`
-  display: flex;
-  width: 100%;
-  height: 3rem;
-  background-color: ${(props) => props.theme.colors.lightDarkGreen};
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-  div {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    font-weight: 600;
-  }
 `;
 
 const AllOrgUsersPunishments: React.FC = () => {
@@ -73,14 +58,7 @@ const AllOrgUsersPunishments: React.FC = () => {
   return (
     <BasePageLayout>
       <Wrapper>
-        <ContentWrapper>
-          <TableHeader>
-            <div>Username</div>
-            <div>Approved</div>
-            <div>Unapproved</div>
-          </TableHeader>
-          {userCards}
-        </ContentWrapper>
+        <ContentWrapper>{userCards}</ContentWrapper>
       </Wrapper>
     </BasePageLayout>
   );
