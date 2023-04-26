@@ -43,6 +43,11 @@ export const populateOrganizationWithUsersFromKSGNettInput = z.object({
   ksgGangName: z.string(),
 });
 
+export const transferAdminRightsSchema = z.object({
+  organizationId: z.string(),
+  targetUserId: z.string(),
+  fromUserId: z.string(),
+});
 export type getOrganizationUsersWithPunishmentDataInput = z.infer<
   typeof getOrganizationUsersWithPunishmentDataSchema
 >;
@@ -57,4 +62,7 @@ export type SortOrganizationsInput = z.infer<typeof sortOrganization>;
 export type DeleteOrganizationInput = z.infer<typeof deleteOrganizationSchema>;
 export type PopulateOrganizationWithUsersFromKSGNettInput = z.infer<
   typeof populateOrganizationWithUsersFromKSGNettInput
+>;
+export type TransferAdminRightsInput = z.infer<
+  typeof transferAdminRightsSchema
 >;

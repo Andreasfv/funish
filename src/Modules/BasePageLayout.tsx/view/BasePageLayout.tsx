@@ -16,10 +16,9 @@ const Wrapper = styled.div`
 const ContentWrapper = styled.div`
   display: flex;
   width: 100%;
-  height: 100%;
   flex-direction: row;
   overflow: auto;
-  padding-bottom: 1rem;
+  height: 100%;
 `;
 
 interface BasePageLayoutProps {

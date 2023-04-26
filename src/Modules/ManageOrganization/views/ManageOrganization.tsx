@@ -1,10 +1,11 @@
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import { api } from "../../../utils/api";
 import { BasePageLayout } from "../../BasePageLayout.tsx/view/BasePageLayout";
-import ActionsPaper, { ActionStatus } from "../components/ActionsPaper";
+import type { ActionStatus } from "../components/ActionsPaper";
+import ActionsPaper from "../components/ActionsPaper";
 import OrganizationUsersPaper from "../components/OrganizationUsersPaper";
 
 const Wrapper = styled.div`
@@ -31,16 +32,17 @@ const ContentWrapper = styled.div`
 `;
 
 const ManageOrganization: React.FC = () => {
-  const orgUsersRef = useRef(null);
   const [getFunksStatus, setGetFunksStatus] = useState<ActionStatus>("info");
   const [getFunksInfoMessage, setGetFunksInfoMessage] = useState("");
   const router = useRouter();
   const { organizationId } = router.query;
 
-  const { data: organization, isLoading: organizationLoading } =
-    api.organizations.getOrganization.useQuery(organizationId as string, {
+  const { data: organization } = api.organizations.getOrganization.useQuery(
+    organizationId as string,
+    {
       enabled: !!organizationId,
-    });
+    }
+  );
 
   const {
     data: users,
@@ -56,7 +58,7 @@ const ManageOrganization: React.FC = () => {
     }
   );
 
-  const { mutate, isLoading, error, isSuccess, data } =
+  const { mutate, error, data } =
     api.organizations.populateOrganizationWithUsersFromKSGNett.useMutation();
 
   useEffect(() => {
@@ -72,7 +74,7 @@ const ManageOrganization: React.FC = () => {
         ksgGangName: organization?.data?.organization?.name ?? "",
       },
       {
-        onSuccess: (data) => {
+        onSuccess: () => {
           setGetFunksStatus("success");
           setGetFunksInfoMessage("Funker hentet!");
           toast("Funker hentet!", {
@@ -111,6 +113,9 @@ const ManageOrganization: React.FC = () => {
           <OrganizationUsersPaper
             users={users?.data?.users ?? []}
             isLoading={usersLoading}
+            refetch={() => {
+              void refetch;
+            }}
           />
         </ContentWrapper>
       </Wrapper>

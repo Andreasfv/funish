@@ -1,14 +1,15 @@
 import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { env } from "../../../env/server.mjs";
-import {
+import type {
   KSGInternalGangsResponse,
   KSGInternalGroupResponse,
+} from "../../ksgQueries";
+import {
   KSG_NETT_HOVMESTER_QUERY,
   KSG_NETT_INTERNAL_GANGS_QUERY,
 } from "../../ksgQueries";
 import type { Context } from "../trpc";
-import { usersRouter } from "../users/router";
 
 import type {
   CreateOrganizationInput,
@@ -17,6 +18,7 @@ import type {
   getOrganizationUsersWithPunishmentDataInput,
   getOrganizationWithPunishmentDataInput,
   PopulateOrganizationWithUsersFromKSGNettInput,
+  TransferAdminRightsInput,
 } from "./schema";
 
 export const createOrganizationController = async ({
@@ -329,6 +331,7 @@ export const getOrganizationUsersWithPunishmentDataController = async ({
           select: {
             id: true,
             name: true,
+            image: true,
             receivedPunishments: {
               where: {
                 approved: input.approved,
@@ -441,7 +444,7 @@ export const populateOrganizationWithUsersFromKSGNettController = async ({
               organizationId: organizationId,
             },
           })
-          .catch((error) => {
+          .catch(() => {
             throw new TRPCError({
               code: "INTERNAL_SERVER_ERROR",
             });
@@ -449,6 +452,75 @@ export const populateOrganizationWithUsersFromKSGNettController = async ({
       }
     }
   }
+
+  return {
+    ok: true,
+  };
+};
+
+export const transferAdminRightsController = async ({
+  ctx,
+  input,
+}: {
+  ctx: Context;
+  input: TransferAdminRightsInput;
+}) => {
+  const { prisma, session } = ctx;
+  const { organizationId, targetUserId, fromUserId } = input;
+  if (
+    session?.user?.role !== "ORG_ADMIN" &&
+    session?.user?.role !== "SUPER_ADMIN"
+  ) {
+    if (session?.user?.organizationId !== organizationId) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Not authorized",
+      });
+    }
+  }
+
+  if (
+    session?.user?.id !== fromUserId &&
+    session?.user?.role !== "SUPER_ADMIN"
+  ) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Not authorized",
+    });
+  }
+
+  if (session?.user?.role === "SUPER_ADMIN") {
+    await prisma.user.update({
+      where: {
+        id: targetUserId,
+      },
+      data: {
+        role: "ORG_ADMIN",
+      },
+    });
+
+    return {
+      ok: true,
+    };
+  }
+
+  await prisma.user.update({
+    where: {
+      id: fromUserId,
+    },
+    data: {
+      role: "ORG_MEMBER",
+    },
+  });
+
+  await prisma.user.update({
+    where: {
+      id: targetUserId,
+    },
+    data: {
+      role: "ORG_ADMIN",
+    },
+  });
 
   return {
     ok: true,

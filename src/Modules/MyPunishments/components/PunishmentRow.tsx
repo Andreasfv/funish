@@ -13,9 +13,11 @@ const Wrapper = styled.div`
   background-color: ${(props) => props.theme.colors.green};
   flex-wrap: wrap;
   overflow: wrap;
-  div {
-    flex: 1 1 160px;
+  & > div:first-child {
     min-width: 135px;
+  }
+  div {
+    flex: 1;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
