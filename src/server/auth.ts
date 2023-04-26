@@ -2,8 +2,7 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import type { Organization, Role } from "@prisma/client";
 import type { GetServerSidePropsContext } from "next";
-import type { Session, User } from "next-auth";
-import jwt, { JWTEncodeParams } from "next-auth/jwt";
+import type { User } from "next-auth";
 import {
   getServerSession,
   type DefaultSession,
@@ -12,11 +11,8 @@ import {
 import CredentialsProvider from "next-auth/providers/credentials";
 import { env } from "../env/server.mjs";
 import { prisma } from "./db";
-import {
-  KSGUserResponse,
-  KSG_NETT_LOGIN_QUERY,
-  KSG_NETT_USER_QUERY,
-} from "./ksgQueries";
+import type { KSGUserResponse } from "./ksgQueries";
+import { KSG_NETT_LOGIN_QUERY, KSG_NETT_USER_QUERY } from "./ksgQueries";
 
 /**
  * Module augmentation for `next-auth` types.
@@ -69,10 +65,7 @@ export const authOptions: NextAuthOptions = {
       }
       return Promise.resolve(token);
     },
-    signIn({ user, account, profile, email, credentials }) {
-      return true;
-    },
-    session({ session, token, user }) {
+    session({ session, token }) {
       if (token) {
         session.user.id = token.id as string;
         session.user.email = (token.email as string) ?? "";
@@ -100,7 +93,7 @@ export const authOptions: NextAuthOptions = {
         },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         if (credentials == undefined) return null;
         console.log(credentials);
         const { email, password } = credentials;
@@ -128,7 +121,6 @@ export const authOptions: NextAuthOptions = {
         if (!ok) return null;
         if (!user) return null;
         if (!token) return null;
-        let gangCreated = false;
         let gangName: string | undefined = "";
         const fetchKSGUser = await fetch(`${env.KSG_NETT_API_URL}`, {
           method: "POST",
@@ -188,7 +180,6 @@ export const authOptions: NextAuthOptions = {
                 name: gangName,
               },
             });
-            gangCreated = true;
           }
 
           let siteUser = await prisma.user.findUnique({

@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PunishmentType } from "@prisma/client";
+import type { PunishmentType } from "@prisma/client";
 import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -8,7 +8,6 @@ import { z } from "zod";
 import FormButton from "../../../components/input/formButton";
 import FormNumberInput from "../../../components/input/formNumberInput";
 import FormSelect from "../../../components/input/formSelect";
-import { useAdmin } from "../../../utils/admin/useAdmin";
 import { api } from "../../../utils/api";
 import FormField from "../../Punishment/components/FormField";
 
@@ -66,7 +65,6 @@ export const RedeemPunishmentsModal: React.FC<RedeemPunishmentsModalProps> = ({
   refetch,
   close,
 }) => {
-  const isAdmin = useAdmin();
   const { handleSubmit, setValue, register, watch } = useForm<redeemFormType>({
     resolver: zodResolver(redeemFormSchema),
   });

@@ -351,7 +351,6 @@ export const updateUserController = async ({
 
 export const updateMyProfileFromKSG = async ({
   ctx,
-  input,
 }: {
   ctx: Context;
   input: string;

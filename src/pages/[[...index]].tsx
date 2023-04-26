@@ -1,38 +1,19 @@
 import { type NextPage } from "next";
+import { signIn, useSession } from "next-auth/react";
 import Head from "next/head";
-import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
 import "../i18";
 
-import { api } from "../utils/api";
-import { useTranslation } from "react-i18next";
-import { useAdmin } from "../utils/admin/useAdmin";
-import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { Input, Label } from "../Modules/IndexPage/components/components";
 import { useKeydown } from "../utils/hooks/useKeydown";
 
 const Home: NextPage = () => {
-  const [wait, setWait] = useState(false);
-  const [orgAssignSuccessful, setOrgAssignSuccessful] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
   const session = useSession();
   console.log(session);
-  const { mutate, isLoading: meLoading } =
-    api.users.addUserToOrganization.useMutation();
-
-  const { data: organization, refetch } =
-    api.organizations.organizationExists.useQuery(
-      router.query?.organizationId as string,
-      {
-        enabled:
-          !!router.query?.organizationId &&
-          session.status == "authenticated" &&
-          !!router.query?.organizationId !== undefined,
-      }
-    );
 
   const sessionData = session.data;
 
@@ -95,7 +76,6 @@ const Home: NextPage = () => {
             />
 
             <p className="text-center text-white">
-              {!orgAssignSuccessful && "Organization login link is invalid"}
               {session.status == "authenticated" &&
                 !session.data.user.organizationId && (
                   <>
