@@ -1,10 +1,9 @@
 import type {
   Punishment,
-  PunishmentType,
   PunishmentReason,
+  PunishmentType,
   User,
 } from "@prisma/client";
-import { CldImage } from "next-cloudinary";
 import { useState } from "react";
 import styled from "styled-components";
 import { useAdmin } from "../../../utils/admin/useAdmin";
@@ -106,9 +105,6 @@ const TypeWrapper = styled.div<{ approved: boolean }>`
       : props.theme.colors.lightError};
   border-radius: 1rem;
 `;
-
-const CloudinaryLink =
-  "https://res.cloudinary.com/dvjzfxaa8/image/upload/v1682510571/sp_proof/t337uumhqepntvc4esvy.png";
 
 interface PunishmentRowProps {
   punishment: Punishment & {

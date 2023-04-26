@@ -1,9 +1,7 @@
 import type { Punishment, PunishmentReason, User } from "@prisma/client";
-import { CldImage } from "next-cloudinary";
 import Image from "next/image";
 import { useState } from "react";
 import styled from "styled-components";
-import css from "styled-jsx/css";
 import { useImageModal } from "../../../utils/hooks/useImageModal";
 
 const Wrapper = styled.div`
@@ -47,7 +45,7 @@ const OpenWrapper = styled.div<OpenWrapperProps>`
     !props.open &&
     `
       :hover {
-        background-color: ${props.theme.colors.darkGreen};
+        background-color: ${props.theme.colors.darkGreen ?? ""};
         cursor: pointer;
       }
     `}
@@ -105,7 +103,7 @@ interface PunishmentRowProps {
 }
 const PunishmentRow: React.FC<PunishmentRowProps> = ({ punishment }) => {
   const [open, setOpen] = useState(false);
-  const [ImageModal, openImage, closeImage, imageOpen] = useImageModal();
+  const [ImageModal, openImage] = useImageModal();
 
   function handleOnClick() {
     setOpen(!open);

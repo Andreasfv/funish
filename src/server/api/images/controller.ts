@@ -1,9 +1,8 @@
-import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
-import type { Context } from "../trpc";
-import { UploadImageInput } from "./schema";
-import { env } from "../../../env/server.mjs";
 import cloudinary from "cloudinary";
+import { env } from "../../../env/server.mjs";
+import type { Context } from "../trpc";
+import type { UploadImageInput } from "./schema";
 
 export const uploadImageController = async ({
   ctx,

@@ -1,10 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  CldImage,
-  CldUploadButton,
-  CldUploadWidget,
-  cloudinaryLoader,
-} from "next-cloudinary";
+import { CldImage, CldUploadWidget } from "next-cloudinary";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -15,11 +10,9 @@ import { z } from "zod";
 import FormInput from "../../../../components/input/formInput";
 import FormNumberInput from "../../../../components/input/formNumberInput";
 import FormSelect from "../../../../components/input/formSelect";
-import { env } from "../../../../env/client.mjs";
 import { api } from "../../../../utils/api";
 import FormField from "../../components/FormField";
 import SubmitButton from "../../components/SubmitButton";
-import cloudinary from "cloudinary";
 const Wrapper = styled.div`
   display: flex;
   width: 100%;
@@ -106,12 +99,6 @@ const CreatePunishment: React.FC = () => {
   });
   const { mutate: createPunishment } =
     api.punishments.createPunishment.useMutation();
-
-  const { mutate: uploadImage } = api.image.uploadImage.useMutation({
-    onSuccess: (data) => {
-      toast("image uploaded");
-    },
-  });
 
   function handleChange(formKey: keyof formType) {
     return (value: formType[typeof formKey]) => {

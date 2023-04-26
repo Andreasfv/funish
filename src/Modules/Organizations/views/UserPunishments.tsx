@@ -155,7 +155,14 @@ const UserPunishments: React.FC<UserPunishmentsProps> = () => {
       })
       .flat();
     setPunishmentRows(punishmentRows);
-  }, [approvePunishment, data, deletePunishment]);
+  }, [
+    approvePunishment,
+    closeImage,
+    data,
+    deletePunishment,
+    imageIsOpen,
+    openImage,
+  ]);
 
   function doFetchNextPage() {
     console.log("fetchin!");

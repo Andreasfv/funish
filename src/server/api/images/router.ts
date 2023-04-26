@@ -1,9 +1,4 @@
-import {
-  adminProcedure,
-  createTRPCRouter,
-  protectedProcedure,
-  superAdminProcedure,
-} from "../trpc";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { uploadImageController } from "./controller";
 import { uploadImageSchema } from "./schema";
 
