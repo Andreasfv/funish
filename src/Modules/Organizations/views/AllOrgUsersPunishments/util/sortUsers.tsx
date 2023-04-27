@@ -1,5 +1,4 @@
-import { User } from "@prisma/client";
-import { RouterOutputs } from "../../../../../utils/api";
+import type { RouterOutputs } from "../../../../../utils/api";
 
 // First dumbfuckery found, why can't I inferr the "user" type from RouterOutputs below???
 export interface InferredFuckingUser {

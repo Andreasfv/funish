@@ -40,6 +40,9 @@ const theme = {
     mobile: "only screen and (max-width: 600px)",
     largeMobile: "only screen and (max-width: 768px)",
   },
+  idk: {
+    type: "satt",
+  },
 };
 
 export default theme;

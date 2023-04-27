@@ -12,8 +12,6 @@ import styled from "styled-components";
 import { useAdmin } from "../../../../utils/admin/useAdmin";
 import { api } from "../../../../utils/api";
 import { useImageModal } from "../../../../utils/hooks/useImageModal";
-import { useMediaQuery } from "../../../../utils/media/useMedia";
-import theme from "../../../../utils/theme";
 import { BasePageLayout } from "../../../BasePageLayout.tsx/view/BasePageLayout";
 import {
   ActionsButton,
@@ -21,7 +19,6 @@ import {
   ContentWrapper,
   FormText,
   FormWrapper,
-  HeaderRow,
   Wrapper,
 } from "../../components/components";
 import PunishmentRow from "./components/PunishmentRow";
@@ -45,7 +42,6 @@ interface UserPunishmentsProps {
 const UserPunishments: React.FC<UserPunishmentsProps> = () => {
   const isAdmin = useAdmin();
   const router = useRouter();
-  const mobile = useMediaQuery(theme.media.largeMobile);
   const [ImageModal, openImage] = useImageModal();
   const [Modal, open, close, isOpen] = useModal("root", {
     preventScroll: true,

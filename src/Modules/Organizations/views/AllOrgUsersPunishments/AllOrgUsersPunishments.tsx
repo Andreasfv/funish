@@ -3,9 +3,10 @@ import { useRouter } from "next/router";
 import { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import Spinner from "../../../../components/Spiner";
-import { api, RouterInputs } from "../../../../utils/api";
+import type { RouterInputs } from "../../../../utils/api";
+import { api } from "../../../../utils/api";
 import { BasePageLayout } from "../../../BasePageLayout.tsx/view/BasePageLayout";
-import { HeaderColumnProps } from "./components/HeaderColumn";
+import type { HeaderColumnProps } from "./components/HeaderColumn";
 import HeaderRow from "./components/HeaderRow";
 import UserPunishmentsRow from "./components/UserPunishmentsRow";
 import { sortUsers } from "./util/sortUsers";
@@ -23,21 +24,6 @@ const ContentWrapper = styled.div`
   flex-direction: column;
   gap: 0.5rem;
   width: 100%;
-`;
-
-const TableHeader = styled.div`
-  display: flex;
-  width: 100%;
-  height: 3rem;
-  background-color: ${(props) => props.theme.colors.lightDarkGreen};
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-  div {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    font-weight: 600;
-  }
 `;
 
 const SpinnerWrapper = styled.div`

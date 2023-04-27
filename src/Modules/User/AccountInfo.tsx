@@ -132,12 +132,7 @@ const AccountInfo: React.FC<AccountInfoProps> = ({ user }) => {
     setEdit(!edit);
   }
 
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-    getValues,
-  } = useForm<UserFormType>({
+  const { handleSubmit, register, getValues } = useForm<UserFormType>({
     defaultValues: {
       name: user.name ?? "",
       email: user.email ?? "",
