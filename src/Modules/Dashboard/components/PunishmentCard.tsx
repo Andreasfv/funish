@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import css from "styled-jsx/css";
 
 const Card = styled.div`
   display: flex;
@@ -11,6 +12,16 @@ const Card = styled.div`
   border-radius: 0.7rem;
   padding: 1rem;
   box-shadow: ${(props) => props.theme.shadow.cardShadow};
+
+  ${(props) =>
+    props.onClick &&
+    `
+      cursor: pointer;
+      :hover {
+        border: 1px solid ${props.theme.colors.blue}
+      }
+
+    `}
 `;
 
 const NumberWrapper = styled.div`
@@ -26,25 +37,16 @@ const NumberWrapper = styled.div`
 interface PunishmentCardProps {
   punishmentType: string | undefined;
   count: number | undefined;
+  onClick?: () => void;
 }
 
 const PunishmentCard: React.FC<PunishmentCardProps> = ({
   punishmentType,
   count,
+  onClick,
 }) => {
-  //   const { data: userData, isLoading: userLoading } = api.users.getUser.useQuery(
-  //     userId ?? "",
-  //     { enabled: !!userId }
-  //   );
-  //   if (userLoading || punishmentTypeLoading || punishmentLoading) {
-  //     return (
-  //       <Card>
-  //         <Spinner />
-  //       </Card>
-  //     );
-  //   }
   return (
-    <Card>
+    <Card onClick={onClick}>
       <p>{punishmentType}</p>
       <NumberWrapper>{count}</NumberWrapper>
     </Card>

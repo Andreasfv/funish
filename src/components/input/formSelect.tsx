@@ -107,7 +107,6 @@ const FormSelect: React.FC<FormSelectProps> = ({
   const handleSearch = (e: React.FormEvent<HTMLInputElement>) => {
     //We use a const so that the update is immediatedly. setState can be slow.
     handleTextChange(e.currentTarget.value);
-    console.log(e.currentTarget.value);
     const filteredOptions = options.filter((option) => {
       return option.label
         .toLowerCase()

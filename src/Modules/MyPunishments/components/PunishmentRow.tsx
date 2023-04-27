@@ -120,9 +120,9 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({
           <div>Antall: {punishment.quantity}</div>
           <div>Fra: {punishment.createdBy.name}</div>
         </LineWrapper>
-        <TextWrapper>
+        <LineWrapper>
           <div>{punishment.description}</div>
-        </TextWrapper>
+        </LineWrapper>
         <FooterWrapper>
           <FooterButton onClick={handleOnClick}>Lukk</FooterButton>
           {punishment.proof ? (

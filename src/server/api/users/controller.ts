@@ -322,7 +322,6 @@ export const updateUserController = async ({
         message: "User not found",
       });
     }
-    console.log(data);
     const user = await prisma.user.update({
       where: {
         id: id,

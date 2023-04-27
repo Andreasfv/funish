@@ -95,7 +95,6 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (credentials == undefined) return null;
-        console.log(credentials);
         const { email, password } = credentials;
 
         if (!email || !password) {
@@ -162,7 +161,6 @@ export const authOptions: NextAuthOptions = {
           });
           const ksgUserResponse: KSGUserResponse = await fetchKSGUser.json();
           gangName = ksgUserResponse.data.user.ksgStatus.split(":")[0];
-          console.log(gangName);
 
           // Check if ksg gang has an organization in db
           const organization = await prisma.organization.findUnique({
@@ -170,11 +168,9 @@ export const authOptions: NextAuthOptions = {
               name: env.NODE_ENV === "development" ? gangName : gangName,
             },
           });
-          console.log(organization);
           // if ksg gang does not have an organization create the organization
           let createdGang: Organization | null = null;
           if (!organization && gangName) {
-            console.log("creating gang??");
             createdGang = await prisma.organization.create({
               data: {
                 name: gangName,
