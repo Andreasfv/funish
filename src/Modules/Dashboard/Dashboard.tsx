@@ -3,8 +3,8 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import { BasePageLayout } from "../BasePageLayout.tsx/view/BasePageLayout";
-import OrganizationPaper from "../Organizations/components/OrganizationPaper";
-import PunishmentCard from "../Punishment/components/PunishmentCard";
+import OrganizationPaper from "./components/OrganizationPaper";
+import PunishmentCard from "./components/PunishmentCard";
 import { api } from "../../utils/api";
 import Link from "next/link";
 
@@ -87,7 +87,6 @@ const BigButton = styled(Link)`
 const Dashboard: NextPage = () => {
   const session = useSession();
   const router = useRouter();
-  console.log(session.data);
   const { organizationId } = router.query;
   const { data: userData, isLoading: userDataLoading } =
     api.users.getComprehensiveUserData.useQuery({
@@ -120,6 +119,11 @@ const Dashboard: NextPage = () => {
                     userData?.data?.user?.organization?.punishmentTypes?.map(
                       (punishmentType, index) => (
                         <PunishmentCard
+                          onClick={() => {
+                            void router.push(
+                              `/${organization.id}/my-punishments`
+                            );
+                          }}
                           key={index}
                           punishmentType={punishmentType.name}
                           count={punishmentType.Punishments.reduce(
@@ -135,6 +139,11 @@ const Dashboard: NextPage = () => {
                 {userData.data?.user?.organizationId && (
                   <CardsWrapper>
                     <OrganizationPaper
+                      onClick={() => {
+                        void router.push(
+                          `/${organization.id}/all-users-punishments`
+                        );
+                      }}
                       organizationId={(organizationId as string) ?? ""}
                     />
                   </CardsWrapper>

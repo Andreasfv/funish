@@ -144,7 +144,6 @@ const AccountInfo: React.FC<AccountInfoProps> = ({ user }) => {
     },
     resolver: zodResolver(UserFormSchema),
   });
-  console.log(errors);
   function handleUpdateUser() {
     handleSubmit((data) => {
       const submitData = {

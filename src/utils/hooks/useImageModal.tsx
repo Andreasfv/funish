@@ -3,7 +3,10 @@ import { useCallback, useEffect, useState } from "react";
 import { useModal } from "react-hooks-use-modal";
 import styled from "styled-components";
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  height: 100%;
+  width: 100%;
+`;
 
 const Image = styled(CldImage)`
   width: 100%;
@@ -57,7 +60,7 @@ export const useImageModal = (): ImageModalReturn => {
     return (
       <Modal>
         <Wrapper>
-          <Image src={image} alt="" width={700} height={700} />
+          <Image src={image} alt="" width={1200} height={1200} />
           <Close
             onClick={() => {
               close();

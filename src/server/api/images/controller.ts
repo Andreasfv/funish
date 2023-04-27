@@ -26,13 +26,11 @@ export const uploadImageController = async ({
       api_key: env.CLOUDINARY_API_KEY,
       api_secret: env.CLOUDINARY_API_SECRET,
     });
-    console.log(input.image);
     const upload = await cloudinary.v2.uploader.upload(image.toString(), {
       public_id: `${userId}/${organizationId}`,
       overwrite: true,
     });
 
-    console.log(upload);
     if (!upload) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",

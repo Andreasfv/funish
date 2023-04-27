@@ -1,6 +1,6 @@
 import type { PunishmentReason, PunishmentType, User } from "@prisma/client";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -63,7 +63,7 @@ const UserPunishmentsRow: React.FC<UserPunishmentsRowProps> = ({
 }) => {
   const [approvedCount, setApprovedCount] = useState(0);
   const [disaprovedCount, setDisaprovedCount] = useState(0);
-
+  const proofRef = useRef(null);
   useEffect(() => {
     const approved = user.receivedPunishments.filter(
       (p) => p.approved && p.user.id === user.id

@@ -13,7 +13,6 @@ const Home: NextPage = () => {
   const [password, setPassword] = useState("");
   const router = useRouter();
   const session = useSession();
-  console.log(session);
 
   const sessionData = session.data;
 
@@ -23,14 +22,9 @@ const Home: NextPage = () => {
       password: password,
       redirect: false,
       callbackUrl: `/${session?.data?.user?.organizationId ?? ""}/dashboard`,
-    })
-      .then((res) => {
-        console.log(res);
-        console.log(sessionData);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    }).catch((err) => {
+      console.warn(err);
+    });
   };
 
   useKeydown("Enter", () => {

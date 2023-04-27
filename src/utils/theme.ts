@@ -21,7 +21,7 @@ const theme = {
     gray11: "#f7f8fc",
 
     red: "#880d1e",
-
+    blue: "#6C9BCF",
     success: "#41644A",
     lightSuccess: "#DEF5E5",
     error: "#E74646",

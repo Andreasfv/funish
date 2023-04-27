@@ -112,9 +112,6 @@ const CreatePunishment: React.FC = () => {
     });
   }
 
-  useEffect(() => {
-    console.log(errors);
-  }, [errors]);
   const onSubmit = (data: formType) => {
     const createPunishmentData = {
       userId: data.userId ?? "",
@@ -260,7 +257,6 @@ const CreatePunishment: React.FC = () => {
                     handleChange("proof")(idk.info?.path);
                     setFileName(idk.info?.original_filename ?? "");
                   }
-                  console.log(idk);
                 }}
               >
                 {({ open }) => {

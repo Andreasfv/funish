@@ -1,10 +1,6 @@
 import styled from "styled-components";
 import { api } from "../../../utils/api";
 
-interface OrganizationPaperProps {
-  organizationId: string;
-}
-
 const Card = styled.div`
   display: flex;
   flex-direction: column;
@@ -16,10 +12,25 @@ const Card = styled.div`
   padding: 1rem;
   border: ${(props) => props.theme.borders.cardBorder};
   box-shadow: ${(props) => props.theme.shadow.cardShadow};
+
+  ${(props) =>
+    props.onClick &&
+    `
+      cursor: pointer;
+      :hover {
+        border: 1px solid ${props.theme.colors.blue}
+      }
+    `}
 `;
+
+interface OrganizationPaperProps {
+  organizationId: string;
+  onClick?: () => void;
+}
 
 const OrganizationPaper: React.FC<OrganizationPaperProps> = ({
   organizationId,
+  onClick,
 }) => {
   const { data: organization } =
     api.organizations.getOrganizationWithPunishmentData.useQuery({
@@ -29,7 +40,7 @@ const OrganizationPaper: React.FC<OrganizationPaperProps> = ({
     });
 
   return (
-    <Card>
+    <Card onClick={onClick}>
       <p>{organization?.data?.organization?.name}</p>
       <p>{`Total SP: ${
         organization?.data?.organization?.punishments.reduce(

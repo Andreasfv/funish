@@ -9,12 +9,12 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { useModal } from "react-hooks-use-modal";
 import styled from "styled-components";
-import { useAdmin } from "../../../utils/admin/useAdmin";
-import { api } from "../../../utils/api";
-import { useImageModal } from "../../../utils/hooks/useImageModal";
-import { useMediaQuery } from "../../../utils/media/useMedia";
-import theme from "../../../utils/theme";
-import { BasePageLayout } from "../../BasePageLayout.tsx/view/BasePageLayout";
+import { useAdmin } from "../../../../utils/admin/useAdmin";
+import { api } from "../../../../utils/api";
+import { useImageModal } from "../../../../utils/hooks/useImageModal";
+import { useMediaQuery } from "../../../../utils/media/useMedia";
+import theme from "../../../../utils/theme";
+import { BasePageLayout } from "../../../BasePageLayout.tsx/view/BasePageLayout";
 import {
   ActionsButton,
   ActionsContentWrapper,
@@ -23,9 +23,9 @@ import {
   FormWrapper,
   HeaderRow,
   Wrapper,
-} from "../components/components";
-import PunishmentRow from "../components/PunishmentRow";
-import RedeemPunishmentsModal from "../components/RedeemPunishmentsModal";
+} from "../../components/components";
+import PunishmentRow from "./components/PunishmentRow";
+import RedeemPunishmentsModal from "./components/RedeemPunishmentsModal";
 
 const UserImage = styled(Image)`
   border-radius: 50%;
@@ -155,13 +155,11 @@ const UserPunishments: React.FC<UserPunishmentsProps> = () => {
   }, [approvePunishment, data, deletePunishment, openImage]);
 
   function doFetchNextPage() {
-    console.log("fetchin!");
-    console.log(hasNextPage);
     fetchNextPage()
       .then(() => {
         createRows();
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.warn(err));
   }
 
   useEffect(() => {
@@ -212,7 +210,7 @@ const UserPunishments: React.FC<UserPunishmentsProps> = () => {
           </Modal>
         </>
         <ContentWrapper onScroll={handleScroll}>
-          <HeaderRow>
+          {/* <HeaderRow>
             {!mobile ? (
               <>
                 <div>Type</div>
@@ -226,7 +224,7 @@ const UserPunishments: React.FC<UserPunishmentsProps> = () => {
                 <div>Straffepils</div>
               </>
             )}
-          </HeaderRow>
+          </HeaderRow> */}
           {punishmentRows}
         </ContentWrapper>
       </Wrapper>

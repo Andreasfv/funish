@@ -88,17 +88,15 @@ const ManagePunishmentReasons: React.FC<ManagePunishmentReasonsProps> = ({
         refetch();
       })
       .catch((err) => {
-        console.log(err);
+        console.warn(err);
       });
   }
   function onSubmit(data: formType) {
-    console.log("YEAH");
     const submitData = {
       ...data,
       organizationId: organizationId as string,
       description: data.description ?? "",
     };
-    console.log("HELP?");
     createPunishmentType(submitData);
   }
 
