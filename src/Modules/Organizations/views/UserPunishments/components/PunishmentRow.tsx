@@ -46,7 +46,19 @@ const LineWrapper = styled.div`
   height: 100%;
   min-height: 24px;
   flex: 1;
+  @media ${theme.media.largeMobile} {
+    & > :last-child {
+      justify-content: flex-end;
+    }
+  }
 `;
+
+const DescriptionWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+`;
+
 const Button = styled.button`
   height: 100%;
   border-radius: 0.5rem;
@@ -96,6 +108,7 @@ const ButtonWrapper = styled.div`
   flex: 1;
   min-width: 175px;
   @media ${theme.media.largeMobile} {
+    margin-left: auto;
     min-width: 85px;
     max-width: 90px;
   }
@@ -173,24 +186,23 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({
             </TypeWrapper>
           </div>
           <div>{punishment.reason.name}</div>
-          {isAdmin && (
+          {isAdmin && !punishment.approved && (
             <ButtonWrapper>
-              {!punishment.approved && (
-                <ApproveButton ref={approveRef} onClick={handleApproveClick}>
-                  {" "}
-                  Y{" "}
-                </ApproveButton>
-              )}
+              <ApproveButton ref={approveRef} onClick={handleApproveClick}>
+                {" "}
+                Y{" "}
+              </ApproveButton>
             </ButtonWrapper>
           )}
         </LineWrapper>
         <LineWrapper>
           <div>{punishment.createdBy.name}</div>
           <div>{punishment.approved ? "Godkjent" : "Ikke godkjent"}</div>
-          <ButtonWrapper></ButtonWrapper>
         </LineWrapper>
-        <LineWrapper>
+        <DescriptionWrapper>
           <div>{punishment.description}</div>
+        </DescriptionWrapper>
+        <LineWrapper>
           {punishment.proof && punishment.proof !== "" && (
             <ProofButton ref={proofRef} onClick={handleProofClick}>
               Vis Bevis
