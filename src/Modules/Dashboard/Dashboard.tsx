@@ -149,7 +149,7 @@ const Dashboard: NextPage = () => {
                   </CardsWrapper>
                 )}
               </ContentWrapper>
-              <LogWrapper>###Event Log###</LogWrapper>
+              {/* <LogWrapper>###Event Log###</LogWrapper> */}
             </InnerWrapper>
           </ContentWrapper>
         </Wrapper>
