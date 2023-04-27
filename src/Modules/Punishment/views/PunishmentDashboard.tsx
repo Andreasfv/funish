@@ -23,6 +23,7 @@ const ContentWrapper = styled.div`
   box-shadow: ${(props) => props.theme.shadow.wrapperShadow};
   margin: 1rem;
   border-radius: 0.5rem;
+  overflow-y: auto;
 `;
 
 const TopContentWrapper = styled.div`

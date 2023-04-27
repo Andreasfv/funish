@@ -45,6 +45,10 @@ const ErrorSpan = styled.span`
   margin-top: 0.2rem;
   margin-left: 0.2rem;
 `;
+const UploadButton = styled.button`
+  border-radius: 0.5rem;
+  border: 1px solid ${(props) => props.theme.colors.lightDarkGreen};
+`;
 
 const formSchema = z.object({
   userId: z.string(),
@@ -266,7 +270,9 @@ const CreatePunishment: React.FC = () => {
                     e.preventDefault();
                     open();
                   }
-                  return <button onClick={handleOnClick}>Upload</button>;
+                  return (
+                    <UploadButton onClick={handleOnClick}>Upload</UploadButton>
+                  );
                 }}
               </CldUploadWidget>
             </FormField>

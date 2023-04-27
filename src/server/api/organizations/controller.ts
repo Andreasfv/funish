@@ -289,7 +289,11 @@ export const getOrganizationWithPunishmentDataController = async ({
         },
         punishmentTypes: true,
         punishmentReasons: true,
-        users: true,
+        users: {
+          orderBy: {
+            name: "asc",
+          },
+        },
       },
     });
     return {
