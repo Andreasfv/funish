@@ -2,7 +2,6 @@ import type { Punishment, PunishmentReason, User } from "@prisma/client";
 import Image from "next/image";
 import { useState } from "react";
 import styled from "styled-components";
-import { useImageModal } from "../../../utils/hooks/useImageModal";
 
 const Wrapper = styled.div`
   display: flex;
@@ -70,15 +69,6 @@ const FooterWrapper = styled.div`
   }
 `;
 
-const TextWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  padding: 0.3rem;
-  border-radius: 0.3rem;
-  background-color: white;
-`;
-
 const UserImage = styled(Image)`
   border-radius: 50%;
   width: 2.5rem;
@@ -128,7 +118,7 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({
           {punishment.proof ? (
             <FooterButton
               onClick={() => {
-                openImage(punishment.proof!);
+                openImage(punishment.proof ?? "");
               }}
             >
               Se Bevis

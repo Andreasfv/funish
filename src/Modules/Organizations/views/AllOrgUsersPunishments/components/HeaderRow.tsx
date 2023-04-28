@@ -13,6 +13,9 @@ const Wrapper = styled.div`
 
   & > *:first-child {
     margin-left: 32px;
+    @media ${(props) => props.theme.media.largeMobile} {
+      flex: 2;
+    }
   }
 `;
 

@@ -579,3 +579,60 @@ export const transferAdminRightsController = async ({
     ok: true,
   };
 };
+
+export const getOrganizationSPKingController = async ({
+  ctx,
+  input,
+}: {
+  ctx: Context;
+  input: string;
+}) => {
+  const { session, prisma } = ctx;
+
+  if (!session?.user) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Not authorized",
+    });
+  }
+
+  const organization = await prisma.organization.findUnique({
+    where: {
+      id: input,
+    },
+    select: {
+      users: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+          receivedPunishments: true,
+          _count: {
+            select: {
+              receivedPunishments: true,
+            },
+          },
+        },
+        orderBy: {
+          receivedPunishments: {
+            _count: "desc",
+          },
+        },
+      },
+    },
+  });
+
+  if (organization?.users.length === 0) {
+    return {
+      status: "success",
+      spKing: null,
+    };
+  }
+
+  const spKing = organization?.users[0];
+
+  return {
+    status: "success",
+    spKing,
+  };
+};
