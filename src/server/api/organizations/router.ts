@@ -16,6 +16,7 @@ import {
   organizationExists,
   populateOrganizationWithUsersFromKSGNettController,
   transferAdminRightsController,
+  getOrganizationSPKingController,
 } from "./controller";
 import {
   getOrganizationSchema,
@@ -50,6 +51,9 @@ export const organizationsRouter = createTRPCRouter({
   getMyOrganization: protectedProcedure.query(({ ctx }) =>
     getMyOrganizationController({ ctx })
   ),
+  getOrganizationSPKing: protectedProcedure
+    .input(getOrganizationSchema)
+    .query(({ ctx, input }) => getOrganizationSPKingController({ ctx, input })),
   createOrganization: superAdminProcedure
     .input(createOrganizationSchema)
     .mutation(({ ctx, input }) => createOrganizationController({ ctx, input })),

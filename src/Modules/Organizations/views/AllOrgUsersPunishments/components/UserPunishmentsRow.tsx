@@ -1,7 +1,9 @@
 import type { PunishmentReason, PunishmentType, User } from "@prisma/client";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useMediaQuery } from "../../../../../utils/media/useMedia";
+import theme from "../../../../../utils/theme";
 
 const Wrapper = styled.div`
   display: flex;
@@ -63,7 +65,7 @@ const UserPunishmentsRow: React.FC<UserPunishmentsRowProps> = ({
 }) => {
   const [approvedCount, setApprovedCount] = useState(0);
   const [disaprovedCount, setDisaprovedCount] = useState(0);
-  const proofRef = useRef(null);
+  const mobile = useMediaQuery(theme.media.largeMobile);
   useEffect(() => {
     const approved = user.receivedPunishments.filter(
       (p) => p.approved && p.user.id === user.id
@@ -75,6 +77,19 @@ const UserPunishmentsRow: React.FC<UserPunishmentsRowProps> = ({
     setDisaprovedCount(disapproved.length);
   }, [user]);
 
+  function shortenName(name: string) {
+    const names = name.split(" ");
+    if (names.length === 1) return name;
+    const aggregatedNames = names.map((n, i) => {
+      if (i === 0) return n;
+      if (n.length < 2) return n;
+      if (!n[0]) return n; // ?=???
+      return `${n[0]}.`;
+    });
+
+    return aggregatedNames.join(" ");
+  }
+
   return (
     <Wrapper onClick={onClick}>
       <UserImage
@@ -84,9 +99,9 @@ const UserPunishmentsRow: React.FC<UserPunishmentsRowProps> = ({
         alt=":)"
         unoptimized
       />
-      <div>{user.name}</div>
-      <div>A: {approvedCount}</div>
-      <div>U: {disaprovedCount}</div>
+      <div>{user.name && (!mobile ? user.name : shortenName(user.name))}</div>
+      <div>{approvedCount}</div>
+      <div>{disaprovedCount}</div>
     </Wrapper>
   );
 };

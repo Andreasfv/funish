@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import SVGIcon from "../../../../BasePageLayout.tsx/components/svg/SVG";
+import SVGIcon from "../../../../../components/svg/SVG";
 
 const Wrapper = styled.div`
   flex: 1;

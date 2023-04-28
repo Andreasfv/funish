@@ -110,7 +110,7 @@ const AllOrgUsersPunishments: React.FC = () => {
       setSortBy: handleOrderBy(orderBy === "-spCount" ? "spCount" : "-spCount"),
     },
     {
-      label: "SP til godkjenning",
+      label: "SP??",
       setSortBy: handleOrderBy(
         orderBy === "-unapprovedSPCount"
           ? "unapprovedSPCount"
