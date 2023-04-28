@@ -289,7 +289,11 @@ export const getOrganizationWithPunishmentDataController = async ({
         },
         punishmentTypes: true,
         punishmentReasons: true,
-        users: true,
+        users: {
+          orderBy: {
+            name: "asc",
+          },
+        },
       },
     });
     return {
@@ -322,6 +326,54 @@ export const getOrganizationUsersWithPunishmentDataController = async ({
         });
       }
     }
+
+    const orderBy = (): Prisma.UserOrderByWithRelationInput => {
+      if (!input?.orderBy) {
+        return { name: "asc" };
+      }
+
+      const orderString = input?.orderBy;
+
+      if (input?.orderBy) {
+        switch (orderString) {
+          case "name" || "-name":
+            return { name: "desc" };
+          case "-name":
+            return { name: "asc" };
+          case "spCount":
+            return {
+              receivedPunishments: {
+                _count: "desc",
+              },
+            };
+
+          case "-spCount":
+            return {
+              receivedPunishments: {
+                _count: "asc",
+              },
+            };
+          case "unapprovedSPCount":
+            return {
+              receivedPunishments: {
+                _count: "desc",
+              },
+            };
+          case "-unapprovedSPCount":
+            return {
+              receivedPunishments: {
+                _count: "asc",
+              },
+            };
+
+          default:
+            return { name: "asc" };
+        }
+      } else {
+        return { name: "asc" };
+      }
+    };
+
     const organization = await prisma.organization.findUnique({
       where: {
         id: input.organizationId,
@@ -337,6 +389,7 @@ export const getOrganizationUsersWithPunishmentDataController = async ({
                 approved: input.approved,
                 reedemed: input.redeemed,
               },
+
               select: {
                 id: true,
                 type: true,
@@ -349,6 +402,8 @@ export const getOrganizationUsersWithPunishmentDataController = async ({
               },
             },
           },
+          orderBy: orderBy(),
+          // ...{ orderBy: input.orderBy ? input.orderBy : { name: "asc" } },
         },
       },
     });
@@ -389,7 +444,6 @@ export const populateOrganizationWithUsersFromKSGNettController = async ({
   //This is janky as shits, but I couldn't be arsed to download KSG-nett or find their dev-graphql endpoint and figure it out.
   //TODO UNJANK THIS SHIT
   for (const gang of internalGangsData?.data?.internalGroups) {
-    console.log(gang.name);
     if (gang.name.toLowerCase() === ksgGangName.toLowerCase()) {
       internalGangId = gang.id;
     }
@@ -416,7 +470,6 @@ export const populateOrganizationWithUsersFromKSGNettController = async ({
     Styret: true,
   };
   for (const group of data?.data?.internalGroup?.membershipData) {
-    console.log(group.internalGroupPositionName);
     if (
       group.internalGroupPositionName ==
         funkeGjenger[ksgGangName as keyof typeof funkeGjenger] ||

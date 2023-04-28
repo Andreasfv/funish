@@ -226,6 +226,7 @@ export const getPunishmentTypesWithPunishmentsForUser = async ({
             createdBy: true,
             reason: true,
           },
+          ...{ orderBy: input.orderBy ? input.orderBy : { updatedAt: "asc" } },
         },
       },
     });
@@ -245,7 +246,7 @@ export const redeemPunishmentsController = async ({
   input,
 }: {
   ctx: Context;
-  input: RedeemPunishmentsInput
+  input: RedeemPunishmentsInput;
 }) => {
   try {
     const { prisma, session } = ctx;
@@ -258,7 +259,7 @@ export const redeemPunishmentsController = async ({
     }
     const punishmentType = await prisma.punishmentType.findUnique({
       where: {
-            id: input.punishmentTypeId,
+        id: input.punishmentTypeId,
       },
       include: {
         Punishments: {
@@ -271,20 +272,20 @@ export const redeemPunishmentsController = async ({
             reason: true,
           },
           orderBy: {
-            createdAt: "desc"
-          }
+            createdAt: "desc",
+          },
         },
       },
     });
 
-    const punishmentsToRedeem: Punishment[] = []
-    console.log("IM Fired")
+    const punishmentsToRedeem: Punishment[] = [];
     if (punishmentType?.Punishments && punishmentType.Punishments.length > 0) {
-      const {Punishments: punishments} = punishmentType 
+      const { Punishments: punishments } = punishmentType;
 
       const punishmentQuantity = punishments?.reduce(
-        (acc, cur) => acc + (cur?.approved ?? false ? (cur?.quantity ?? 0) : 0), 
-      0)
+        (acc, cur) => acc + (cur?.approved ?? false ? cur?.quantity ?? 0 : 0),
+        0
+      );
 
       if (punishmentQuantity < input.quantity) {
         throw new TRPCError({
@@ -293,61 +294,62 @@ export const redeemPunishmentsController = async ({
         });
       }
 
-      let punishmentQuota = input.quantity
+      let punishmentQuota = input.quantity;
       punishments.forEach((punishment) => {
         if (punishmentQuota > 0) {
           if (punishment.quantity <= punishmentQuota) {
-            punishmentsToRedeem.push(punishment)
-            punishmentQuota -= punishment.quantity
+            punishmentsToRedeem.push(punishment);
+            punishmentQuota -= punishment.quantity;
           } else {
-            prisma.punishment.update({
-              where: {
-                id: punishment.id
-              },
-              data: {
-                quantity: punishment.quantity - punishmentQuota
-              }
-            }).catch((err: Error) => {
-              throw new TRPCError({
-                code: "INTERNAL_SERVER_ERROR",
-                message: err.message,
+            prisma.punishment
+              .update({
+                where: {
+                  id: punishment.id,
+                },
+                data: {
+                  quantity: punishment.quantity - punishmentQuota,
+                },
+              })
+              .catch((err: Error) => {
+                throw new TRPCError({
+                  code: "INTERNAL_SERVER_ERROR",
+                  message: err.message,
+                });
               });
-            })
             punishmentQuota = 0;
             return;
           }
         }
-      })
-      } else {
-        if (!punishmentType?.Punishments) {
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "No punishments to redeem",
-          });
-        }
-
+      });
+    } else {
+      if (!punishmentType?.Punishments) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: "Not enough punishments to redeem",
+          message: "No punishments to redeem",
         });
       }
 
-      await prisma.punishment.updateMany({
-        where: {
-          id: {
-            in: punishmentsToRedeem.map((punishment) => punishment.id)
-          }
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Not enough punishments to redeem",
+      });
+    }
+
+    await prisma.punishment.updateMany({
+      where: {
+        id: {
+          in: punishmentsToRedeem.map((punishment) => punishment.id),
         },
-        data: {
-          reedemed: true
-        }
-      })
+      },
+      data: {
+        reedemed: true,
+      },
+    });
 
     return {
       status: "success",
-    }
+    };
   } catch (error) {
     throw error;
   }
-}
-
+};

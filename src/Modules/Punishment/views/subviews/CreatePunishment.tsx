@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CldImage, CldUploadWidget } from "next-cloudinary";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
@@ -44,6 +44,10 @@ const ErrorSpan = styled.span`
   font-size: 0.8rem;
   margin-top: 0.2rem;
   margin-left: 0.2rem;
+`;
+const UploadButton = styled.button`
+  border-radius: 0.5rem;
+  border: 1px solid ${(props) => props.theme.colors.lightDarkGreen};
 `;
 
 const formSchema = z.object({
@@ -112,9 +116,6 @@ const CreatePunishment: React.FC = () => {
     });
   }
 
-  useEffect(() => {
-    console.log(errors);
-  }, [errors]);
   const onSubmit = (data: formType) => {
     const createPunishmentData = {
       userId: data.userId ?? "",
@@ -260,7 +261,6 @@ const CreatePunishment: React.FC = () => {
                     handleChange("proof")(idk.info?.path);
                     setFileName(idk.info?.original_filename ?? "");
                   }
-                  console.log(idk);
                 }}
               >
                 {({ open }) => {
@@ -270,7 +270,9 @@ const CreatePunishment: React.FC = () => {
                     e.preventDefault();
                     open();
                   }
-                  return <button onClick={handleOnClick}>Upload</button>;
+                  return (
+                    <UploadButton onClick={handleOnClick}>Upload</UploadButton>
+                  );
                 }}
               </CldUploadWidget>
             </FormField>

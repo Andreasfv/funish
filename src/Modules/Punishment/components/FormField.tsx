@@ -11,6 +11,9 @@ const FormField = styled.div`
     font-weight: 600;
     color: ${(props) => props.theme.colors.gray5};
   }
+  @media ${(props) => props.theme.media.largeMobile} {
+    margin-bottom: 0.5rem;
+  }
 `;
 
 export default FormField;

@@ -21,7 +21,7 @@ const theme = {
     gray11: "#f7f8fc",
 
     red: "#880d1e",
-
+    blue: "#6C9BCF",
     success: "#41644A",
     lightSuccess: "#DEF5E5",
     error: "#E74646",
@@ -39,6 +39,9 @@ const theme = {
   media: {
     mobile: "only screen and (max-width: 600px)",
     largeMobile: "only screen and (max-width: 768px)",
+  },
+  idk: {
+    type: "satt",
   },
 };
 

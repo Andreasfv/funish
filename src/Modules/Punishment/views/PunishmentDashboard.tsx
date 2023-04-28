@@ -23,6 +23,7 @@ const ContentWrapper = styled.div`
   box-shadow: ${(props) => props.theme.shadow.wrapperShadow};
   margin: 1rem;
   border-radius: 0.5rem;
+  overflow-y: auto;
 `;
 
 const TopContentWrapper = styled.div`
@@ -92,7 +93,7 @@ const PunishmentDashboard: React.FC = () => {
     const goToRoute = `${routeArray
       .slice(0, routeArray.length - 1)
       .join("/")}/${item}`;
-    router.push(goToRoute).catch((err) => console.log(err));
+    router.push(goToRoute).catch((err) => console.warn(err));
   }
 
   const { data: organization, refetch } =
@@ -102,7 +103,6 @@ const PunishmentDashboard: React.FC = () => {
       },
       { enabled: !!organizationId }
     );
-  console.log(organization);
   const switchItems = [
     { label: "Meld", href: "punish" },
     { label: "Typer", href: "manage_punishment_types" },

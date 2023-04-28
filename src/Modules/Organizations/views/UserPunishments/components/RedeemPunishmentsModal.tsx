@@ -5,11 +5,11 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import { z } from "zod";
-import FormButton from "../../../components/input/formButton";
-import FormNumberInput from "../../../components/input/formNumberInput";
-import FormSelect from "../../../components/input/formSelect";
-import { api } from "../../../utils/api";
-import FormField from "../../Punishment/components/FormField";
+import FormButton from "../../../../../components/input/formButton";
+import FormNumberInput from "../../../../../components/input/formNumberInput";
+import FormSelect from "../../../../../components/input/formSelect";
+import { api } from "../../../../../utils/api";
+import FormField from "../../../../Punishment/components/FormField";
 
 const ContentWrapper = styled.div`
   display: flex;

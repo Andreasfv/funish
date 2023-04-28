@@ -30,9 +30,7 @@ const PunishmentWrapper = styled.div`
   border-radius: 0.5rem;
   background-color: white;
   height: 100%;
-  padding: 1rem;
   gap: 1rem;
-  border: 1px solid ${(props) => props.theme.colors.lightDarkGreen};
 `;
 
 const PunishmentTypeWrapper = styled.div`
@@ -41,7 +39,7 @@ const PunishmentTypeWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   border-radius: 0.5rem;
-  background-color: ${(props) => props.theme.colors.lightGreen};
+  background-color: white;
   padding: 0 1rem 1rem 1rem;
   gap: 0.2rem;
   height: 100%;
@@ -54,7 +52,7 @@ const PunishmentTypeWrapper = styled.div`
     position: sticky;
     display: flex;
     flex-direction: row;
-    background-color: ${(props) => props.theme.colors.lightGreen};
+    background-color: white;
     padding: 0.5rem;
     top: 0;
     & > div {
@@ -100,6 +98,9 @@ const MyPunishments: React.FC = () => {
         organizationId: (organizationId as string) ?? "",
         redeemed: false,
         approved: true,
+        orderBy: {
+          updatedAt: "desc",
+        },
       },
       {
         enabled: !!organizationId && !!me?.data?.user?.id,
@@ -112,29 +113,27 @@ const MyPunishments: React.FC = () => {
         <ContentWrapper>
           <ImageModal />
           <TitleBar>Mine SP</TitleBar>
-          <PunishmentWrapper>
-            {punishments?.data?.punishmentTypes.map((punishmentType) => (
-              <PunishmentTypeWrapper key={punishmentType.id}>
+          {punishments?.data?.punishmentTypes.map((punishmentType) => (
+            <PunishmentTypeWrapper key={punishmentType.id}>
+              <div>
+                <div>{punishmentType.name}</div>
                 <div>
-                  <div>{punishmentType.name}</div>
-                  <div>
-                    Totalt:{" "}
-                    {punishmentType.Punishments.reduce(
-                      (acc, cur) => acc + (cur.approved ? cur.quantity : 0),
-                      0
-                    )}
-                  </div>
+                  Totalt:{" "}
+                  {punishmentType.Punishments.reduce(
+                    (acc, cur) => acc + (cur.approved ? cur.quantity : 0),
+                    0
+                  )}
                 </div>
-                {punishmentType.Punishments.map((punishment) => (
-                  <PunishmentRow
-                    openImage={openImage}
-                    key={punishment.id}
-                    punishment={punishment}
-                  />
-                ))}
-              </PunishmentTypeWrapper>
-            ))}
-          </PunishmentWrapper>
+              </div>
+              {punishmentType.Punishments.map((punishment) => (
+                <PunishmentRow
+                  openImage={openImage}
+                  key={punishment.id}
+                  punishment={punishment}
+                />
+              ))}
+            </PunishmentTypeWrapper>
+          ))}
         </ContentWrapper>
       </Wrapper>
     </BasePageLayout>

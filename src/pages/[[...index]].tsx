@@ -7,17 +7,21 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Input, Label } from "../Modules/IndexPage/components/components";
 import { useKeydown } from "../utils/hooks/useKeydown";
+import Spinner from "../components/Spiner";
 
 const Home: NextPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loginFailed, setLoginFailed] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const session = useSession();
-  console.log(session);
 
   const sessionData = session.data;
 
   const onSubmit = async () => {
+    setLoading(true);
+    setLoginFailed(false);
     await signIn("credentials", {
       email: username,
       password: password,
@@ -25,11 +29,15 @@ const Home: NextPage = () => {
       callbackUrl: `/${session?.data?.user?.organizationId ?? ""}/dashboard`,
     })
       .then((res) => {
-        console.log(res);
-        console.log(sessionData);
+        if (res?.status == 401 || res?.ok == false) {
+          setLoginFailed(true);
+        }
+        setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+        setLoginFailed(true);
+        setLoading(false);
+        console.warn(err);
       });
   };
 
@@ -62,7 +70,11 @@ const Home: NextPage = () => {
           </h1>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 md:gap-8"></div>
           <div className="flex flex-col items-center gap-2">
-            <Label>Log in med KSG-nett bruker</Label>
+            <Label>
+              {loginFailed
+                ? "Innlogging feilet, prøv igjen"
+                : "Log in med KSG-nett bruker"}
+            </Label>
             <Input
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -89,14 +101,18 @@ const Home: NextPage = () => {
                   </>
                 )}
             </p>
-            <button
-              className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-              onClick={() => {
-                void onSubmit();
-              }}
-            >
-              {sessionData ? "Sign out" : "Sign in"}
-            </button>
+            {loading ? (
+              <Spinner />
+            ) : (
+              <button
+                className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+                onClick={() => {
+                  void onSubmit();
+                }}
+              >
+                {sessionData ? "Sign out" : "Sign in"}
+              </button>
+            )}
           </div>
         </div>
       </main>

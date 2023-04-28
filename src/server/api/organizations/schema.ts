@@ -4,6 +4,18 @@ export const sortOrganization = z
   .enum(["name", "-name", "orgNumber", "-orgNumber"])
   .optional();
 
+export const sortOrganizationUser = z.enum([
+  "name",
+  "-name",
+  "createdAt",
+  "-createdAt",
+  "updatedAt",
+  "-updatedAt",
+  "spCount",
+  "-spCount",
+  "unapprovedSPCount",
+  "-unapprovedSPCount",
+]);
 export const createOrganizationSchema = z.object({
   name: z.string(),
 });
@@ -36,6 +48,7 @@ export const getOrganizationUsersWithPunishmentDataSchema = z.object({
   organizationId: z.string(),
   approved: z.boolean().optional(),
   redeemed: z.boolean().optional(),
+  orderBy: sortOrganizationUser,
 });
 
 export const populateOrganizationWithUsersFromKSGNettInput = z.object({
@@ -59,6 +72,7 @@ export type FilterOrganizationInput = z.infer<typeof filterOrganizationSchema>;
 export type CreateOrganizationInput = z.infer<typeof createOrganizationSchema>;
 export type UpdateOrganizationInput = z.infer<typeof updateOrganizationSchema>;
 export type SortOrganizationsInput = z.infer<typeof sortOrganization>;
+export type SortOrganizationUserInput = z.infer<typeof sortOrganizationUser>;
 export type DeleteOrganizationInput = z.infer<typeof deleteOrganizationSchema>;
 export type PopulateOrganizationWithUsersFromKSGNettInput = z.infer<
   typeof populateOrganizationWithUsersFromKSGNettInput

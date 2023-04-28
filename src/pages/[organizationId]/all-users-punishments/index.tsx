@@ -1,3 +1,3 @@
-import AllOrgUsersPunishments from "../../../Modules/Organizations/views/AllOrgUsersPunishments";
+import AllOrgUsersPunishments from "../../../Modules/Organizations/views/AllOrgUsersPunishments/AllOrgUsersPunishments";
 
 export default AllOrgUsersPunishments;
