@@ -24,6 +24,11 @@ const ContentWrapper = styled.div`
   margin: 1rem;
   border-radius: 0.5rem;
   overflow-y: auto;
+
+  @media ${(props) => props.theme.media.largeMobile} {
+    margin: 0rem;
+    border-radius: 0rem;
+  }
 `;
 
 const TopContentWrapper = styled.div`
@@ -40,6 +45,21 @@ const SwitchWrapper = styled.div`
   padding: 1rem;
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
+
+  @media ${(props) => props.theme.media.largeMobile} {
+    border-radius: 0rem;
+    padding-bottom: 0rem;
+
+    & > div:last-child {
+      border-top-right-radius: 0.5rem;
+      border-bottom-right-radius: 0.5rem;
+    }
+
+    & > div:first-child {
+      border-top-left-radius: 0.5rem;
+      border-bottom-left-radius: 0.5rem;
+    }
+  }
 `;
 interface SwitchItem {
   selected: boolean;
@@ -52,12 +72,18 @@ const SwitchItem = styled.div<SwitchItem>`
   background-color: ${(props) =>
     props.selected ? props.theme.colors.darkGreen : props.theme.colors.green};
   margin: 0rem 0.5rem;
-  padding: 1rem;
+  padding: 0.3rem;
   border-radius: 0.5rem;
 
   &:hover {
     background-color: ${(props) => props.theme.colors.darkGreen};
     cursor: pointer;
+  }
+
+  @media ${(props) => props.theme.media.largeMobile} {
+    border-radius: 0;
+    padding: 0.2rem;
+    margin: 0rem;
   }
 `;
 
