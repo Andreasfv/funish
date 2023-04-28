@@ -216,10 +216,12 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({
           <div>{punishment.description}</div>
         </DescriptionWrapper>
         <LineWrapper>
-          {punishment.proof && punishment.proof !== "" && (
+          {punishment.proof && punishment.proof !== "" ? (
             <ProofButton ref={proofRef} onClick={handleProofClick}>
               Vis Bevis
             </ProofButton>
+          ) : (
+            <div>{"intent bevis ;("}</div>
           )}
           {isAdmin && (
             <ButtonWrapper>
@@ -250,12 +252,14 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({
         </div>
 
         {!open && <div>{punishment.reason.name}</div>}
-        {punishment.proof && punishment.proof !== "" && (
+        {punishment.proof && punishment.proof !== "" ? (
           <div>
             <ProofButton ref={proofRef} onClick={handleProofClick}>
               Vis Bevis
             </ProofButton>
           </div>
+        ) : (
+          <div>{"Intet bevis ;("}</div>
         )}
         <div>{punishment.createdBy.name}</div>
 
