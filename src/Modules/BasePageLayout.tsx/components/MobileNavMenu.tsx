@@ -138,6 +138,10 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
           name: "SP Oversikt",
           path: `/${orgId}/all-users-punishments`,
         },
+        {
+          name: "Galleri",
+          path: `/${orgId}/gallery`,
+        },
       ];
       setRoutes([...routes]);
 

@@ -44,8 +44,10 @@ export const useImageModal = (): ImageModalReturn => {
   const [image, setImage] = useState("");
 
   const openModal = useCallback(
-    (image: string) => {
+    (image: string, originalSize = false) => {
       if (!image || image === "") return;
+      if (originalSize) {
+      }
       setImage(image);
       open();
     },
