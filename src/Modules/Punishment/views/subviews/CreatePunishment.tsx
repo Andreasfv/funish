@@ -10,6 +10,7 @@ import { z } from "zod";
 import FormInput from "../../../../components/input/formInput";
 import FormNumberInput from "../../../../components/input/formNumberInput";
 import FormSelect from "../../../../components/input/formSelect";
+import UploadImageButton from "../../../../components/input/uploadImageButton";
 import { api } from "../../../../utils/api";
 import FormField from "../../components/FormField";
 import SubmitButton from "../../components/SubmitButton";
@@ -261,39 +262,13 @@ const CreatePunishment: React.FC = () => {
             </FormField>
             <FormField>
               <label>{fileLabel}</label>
-              <CldUploadWidget
-                uploadPreset="sp_proof"
-                options={{
-                  maxFiles: 1,
-                  folder: organization?.data.organization?.name,
-                }}
-                onUpload={(idk: {
-                  event: string;
-                  info: {
-                    path: string;
-                    original_filename: string;
-                  } | null;
-                }) => {
-                  if (idk?.event == "success" && idk.info?.path) {
-                    handleChange("proof")(idk.info?.path);
-                    setFileName(idk.info?.original_filename ?? "");
-                  }
-                }}
-              >
-                {({ open }) => {
-                  function handleOnClick(
-                    e: React.MouseEvent<HTMLButtonElement>
-                  ) {
-                    e.preventDefault();
-                    open();
-                  }
-                  return (
-                    <UploadButton onClick={handleOnClick}>
-                      Last opp
-                    </UploadButton>
-                  );
-                }}
-              </CldUploadWidget>
+              <UploadImageButton
+                uploadFolder={`${
+                  organization?.data.organization?.name ?? ""
+                }/sp_proof`}
+                handleChange={handleChange("proof")}
+                setFileName={setFileName}
+              />
             </FormField>
             <div>
               {Object.entries(errors).length > 0 && (
