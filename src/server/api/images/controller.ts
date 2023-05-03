@@ -2,7 +2,7 @@ import { TRPCError } from "@trpc/server";
 import cloudinary from "cloudinary";
 import { env } from "../../../env/server.mjs";
 import type { Context } from "../trpc";
-import type { UploadImageInput } from "./schema";
+import type { GetGalleryImagesInput, UploadImageInput } from "./schema";
 
 export const uploadImageController = async ({
   ctx,
@@ -45,4 +45,52 @@ export const uploadImageController = async ({
       code: "INTERNAL_SERVER_ERROR",
     });
   }
+};
+
+export const getGalleryImagesController = async ({
+  ctx,
+  input,
+}: {
+  ctx: Context;
+  input: GetGalleryImagesInput;
+}) => {
+  const { session, prisma } = ctx;
+  const { organizationId } = input;
+
+  const organization = await prisma.organization.findUnique({
+    where: {
+      id: organizationId,
+    },
+  });
+
+  if (!organization) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+    });
+  }
+  console.log(organization.name);
+  type CloudinaryResponse = {
+    total_count: number;
+    resources: {
+      public_id: string;
+    }[];
+  };
+  const imagesResponse = await cloudinary.v2.search
+    .expression(`resource_type:image AND folder="${organization.name}"`)
+    .max_results(50)
+    .execute()
+    .then((res: CloudinaryResponse) => {
+      console.log(res);
+      return res;
+    })
+    .catch((err) => console.log(err));
+  if (
+    !imagesResponse ||
+    !imagesResponse.resources ||
+    imagesResponse.total_count == 0
+  ) {
+    return [];
+  }
+  const images = imagesResponse.resources.map((image) => image.public_id);
+  return images;
 };

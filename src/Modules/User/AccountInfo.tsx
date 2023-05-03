@@ -202,37 +202,6 @@ const AccountInfo: React.FC<AccountInfoProps> = ({ user }) => {
             )}
           </FormWrapper>
         </AccountContentWrapper>
-        <AccountContentWrapper>
-          <FormWrapper>
-            <FormField
-              onClick={() => {
-                navigator.clipboard
-                  .writeText(
-                    `${window.location.host}/&?organizationId=${
-                      user?.organizationId ?? ""
-                    }`
-                  )
-                  .then(() => {
-                    toast("Copied to clipboard", {
-                      type: "success",
-                      position: "bottom-center",
-                    });
-                  })
-                  .catch(() => {
-                    toast("Failed to copy to clipboard", {
-                      type: "error",
-                      position: "bottom-center",
-                    });
-                  });
-              }}
-            >
-              <label>Invite Link:{" (click to copy)"}</label>
-              <InviteLink>{`${window.location.host}/&?organizationId=${
-                user?.organizationId ?? ""
-              }`}</InviteLink>
-            </FormField>
-          </FormWrapper>
-        </AccountContentWrapper>
       </ContentWrapper>
     </Wrapper>
   );

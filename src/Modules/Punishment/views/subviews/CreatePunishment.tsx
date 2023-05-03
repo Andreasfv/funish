@@ -11,6 +11,7 @@ import FormInput from "../../../../components/input/formInput";
 import FormNumberInput from "../../../../components/input/formNumberInput";
 import FormSelect from "../../../../components/input/formSelect";
 import UploadImageButton from "../../../../components/input/uploadImageButton";
+import Spinner from "../../../../components/Spiner";
 import { api } from "../../../../utils/api";
 import FormField from "../../components/FormField";
 import SubmitButton from "../../components/SubmitButton";
@@ -160,7 +161,7 @@ const CreatePunishment: React.FC = () => {
           createdById: data.createdById,
           organizationId: data.organizationId,
         });
-        toast("Punishment created", {
+        toast("SP Laget!", {
           type: "success",
           position: "bottom-center",
         });
@@ -258,13 +259,18 @@ const CreatePunishment: React.FC = () => {
             </FormField>
             <FormField>
               <label>{fileLabel}</label>
-              <UploadImageButton
-                uploadFolder={`${
-                  organization?.data.organization?.name ?? ""
-                }/sp_proof`}
-                handleChange={handleChange("proof")}
-                setFileName={setFileName}
-              />
+              {organization?.data?.organization?.name ? (
+                <UploadImageButton
+                  uploadFolder={`${
+                    organization?.data.organization?.name ?? ""
+                  }/sp_proof`}
+                  handleChange={handleChange("proof")}
+                  setFileName={setFileName}
+                /> )
+                :
+                (
+                <Spinner />
+              )}
             </FormField>
             <div>
               {Object.entries(errors).length > 0 && (
