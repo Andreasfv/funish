@@ -84,6 +84,7 @@ interface FormSelectProps {
   handleChange: (value: string) => void;
   text: string;
   handleTextChange: (value: string) => void;
+  focusOnSpawn?: boolean;
 }
 
 const FormSelect: React.FC<FormSelectProps> = ({
@@ -92,17 +93,24 @@ const FormSelect: React.FC<FormSelectProps> = ({
   text,
   handleChange,
   handleTextChange,
+  focusOnSpawn = false,
 }) => {
   const [filteredOptions, setFilteredOptions] = useState<Option[]>(options); // [
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const toggling = () => setIsOpen(!isOpen);
-
+  const selectRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (text !== "") return;
     setFilteredOptions(options);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [options]);
+
+  useEffect(() => {
+    if (!focusOnSpawn) return;
+    selectRef.current?.focus();
+    setIsOpen(true);
+  }, [focusOnSpawn]);
 
   const handleSearch = (e: React.FormEvent<HTMLInputElement>) => {
     //We use a const so that the update is immediatedly. setState can be slow.
@@ -120,7 +128,10 @@ const FormSelect: React.FC<FormSelectProps> = ({
     setFilteredOptions(options);
     setIsOpen(false);
     handleChange(value.value);
-    handleTextChange(value.label);
+    console.log(handleTextChange);
+    if (handleTextChange) {
+      handleTextChange(value.label);
+    }
   };
 
   useEffect(() => {
@@ -141,20 +152,26 @@ const FormSelect: React.FC<FormSelectProps> = ({
   });
 
   return (
-    <Wrapper>
+    <Wrapper className="-form-select--wrapper">
       <BaseSelect
+        className="-form-select--base-select"
         placeholder={placeholder}
         onClick={toggling}
         isOpen={isOpen}
         value={text}
         onChange={handleSearch}
         tabIndex={0}
+        ref={selectRef}
       />
       {isOpen && (
-        <DropDownContainer ref={dropdownRef}>
-          <DropDownListContainer>
+        <DropDownContainer
+          ref={dropdownRef}
+          className="-form-select--dropdown-container"
+        >
+          <DropDownListContainer className="-form-select--dropdown-list-container">
             {filteredOptions.map((option, index) => (
               <ListItem
+                className="-form-select--list-item"
                 key={index}
                 onClick={onOptionClicked(option)}
                 value={option.value}

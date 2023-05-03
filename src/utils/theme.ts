@@ -28,6 +28,8 @@ const theme = {
     lightError: "#FA9884",
     loading: "#B0DAFF",
     info: "#393646",
+
+    spPurple: "hsl(280 100% 60% / var(--tw-text-opacity))",
   },
   borders: {
     cardBorder: "1px solid lightgrey",
