@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CldImage, CldUploadWidget } from "next-cloudinary";
+import { CldImage } from "next-cloudinary";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -45,10 +45,6 @@ const ErrorSpan = styled.span`
   font-size: 0.8rem;
   margin-top: 0.2rem;
   margin-left: 0.2rem;
-`;
-const UploadButton = styled.button`
-  border-radius: 0.5rem;
-  border: 1px solid ${(props) => props.theme.colors.lightDarkGreen};
 `;
 
 const formSchema = z.object({

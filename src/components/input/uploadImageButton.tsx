@@ -1,5 +1,4 @@
 import { CldUploadWidget } from "next-cloudinary";
-import { useState } from "react";
 import styled from "styled-components";
 
 const UploadButton = styled.button`
