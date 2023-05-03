@@ -68,6 +68,10 @@ const Sidebar: React.FC = () => {
           SP Oversikt
         </SidebarItem>
         <SidebarItem onClick={goTo("gallery")}>Galleri</SidebarItem>
+
+        <SidebarItem onClick={goTo("multi-sp-tool")}>
+          Multi SP verktøy
+        </SidebarItem>
       </OrgContentWrapper>
       <SidebarBottomWrapper>
         {isAdmin && (

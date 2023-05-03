@@ -10,6 +10,7 @@ import "../i18";
 import "../styles/globals.css";
 import { api } from "../utils/api";
 import theme from "../utils/theme";
+import MultiSPProvider from "../Modules/MultiSPTool/context";
 
 const publicPages = ["/", "/[[...index]]"];
 
@@ -21,19 +22,21 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
   return (
     <SessionProvider session={session}>
-      <ThemeProvider theme={theme}>
-        {publicPages.includes(router.pathname) ? (
-          <Component {...pageProps} />
-        ) : (
-          <RouteGuard>
+      <MultiSPProvider>
+        <ThemeProvider theme={theme}>
+          {publicPages.includes(router.pathname) ? (
             <Component {...pageProps} />
-          </RouteGuard>
-        )}
-        {/* Root is for modal */}
-        <div id="root" />
-        <div id="image-modal" />
-        <ToastContainer />
-      </ThemeProvider>
+          ) : (
+            <RouteGuard>
+              <Component {...pageProps} />
+            </RouteGuard>
+          )}
+          {/* Root is for modal */}
+          <div id="root" />
+          <div id="image-modal" />
+          <ToastContainer />
+        </ThemeProvider>
+      </MultiSPProvider>
     </SessionProvider>
   );
 };
