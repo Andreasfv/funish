@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import type { Organization, Role } from "@prisma/client";
+import { TRPCClientError } from "@trpc/client";
+import { TRPCError } from "@trpc/server";
 import type { GetServerSidePropsContext } from "next";
 import type { User } from "next-auth";
 import {
@@ -117,7 +119,11 @@ export const authOptions: NextAuthOptions = {
         const response: KSGNettAPIResponse = await fetchResult.json();
         const { ok, token, user } = response.data.login;
 
-        if (!ok) return null;
+        if (!ok) {
+          throw new TRPCError({
+            code: "UNAUTHORIZED",
+          });
+        }
         if (!user) return null;
         if (!token) return null;
         let gangName: string | undefined = "";
