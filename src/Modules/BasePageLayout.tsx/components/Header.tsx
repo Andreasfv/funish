@@ -2,6 +2,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useRef } from "react";
 import styled from "styled-components";
+import SVGIcon from "../../../components/svg/SVG";
 import { useMediaQuery } from "../../../utils/media/useMedia";
 import theme from "../../../utils/theme";
 import MobileNavMenu from "./MobileNavMenu";
@@ -25,16 +26,15 @@ const ContentWrapper = styled.div`
   width: 100%;
 `;
 
-const MenuIcon = styled.div`
+const MenuIcon = styled(SVGIcon)`
   display: flex;
-  width: 4rem;
+  width: 1.5rem;
   align-items: center;
   justify-content: center;
   margin-left: auto;
   height: 2rem;
-  background-color: ${(props) => props.theme.colors.darkGreen};
-  border-radius: 0.5rem;
-  margin-right: 1rem;
+
+  fill: ;
 `;
 
 interface HeaderProps {
@@ -65,7 +65,14 @@ const Header: React.FC<HeaderProps> = ({ toggleNavMenu, open }) => {
         >
           Straffe<span className="text-[hsl(280,100%,60%)]">Pils</span>
         </h1>
-        {mobile && <MenuIcon onClick={toggleNavMenu}>Menu</MenuIcon>}
+        {mobile && (
+          <MenuIcon
+            svg="menu"
+            width="20px"
+            height="20px"
+            onClick={toggleNavMenu}
+          ></MenuIcon>
+        )}
       </ContentWrapper>
     </Wrapper>
   );

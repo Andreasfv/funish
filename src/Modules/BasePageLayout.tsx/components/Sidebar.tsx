@@ -67,6 +67,7 @@ const Sidebar: React.FC = () => {
         <SidebarItem onClick={goTo("all-users-punishments")}>
           SP Oversikt
         </SidebarItem>
+        <SidebarItem onClick={goTo("gallery")}>Galleri</SidebarItem>
       </OrgContentWrapper>
       <SidebarBottomWrapper>
         {isAdmin && (

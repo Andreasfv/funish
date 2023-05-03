@@ -17,6 +17,8 @@ const Wrapper = styled.div`
   height: 100%;
   justify-content: center;
   padding: 1rem;
+
+  overflow-y: auto;
 `;
 
 const ContentWrapper = styled.div`
@@ -110,7 +112,7 @@ const AllOrgUsersPunishments: React.FC = () => {
       setSortBy: handleOrderBy(orderBy === "-spCount" ? "spCount" : "-spCount"),
     },
     {
-      label: "SP til godkjenning",
+      label: "SP??",
       setSortBy: handleOrderBy(
         orderBy === "-unapprovedSPCount"
           ? "unapprovedSPCount"

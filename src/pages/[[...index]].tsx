@@ -14,11 +14,19 @@ const Home: NextPage = () => {
   const [password, setPassword] = useState("");
   const [loginFailed, setLoginFailed] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
   const session = useSession();
 
   const sessionData = session.data;
+  function handleErrorMessage(url: string) {
+    if (url.includes("UNAUTHORIZED")) {
+      setErrorMessage("Feil brukernavn eller passord");
+      return;
+    }
 
+    setErrorMessage("Something went wrong, try again");
+  }
   const onSubmit = async () => {
     setLoading(true);
     setLoginFailed(false);
@@ -30,6 +38,8 @@ const Home: NextPage = () => {
     })
       .then((res) => {
         if (res?.status == 401 || res?.ok == false) {
+          handleErrorMessage(res?.error ?? "");
+          console.log(res);
           setLoginFailed(true);
         }
         setLoading(false);
@@ -70,11 +80,7 @@ const Home: NextPage = () => {
           </h1>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 md:gap-8"></div>
           <div className="flex flex-col items-center gap-2">
-            <Label>
-              {loginFailed
-                ? "Innlogging feilet, prøv igjen"
-                : "Log in med KSG-nett bruker"}
-            </Label>
+            <Label>{loginFailed && errorMessage}</Label>
             <Input
               value={username}
               onChange={(e) => setUsername(e.target.value)}

@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CldImage, CldUploadWidget } from "next-cloudinary";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
@@ -10,6 +10,7 @@ import { z } from "zod";
 import FormInput from "../../../../components/input/formInput";
 import FormNumberInput from "../../../../components/input/formNumberInput";
 import FormSelect from "../../../../components/input/formSelect";
+import Spinner from "../../../../components/Spiner";
 import { api } from "../../../../utils/api";
 import FormField from "../../components/FormField";
 import SubmitButton from "../../components/SubmitButton";
@@ -72,11 +73,14 @@ const CreatePunishment: React.FC = () => {
   const router = useRouter();
   const params = router.query;
   const [fileName, setFileName] = useState("");
+
   const { data: me } = api.users.me.useQuery();
   const { data: organization } =
     api.organizations.getOrganizationWithPunishmentData.useQuery({
       organizationId: me?.data?.user?.organizationId ?? "",
     });
+  const { mutate: createPunishment } =
+    api.punishments.createPunishment.useMutation();
 
   const {
     handleSubmit,
@@ -101,8 +105,22 @@ const CreatePunishment: React.FC = () => {
     },
     resolver: zodResolver(formSchema),
   });
-  const { mutate: createPunishment } =
-    api.punishments.createPunishment.useMutation();
+
+  useEffect(() => {
+    if (
+      organization?.data.organization?.punishmentTypes &&
+      organization?.data.organization?.punishmentTypes[0]
+    ) {
+      setValue(
+        "typeId",
+        organization?.data.organization?.punishmentTypes[0]?.id
+      );
+      setValue(
+        "typeIdText",
+        organization?.data.organization?.punishmentTypes[0].name
+      );
+    }
+  }, [organization?.data.organization?.punishmentTypes, setValue]);
 
   function handleChange(formKey: keyof formType) {
     return (value: formType[typeof formKey]) => {
@@ -136,8 +154,8 @@ const CreatePunishment: React.FC = () => {
         formReset({
           userId: "",
           userIdText: "",
-          typeId: "",
-          typeIdText: "",
+          typeId: data.typeId,
+          typeIdText: data.typeIdText,
           reasonId: "",
           reasonIdText: "",
           description: "",
@@ -146,7 +164,7 @@ const CreatePunishment: React.FC = () => {
           createdById: data.createdById,
           organizationId: data.organizationId,
         });
-        toast("Punishment created", {
+        toast("SP Laget!", {
           type: "success",
           position: "bottom-center",
         });
@@ -244,48 +262,55 @@ const CreatePunishment: React.FC = () => {
             </FormField>
             <FormField>
               <label>{fileLabel}</label>
-              <CldUploadWidget
-                uploadPreset="sp_proof"
-                options={{
-                  maxFiles: 1,
-                  folder: organization?.data.organization?.name,
-                }}
-                onUpload={(idk: {
-                  event: string;
-                  info: {
-                    path: string;
-                    original_filename: string;
-                  } | null;
-                }) => {
-                  if (idk?.event == "success" && idk.info?.path) {
-                    handleChange("proof")(idk.info?.path);
-                    setFileName(idk.info?.original_filename ?? "");
-                  }
-                }}
-              >
-                {({ open }) => {
-                  function handleOnClick(
-                    e: React.MouseEvent<HTMLButtonElement>
-                  ) {
-                    e.preventDefault();
-                    open();
-                  }
-                  return (
-                    <UploadButton onClick={handleOnClick}>Upload</UploadButton>
-                  );
-                }}
-              </CldUploadWidget>
+              {organization?.data?.organization?.name ? (
+                <CldUploadWidget
+                  uploadPreset="sp_proof"
+                  options={{
+                    maxFiles: 1,
+                    folder: `${organization?.data?.organization?.name ?? ""}`,
+                  }}
+                  onUpload={(idk: {
+                    event: string;
+                    info: {
+                      path: string;
+                      original_filename: string;
+                      public_id: string;
+                    } | null;
+                  }) => {
+                    if (idk?.event == "success" && idk.info?.path) {
+                      handleChange("proof")(idk.info?.public_id);
+                      setFileName(idk.info?.original_filename ?? "");
+                    }
+                  }}
+                >
+                  {({ open }) => {
+                    function handleOnClick(
+                      e: React.MouseEvent<HTMLButtonElement>
+                    ) {
+                      e.preventDefault();
+                      open();
+                    }
+                    return (
+                      <UploadButton onClick={handleOnClick}>
+                        Last opp
+                      </UploadButton>
+                    );
+                  }}
+                </CldUploadWidget>
+              ) : (
+                <Spinner />
+              )}
             </FormField>
             <div>
               {Object.entries(errors).length > 0 && (
                 <ErrorSpan>{t("form.error.corrections")}</ErrorSpan>
               )}
             </div>
-            <SubmitButton onClick={submit}>Submit</SubmitButton>
+            <SubmitButton onClick={submit}>Gi SP!</SubmitButton>
             {watch("proof") && (
               <>
                 <br></br>
-                <label>Preview</label>
+                <label>Forhåndsvisning</label>
                 <CldImage
                   src={watch("proof")}
                   width={300}

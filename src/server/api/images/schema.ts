@@ -6,4 +6,9 @@ export const uploadImageSchema = z.object({
   organizationId: z.string(),
 });
 
+export const getGalleryImagesSchema = z.object({
+  organizationId: z.string(),
+});
+
 export type UploadImageInput = z.infer<typeof uploadImageSchema>;
+export type GetGalleryImagesInput = z.infer<typeof getGalleryImagesSchema>;

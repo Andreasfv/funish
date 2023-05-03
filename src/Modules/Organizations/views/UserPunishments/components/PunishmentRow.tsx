@@ -65,30 +65,47 @@ const Button = styled.button`
   padding: 0.5rem;
 `;
 
-const ApproveButton = styled(Button)`
-  position: absolute;
+const ActionButton = styled(Button)`
   height: 2rem;
   padding: 0 1rem;
 
+  @media ${theme.media.largeMobile} {
+    display: flex;
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.3rem;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
+const ApproveButton = styled(ActionButton)`
   background-color: ${(props) => props.theme.colors.lightDarkGreen};
+
   :hover {
     background-color: ${(props) => props.theme.colors.darkGreen};
   }
 
   @media ${theme.media.largeMobile} {
-    left: null;
     right: 0;
+    left: null;
   }
 `;
 
-const DeleteButton = styled(Button)`
-  position: absolute;
-  height: 2rem;
+const DeleteButton = styled(ActionButton)`
   right: 0;
-  padding: 0 1rem;
+
   background-color: ${(props) => props.theme.colors.red};
   :hover {
     background-color: red;
+  }
+
+  @media ${theme.media.largeMobile} {
+    left: 0;
+    right: null;
+    border: 1px solid gray;
+    color: white;
   }
 `;
 
@@ -105,9 +122,13 @@ const ProofButton = styled(Button)`
 
 const ButtonWrapper = styled.div`
   position: relative;
+  display: flex;
+  justify-content: flex-end;
   flex: 1;
   min-width: 175px;
+
   @media ${theme.media.largeMobile} {
+    gap: 0.75rem;
     margin-left: auto;
     min-width: 85px;
     max-width: 90px;
@@ -186,14 +207,6 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({
             </TypeWrapper>
           </div>
           <div>{punishment.reason.name}</div>
-          {isAdmin && !punishment.approved && (
-            <ButtonWrapper>
-              <ApproveButton ref={approveRef} onClick={handleApproveClick}>
-                {" "}
-                Y{" "}
-              </ApproveButton>
-            </ButtonWrapper>
-          )}
         </LineWrapper>
         <LineWrapper>
           <div>{punishment.createdBy.name}</div>
@@ -203,10 +216,12 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({
           <div>{punishment.description}</div>
         </DescriptionWrapper>
         <LineWrapper>
-          {punishment.proof && punishment.proof !== "" && (
+          {punishment.proof && punishment.proof !== "" ? (
             <ProofButton ref={proofRef} onClick={handleProofClick}>
               Vis Bevis
             </ProofButton>
+          ) : (
+            <div>{"intent bevis ;("}</div>
           )}
           {isAdmin && (
             <ButtonWrapper>
@@ -214,6 +229,12 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({
                 {" "}
                 X{" "}
               </DeleteButton>
+              {!punishment.approved && (
+                <ApproveButton ref={approveRef} onClick={handleApproveClick}>
+                  {" "}
+                  Y{" "}
+                </ApproveButton>
+              )}
             </ButtonWrapper>
           )}
         </LineWrapper>
@@ -231,12 +252,14 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({
         </div>
 
         {!open && <div>{punishment.reason.name}</div>}
-        {punishment.proof && punishment.proof !== "" && (
+        {punishment.proof && punishment.proof !== "" ? (
           <div>
             <ProofButton ref={proofRef} onClick={handleProofClick}>
               Vis Bevis
             </ProofButton>
           </div>
+        ) : (
+          <div>{"Intet bevis ;("}</div>
         )}
         <div>{punishment.createdBy.name}</div>
 
@@ -245,14 +268,14 @@ const PunishmentRow: React.FC<PunishmentRowProps> = ({
         )}
         {isAdmin && (
           <ButtonWrapper>
+            <DeleteButton ref={deleteRef} onClick={handleDeleteClick}>
+              {mobile ? "X" : "Delete"}
+            </DeleteButton>
             {!punishment.approved && (
               <ApproveButton ref={approveRef} onClick={handleApproveClick}>
                 {mobile ? "Y" : "Approve"}
               </ApproveButton>
             )}
-            <DeleteButton ref={deleteRef} onClick={handleDeleteClick}>
-              {mobile ? "X" : "Delete"}
-            </DeleteButton>
           </ButtonWrapper>
         )}
       </LineWrapper>

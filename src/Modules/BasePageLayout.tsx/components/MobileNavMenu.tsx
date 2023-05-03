@@ -11,7 +11,7 @@ interface WrapperProps {
 const Wrapper = styled.div<WrapperProps>`
   position: fixed;
   display: flex;
-  top: 4rem;
+  top: 3.7rem;
   width: 100%;
   height: ${(props) => (props.open ? "calc(100% - 4rem)" : "0%")};
   transition: height 0.5s ease-in-out;
@@ -137,6 +137,10 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
         {
           name: "SP Oversikt",
           path: `/${orgId}/all-users-punishments`,
+        },
+        {
+          name: "Galleri",
+          path: `/${orgId}/gallery`,
         },
       ];
       setRoutes([...routes]);
