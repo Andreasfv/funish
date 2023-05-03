@@ -102,6 +102,7 @@ export const authOptions: NextAuthOptions = {
         if (!email || !password) {
           return null;
         }
+
         const fetchResult = await fetch(`${env.KSG_NETT_API_URL}`, {
           method: "POST",
           headers: {
@@ -126,7 +127,9 @@ export const authOptions: NextAuthOptions = {
         }
         if (!user) return null;
         if (!token) return null;
+
         let gangName: string | undefined = "";
+
         const fetchKSGUser = await fetch(`${env.KSG_NETT_API_URL}`, {
           method: "POST",
           headers: {

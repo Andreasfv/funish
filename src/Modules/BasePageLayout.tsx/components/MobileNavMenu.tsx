@@ -142,10 +142,15 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
           name: "Galleri",
           path: `/${orgId}/gallery`,
         },
+        {
+          name: "Multi SP verktøy",
+          path: `/${orgId}/multi-sp-tool`,
+        },
       ];
+
       setRoutes([...routes]);
 
-      const adminRoutes = [
+      const adminBottomRoutes = [
         {
           name: "Gjeng Instillinger",
           path: `/${orgId}/manage-organization`,
@@ -153,7 +158,7 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
       ];
 
       setBottomRoutes([
-        ...(isAdmin ? adminRoutes : []),
+        ...(isAdmin ? adminBottomRoutes : []),
         {
           name: "Min Bruker",
           path: `/${orgId}/my-account`,

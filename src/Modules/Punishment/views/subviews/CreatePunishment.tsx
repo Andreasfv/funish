@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CldImage, CldUploadWidget } from "next-cloudinary";
+import { CldImage } from "next-cloudinary";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -10,6 +10,7 @@ import { z } from "zod";
 import FormInput from "../../../../components/input/formInput";
 import FormNumberInput from "../../../../components/input/formNumberInput";
 import FormSelect from "../../../../components/input/formSelect";
+import UploadImageButton from "../../../../components/input/uploadImageButton";
 import Spinner from "../../../../components/Spiner";
 import { api } from "../../../../utils/api";
 import FormField from "../../components/FormField";
@@ -45,10 +46,6 @@ const ErrorSpan = styled.span`
   font-size: 0.8rem;
   margin-top: 0.2rem;
   margin-left: 0.2rem;
-`;
-const UploadButton = styled.button`
-  border-radius: 0.5rem;
-  border: 1px solid ${(props) => props.theme.colors.lightDarkGreen};
 `;
 
 const formSchema = z.object({
@@ -263,41 +260,15 @@ const CreatePunishment: React.FC = () => {
             <FormField>
               <label>{fileLabel}</label>
               {organization?.data?.organization?.name ? (
-                <CldUploadWidget
-                  uploadPreset="sp_proof"
-                  options={{
-                    maxFiles: 1,
-                    folder: `${organization?.data?.organization?.name ?? ""}`,
-                  }}
-                  onUpload={(idk: {
-                    event: string;
-                    info: {
-                      path: string;
-                      original_filename: string;
-                      public_id: string;
-                    } | null;
-                  }) => {
-                    if (idk?.event == "success" && idk.info?.path) {
-                      handleChange("proof")(idk.info?.public_id);
-                      setFileName(idk.info?.original_filename ?? "");
-                    }
-                  }}
-                >
-                  {({ open }) => {
-                    function handleOnClick(
-                      e: React.MouseEvent<HTMLButtonElement>
-                    ) {
-                      e.preventDefault();
-                      open();
-                    }
-                    return (
-                      <UploadButton onClick={handleOnClick}>
-                        Last opp
-                      </UploadButton>
-                    );
-                  }}
-                </CldUploadWidget>
-              ) : (
+                <UploadImageButton
+                  uploadFolder={`${
+                    organization?.data.organization?.name ?? ""
+                  }/sp_proof`}
+                  handleChange={handleChange("proof")}
+                  setFileName={setFileName}
+                /> )
+                :
+                (
                 <Spinner />
               )}
             </FormField>
