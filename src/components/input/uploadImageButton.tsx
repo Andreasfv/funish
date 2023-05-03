@@ -28,10 +28,11 @@ const UploadImageButton: React.FC<UploadImageButtonProps> = ({
         info: {
           path: string;
           original_filename: string;
+          public_id: string;
         } | null;
       }) => {
         if (idk?.event == "success" && idk.info?.path) {
-          handleChange(idk.info?.path);
+          handleChange(idk.info?.public_id);
           setFileName(idk.info?.original_filename ?? "");
         }
       }}

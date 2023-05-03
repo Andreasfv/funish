@@ -1,11 +1,9 @@
-import styled from "styled-components";
-import { BasePageLayout } from "../../BasePageLayout.tsx/view/BasePageLayout";
-import cloudinary from "cloudinary";
-import { api } from "../../../utils/api";
 import { useRouter } from "next/router";
-import { CldImage } from "next-cloudinary";
-import GalleryImage from "../components/GalleryImage";
+import styled from "styled-components";
+import { api } from "../../../utils/api";
 import { useImageModal } from "../../../utils/hooks/useImageModal";
+import { BasePageLayout } from "../../BasePageLayout.tsx/view/BasePageLayout";
+import GalleryImage from "../components/GalleryImage";
 
 const Wrapper = styled.div`
   display: flex;

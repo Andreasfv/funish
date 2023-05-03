@@ -76,11 +76,12 @@ export const getGalleryImagesController = async ({
     }[];
   };
   const imagesResponse = await cloudinary.v2.search
-    .expression(`resource_type:image AND folder="${organization.name}"`)
+    .expression(
+      `resource_type:image AND folder="${organization.name}/sp_proof"`
+    )
     .max_results(50)
     .execute()
     .then((res: CloudinaryResponse) => {
-      console.log(res);
       return res;
     })
     .catch((err) => console.log(err));
