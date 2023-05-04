@@ -13,7 +13,7 @@ const Wrapper = styled.div`
   gap: 1rem;
   @media ${(props) => props.theme.media.largeMobile} {
     padding-bottom: 0.5rem;
-    border-bottom: 2px solid ${(props) => props.theme.colors.green};
+    border-bottom: 2px solid black;
   }
 `;
 
