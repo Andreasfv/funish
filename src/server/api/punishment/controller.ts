@@ -6,6 +6,7 @@ import type {
   CreatePunishmentInput,
   UpdatePunishmentInput,
   FilterPunishmentInput,
+  CreateManyPunishmentsInput,
 } from "./schema";
 
 export const createPunishmentController = async ({
@@ -49,6 +50,81 @@ export const createPunishmentController = async ({
       }
     }
     throw error;
+  }
+};
+
+export const createManyPunishmentsController = async ({
+  ctx,
+  input,
+}: {
+  ctx: Context;
+  input: CreateManyPunishmentsInput;
+}) => {
+  const { prisma, session } = ctx;
+
+  if (!session) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+    });
+  }
+  //Verification? Already verified on the front-end buuut...
+  if (input.length === 0) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "No punishments were provided",
+    });
+  }
+  input.forEach((sp, index) => {
+    if (!sp.createdById) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: `No createdById provided for punishment ${index}`,
+      });
+    }
+    if (!sp.userId) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: `No userId provided for punishment ${index}`,
+      });
+    }
+    if (!sp.typeId) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: `No typeId provided for punishment ${index}`,
+      });
+    }
+    if (!sp.reasonId) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: `No reasonId provided for punishment ${index}`,
+      });
+    }
+    if (!sp.organizationId) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: `No organizationId provided for punishment ${index}`,
+      });
+    }
+    if (Number.isNaN(sp.quantity)) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: `Quantity value for punishment ${index} has to be a number`,
+      });
+    }
+  });
+
+  const ok = await prisma.punishment.createMany({
+    data: input,
+  });
+
+  if (ok) {
+    return {
+      status: "success",
+    };
+  } else {
+    return {
+      status: "error",
+    };
   }
 };
 
@@ -196,7 +272,7 @@ export const getPunishmentsController = async ({
       }
     }
 
-    const {cursor} = input;
+    const { cursor } = input;
 
     const punishment = await prisma.punishment.findMany({
       where: {
@@ -215,13 +291,13 @@ export const getPunishmentsController = async ({
         createdBy: input.including?.createdBy ?? false,
       },
       orderBy,
-      cursor: input.cursor ? {id: input.cursor} : undefined,
+      cursor: input.cursor ? { id: input.cursor } : undefined,
       take: input.limit,
     });
-    let nextCursor: typeof cursor | undefined = undefined
-    if (punishment.length >= (input?.limit ? input.limit :  0)) {
-      const nextItem = punishment.pop()
-      nextCursor = nextItem?.id
+    let nextCursor: typeof cursor | undefined = undefined;
+    if (punishment.length >= (input?.limit ? input.limit : 0)) {
+      const nextItem = punishment.pop();
+      nextCursor = nextItem?.id;
     }
     return {
       status: "success",

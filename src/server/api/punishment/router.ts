@@ -1,6 +1,7 @@
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 import {
+  createManyPunishmentsController,
   createPunishmentController,
   deletePunishmentController,
   getPunishmentController,
@@ -9,6 +10,7 @@ import {
 } from "./controller";
 
 import {
+  createManyPunishmentsSchema,
   createPunishmentSchema,
   deletePunishmentSchema,
   filterPunishmentSchema,
@@ -28,6 +30,12 @@ export const punishmentRouter = createTRPCRouter({
   createPunishment: protectedProcedure
     .input(createPunishmentSchema)
     .mutation(({ ctx, input }) => createPunishmentController({ ctx, input })),
+
+  createManyPunishments: protectedProcedure
+    .input(createManyPunishmentsSchema)
+    .mutation(({ ctx, input }) =>
+      createManyPunishmentsController({ ctx, input })
+    ),
 
   updatePunishment: protectedProcedure
     .input(updatePunishmentSchema)

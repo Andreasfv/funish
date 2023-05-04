@@ -100,7 +100,9 @@ export const authOptions: NextAuthOptions = {
         const { email, password } = credentials;
 
         if (!email || !password) {
-          return null;
+          throw new TRPCError({
+            code: "UNAUTHORIZED",
+          });
         }
 
         const fetchResult = await fetch(`${env.KSG_NETT_API_URL}`, {
@@ -129,7 +131,6 @@ export const authOptions: NextAuthOptions = {
         if (!token) return null;
 
         let gangName: string | undefined = "";
-
         const fetchKSGUser = await fetch(`${env.KSG_NETT_API_URL}`, {
           method: "POST",
           headers: {
@@ -171,6 +172,12 @@ export const authOptions: NextAuthOptions = {
           const ksgUserResponse: KSGUserResponse = await fetchKSGUser.json();
           gangName = ksgUserResponse.data.user.ksgStatus.split(":")[0];
 
+          let siteUser = await prisma.user.findUnique({
+            where: {
+              email: credentials.email,
+            },
+          });
+
           // Check if ksg gang has an organization in db
           const organization = await prisma.organization.findUnique({
             where: {
@@ -179,7 +186,7 @@ export const authOptions: NextAuthOptions = {
           });
           // if ksg gang does not have an organization create the organization
           let createdGang: Organization | null = null;
-          if (!organization && gangName) {
+          if (!organization && gangName && !siteUser?.organizationId) {
             createdGang = await prisma.organization.create({
               data: {
                 name: gangName,
@@ -187,11 +194,29 @@ export const authOptions: NextAuthOptions = {
             });
           }
 
-          let siteUser = await prisma.user.findUnique({
+          const userConnectedToKSG = await prisma.user.findFirst({
             where: {
               id: user.id,
             },
           });
+
+          if (!userConnectedToKSG && siteUser) {
+            // Just a simple initiator if the users id is not equal to the siteUser id.
+            // This mean the account was manually created for a older user or someone who isn't
+            // registered for the gang on KSG-nett.
+            siteUser = await prisma.user.update({
+              where: {
+                email: credentials.email,
+              },
+              data: {
+                id: user.id,
+                name: ksgUserResponse.data.user.fullName,
+                email: credentials.email,
+                image: ksgUserResponse.data.user.profileImage ?? "",
+                role: createdGang ? "ORG_ADMIN" : "ORG_MEMBER",
+              },
+            });
+          }
 
           if (!createdGang && !organization)
             throw new Error("Error creating organization");

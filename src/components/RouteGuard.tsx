@@ -11,6 +11,7 @@ const RouteGuard = (props: {
   const { children } = props;
   const router = useRouter();
   const session = useSession();
+  // I should checkout this, authorized is never used.
   const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {

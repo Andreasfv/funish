@@ -1,14 +1,21 @@
 import { createContext, useCallback, useState } from "react";
+import { toast } from "react-toastify";
+import { useAdmin } from "../../utils/admin/useAdmin";
 import type { RouterOutputs } from "../../utils/api";
+import { api } from "../../utils/api";
 import type { CreateMultipleSPUserEntry, SPInput } from "./types";
 type handleSPChangeInput<T> = {
   userId: string;
   spIndex: number;
-  field: keyof T;
+  field: keyof T & string;
 };
 interface MultiSPContextType {
   users: RouterOutputs["users"]["getOrganizationUsers"]["data"]["users"];
   usersSP: CreateMultipleSPUserEntry[];
+  organizationId: string;
+  errors: string[];
+  handleResetSP: () => void;
+  handleSetOrganization: (orgId: string) => void;
   handleSetUsers: (users: MultiSPContextType["users"]) => void;
   handleAddUser: (userId: string) => void;
   handleRemoveUser: (userId: string) => () => void;
@@ -16,29 +23,55 @@ interface MultiSPContextType {
   handleRemoveSP: (userId: string, spIndex: number) => () => void;
   handleSPChange: (
     input: handleSPChangeInput<SPInput>
-  ) => (value: string | number | boolean) => void;
+  ) => (value: SPInput[keyof SPInput]) => void;
+  submitState: string;
+  handleSubmit: () => void;
 }
 
 export const MultiSPContext = createContext<MultiSPContextType>({
   users: [],
   usersSP: [],
+  organizationId: "",
+  errors: [],
+  handleResetSP: () => null,
+  handleSetOrganization: () => null,
   handleSetUsers: () => null,
   handleAddUser: () => null,
   handleRemoveUser: () => () => null,
   handleAddSP: () => () => null,
   handleRemoveSP: () => () => null,
   handleSPChange: () => () => null,
+  submitState: "",
+  handleSubmit: () => null,
 });
 
 const MultiSPProvider = ({ children }: { children: JSX.Element }) => {
   const [users, setUsers] = useState<MultiSPContextType["users"]>([]);
   const [usersSP, setUsersSP] = useState<MultiSPContextType["usersSP"]>([]);
+  const [organizationId, setOrganizationId] = useState("");
+  const [errors, setErrors] = useState<string[]>([]);
+  const [submitState, setSubmitState] = useState("");
+
+  const isAdmin = useAdmin();
+
+  const handleSetOrganization = useCallback((orgId: string) => {
+    setOrganizationId(orgId);
+  }, []);
+
+  const { mutate: createMultipleSP } =
+    api.punishments.createManyPunishments.useMutation();
+
   const handleSetUsers = useCallback(
     (users: MultiSPContextType["users"]) => {
       setUsers(users);
     },
     [setUsers]
   );
+
+  const handleResetSP = useCallback(() => {
+    setUsersSP([]);
+  }, []);
+
   const handleAddUser = useCallback(
     (userId: string) => {
       const userName = users?.find((user) => user.id === userId)?.name ?? "";
@@ -74,13 +107,14 @@ const MultiSPProvider = ({ children }: { children: JSX.Element }) => {
         const newSP = {
           userId: userId,
           createdById: fromId,
-          organizationId: "",
+          organizationId: organizationId,
           typeId: "",
           reasonId: "",
           quantity: 1,
           description: "",
-          proof: "",
-          approved: false,
+          proof:
+            "https://cdn3.whatculture.com/images/2020/06/53eb42242abaacfa-600x338.jpg",
+          approved: isAdmin,
         };
 
         userSPEntry.sp.push(newSP);
@@ -88,7 +122,7 @@ const MultiSPProvider = ({ children }: { children: JSX.Element }) => {
         setUsersSP([...usersSP]);
       };
     },
-    [usersSP]
+    [isAdmin, organizationId, usersSP]
   );
 
   const handleRemoveSP = useCallback(
@@ -108,8 +142,10 @@ const MultiSPProvider = ({ children }: { children: JSX.Element }) => {
   );
 
   const handleSPChange = useCallback(
-    (input: handleSPChangeInput<SPInput>) => {
-      return (value: string | number | boolean) => {
+    (
+      input: handleSPChangeInput<SPInput>
+    ): ((value: SPInput[keyof SPInput]) => void) => {
+      return (value: SPInput[keyof SPInput]) => {
         const { userId, spIndex, field } = input;
         const userSPEntry = usersSP.find((user) => user.id === userId);
 
@@ -119,6 +155,8 @@ const MultiSPProvider = ({ children }: { children: JSX.Element }) => {
 
         if (!spToUpdate) return;
 
+        // I couldn't figure out the typescript for this. I probably have to remake the function to do so.
+        field;
         if (
           field === "userId" ||
           field === "createdById" ||
@@ -145,17 +183,91 @@ const MultiSPProvider = ({ children }: { children: JSX.Element }) => {
     [usersSP]
   );
 
+  const verifySubmitSPArray = useCallback(() => {
+    const errors: string[] = [];
+    if (usersSP.length === 0) {
+      errors.push("Du må legge til minst en bruker med minst en SP");
+    }
+    for (const user of usersSP) {
+      if (user.sp.length === 0) {
+        errors.push(`${user.name} har ingen SP lagt til`);
+        continue;
+      }
+      for (const sp of user.sp) {
+        if (sp.reasonId === "") {
+          errors.push(
+            ` Du må velge begrunnelse for en eller flere SP for ${user.name} `
+          );
+          break;
+        }
+
+        if (sp.typeId === "") {
+          errors.push(
+            ` Du må velge type for en eller flere SP for ${user.name} `
+          );
+          break;
+        }
+
+        if (
+          sp.createdById === "" ||
+          sp.userId === "" ||
+          sp.organizationId == ""
+        ) {
+          errors.push(
+            `Noe som ikke er din feil gikk galt, send melding til Andreas hvis det vedvarer, gjerne med screenshot :))`
+          );
+        }
+      }
+    }
+    setErrors(errors);
+    return errors.length === 0 ? true : false;
+  }, [usersSP]);
+
+  const handleSubmit = useCallback(() => {
+    setErrors([]);
+    setSubmitState("verifying");
+    const spToSubmit = usersSP.map((user) => user.sp).flat();
+    const verified = verifySubmitSPArray();
+    if (!verified) {
+      setSubmitState("");
+      return;
+    }
+    setSubmitState("sending!");
+    createMultipleSP(spToSubmit, {
+      onSuccess: () => {
+        toast("SP lagret!", {
+          type: "success",
+        });
+        setSubmitState("");
+      },
+      onError: (error) => {
+        setErrors([...errors, error.message]);
+        setSubmitState("");
+        toast("Noe gikk galt", {
+          type: "error",
+        });
+      },
+    });
+    console.log(spToSubmit);
+  }, [createMultipleSP, errors, usersSP, verifySubmitSPArray]);
+
   return (
     <MultiSPContext.Provider
       value={{
         users,
         usersSP,
+        organizationId,
+        errors,
+        handleSetOrganization,
         handleSetUsers,
+        handleResetSP,
         handleAddUser,
         handleRemoveUser,
         handleAddSP,
         handleRemoveSP,
         handleSPChange,
+        submitState,
+        handleSubmit,
       }}
     >
       {children}
