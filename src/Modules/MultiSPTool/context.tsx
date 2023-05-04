@@ -239,6 +239,7 @@ const MultiSPProvider = ({ children }: { children: JSX.Element }) => {
           type: "success",
         });
         setSubmitState("");
+        handleResetSP();
       },
       onError: (error) => {
         setErrors([...errors, error.message]);
@@ -248,7 +249,7 @@ const MultiSPProvider = ({ children }: { children: JSX.Element }) => {
         });
       },
     });
-  }, [createMultipleSP, errors, usersSP, verifySubmitSPArray]);
+  }, [createMultipleSP, errors, handleResetSP, usersSP, verifySubmitSPArray]);
 
   return (
     <MultiSPContext.Provider
