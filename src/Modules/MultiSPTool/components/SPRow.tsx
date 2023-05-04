@@ -79,7 +79,6 @@ const SPRow: React.FC<SPRowProps> = ({
   spTypeOptions,
   spReasonOptions,
 }) => {
-  console.log(entry);
   const [typeText, setTypeText] = useState("");
   const [reasonText, setReasonText] = useState("");
   const { handleSPChange, usersSP, handleRemoveSP } =
@@ -89,7 +88,6 @@ const SPRow: React.FC<SPRowProps> = ({
     return <div>waiting for stupidity to fix itself</div>;
   }
   function handleTextChangeType(text: string) {
-    console.log(text);
     setTypeText(text);
   }
 
@@ -98,7 +96,6 @@ const SPRow: React.FC<SPRowProps> = ({
   }
 
   function handleNumberInput(event: React.ChangeEvent<HTMLInputElement>) {
-    console.log(usersSP[userIndex]);
     handleSPChange({
       userId: entry.id,
       spIndex: index,

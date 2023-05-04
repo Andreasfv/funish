@@ -248,7 +248,6 @@ const MultiSPProvider = ({ children }: { children: JSX.Element }) => {
         });
       },
     });
-    console.log(spToSubmit);
   }, [createMultipleSP, errors, usersSP, verifySubmitSPArray]);
 
   return (
