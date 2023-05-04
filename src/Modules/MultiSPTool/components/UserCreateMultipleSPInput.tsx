@@ -14,7 +14,9 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 1rem;
+  -webkit-box-shadow: -20px 18px 0px -18px ${(props) => props.theme.colors.green};
+  box-shadow: -20px 18px 0px -18px ${(props) => props.theme.colors.green};
+  gap: 0.5rem;
 `;
 
 const SPContent = styled.div`
@@ -111,7 +113,7 @@ const UserCreateMultipleSPInput: React.FC<UserSPLineProps> = ({ entry }) => {
         <MinusIcon onClick={handleRemoveUser(entry.id)} />
       </LabelWrapper>
       <SPContent>
-        <SPUserRowContainer>{spRows}</SPUserRowContainer>
+        {spRows.length > 0 && <SPUserRowContainer>{spRows}</SPUserRowContainer>}
         <SPContentRow>
           <AddSPButton onClick={handleAddSP(entry.id, session.data?.user.id)} />
         </SPContentRow>

@@ -12,6 +12,8 @@ export const createPunishmentSchema = z.object({
   approved: z.boolean().default(false),
 });
 
+export const createManyPunishmentsSchema = z.array(createPunishmentSchema);
+
 export const updatePunishmentSchema = z.object({
   id: z.string(),
   userId: z.string().optional(),
@@ -47,12 +49,14 @@ export const filterPunishmentSchema = z.object({
       "-approved",
     ])
     .optional(),
-  including: z.object({
-    type: z.boolean().default(false),
-    reason: z.boolean().default(false),
-    user: z.boolean().default(false),
-    createdBy: z.boolean().default(false),
-  }).optional()
+  including: z
+    .object({
+      type: z.boolean().default(false),
+      reason: z.boolean().default(false),
+      user: z.boolean().default(false),
+      createdBy: z.boolean().default(false),
+    })
+    .optional(),
 });
 
 export const deletePunishmentSchema = z.string();
@@ -60,6 +64,9 @@ export const deletePunishmentSchema = z.string();
 export const getPunishmentSchema = z.string();
 
 export type CreatePunishmentInput = z.infer<typeof createPunishmentSchema>;
+export type CreateManyPunishmentsInput = z.infer<
+  typeof createManyPunishmentsSchema
+>;
 export type UpdatePunishmentInput = z.infer<typeof updatePunishmentSchema>;
 export type FilterPunishmentInput = z.infer<typeof filterPunishmentSchema>;
 export type SortPunishmentsInput = z.infer<

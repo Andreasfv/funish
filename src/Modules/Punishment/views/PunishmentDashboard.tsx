@@ -146,7 +146,7 @@ const PunishmentDashboard: React.FC = () => {
       </SwitchItem>
     ))
   ) : (
-    <SwitchItem selected={false}>Punish</SwitchItem>
+    <SwitchItem selected={false}>Meld</SwitchItem>
   );
 
   function execRefetch() {

@@ -39,7 +39,6 @@ const Home: NextPage = () => {
       .then((res) => {
         if (res?.status == 401 || res?.ok == false) {
           handleErrorMessage(res?.error ?? "");
-          console.log(res);
           setLoginFailed(true);
         }
         setLoading(false);

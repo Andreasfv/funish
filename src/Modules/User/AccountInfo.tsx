@@ -72,6 +72,7 @@ const FormWrapper = styled.div`
   background-color: white;
   border-radius: 0.5rem;
   border: 1px solid ${(props) => props.theme.colors.lightDarkGreen};
+  overflow-y: auto;
 `;
 const FormFieldRow = styled.div`
   display: flex;
@@ -95,12 +96,6 @@ const UserFormSchema = z.object({
   name: z.string(),
   email: z.string().email(),
 });
-
-const InviteLink = styled.div`
-  :hover {
-    cursor: pointer;
-  }
-`;
 
 type UserFormType = z.infer<typeof UserFormSchema>;
 

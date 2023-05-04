@@ -128,7 +128,6 @@ const FormSelect: React.FC<FormSelectProps> = ({
     setFilteredOptions(options);
     setIsOpen(false);
     handleChange(value.value);
-    console.log(handleTextChange);
     if (handleTextChange) {
       handleTextChange(value.label);
     }

@@ -54,7 +54,7 @@ export const getGalleryImagesController = async ({
   ctx: Context;
   input: GetGalleryImagesInput;
 }) => {
-  const { session, prisma } = ctx;
+  const { prisma } = ctx;
   const { organizationId } = input;
 
   const organization = await prisma.organization.findUnique({
@@ -68,7 +68,6 @@ export const getGalleryImagesController = async ({
       code: "INTERNAL_SERVER_ERROR",
     });
   }
-  console.log(organization.name);
   type CloudinaryResponse = {
     total_count: number;
     resources: {
@@ -84,7 +83,7 @@ export const getGalleryImagesController = async ({
     .then((res: CloudinaryResponse) => {
       return res;
     })
-    .catch((err) => console.log(err));
+    .catch((err) => console.warn(err));
   if (
     !imagesResponse ||
     !imagesResponse.resources ||
