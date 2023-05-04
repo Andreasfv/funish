@@ -1,5 +1,6 @@
 import { CldImage } from "next-cloudinary";
-import { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
+import { useCallback, useState } from "react";
 import { useModal } from "react-hooks-use-modal";
 import styled from "styled-components";
 
@@ -8,7 +9,13 @@ const Wrapper = styled.div`
   width: 100%;
 `;
 
-const Image = styled(CldImage)`
+const CloudinaryImage = styled(CldImage)`
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+`;
+
+const StandardImage = styled(Image)`
   width: 100%;
   height: 100%;
   object-fit: contain;
@@ -59,10 +66,15 @@ export const useImageModal = (): ImageModalReturn => {
   }, [close]);
 
   const ImageModal: React.FC = () => {
+    const isCloudinary = !(image.includes("https") || image.includes("http"));
     return (
       <Modal>
         <Wrapper>
-          <Image src={image} alt="" width={1200} height={1200} />
+          {isCloudinary ? (
+            <CloudinaryImage src={image} alt="" width={1200} height={1200} />
+          ) : (
+            <StandardImage src={image} alt="" width={1200} height={1200} />
+          )}
           <Close
             onClick={() => {
               close();

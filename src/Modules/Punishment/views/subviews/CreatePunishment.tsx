@@ -266,9 +266,8 @@ const CreatePunishment: React.FC = () => {
                   }/sp_proof`}
                   handleChange={handleChange("proof")}
                   setFileName={setFileName}
-                /> )
-                :
-                (
+                />
+              ) : (
                 <Spinner />
               )}
             </FormField>

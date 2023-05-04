@@ -1,9 +1,10 @@
 import { useRouter } from "next/router";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import styled from "styled-components";
 import { api } from "../../../utils/api";
 import { BasePageLayout } from "../../BasePageLayout.tsx/view/BasePageLayout";
 import AddUserLine from "../components/AddUserLine";
+import { SubmitButton } from "../components/SubmitButton";
 import UserCreateMultipleSPInput from "../components/UserCreateMultipleSPInput";
 import { MultiSPContext } from "../context";
 
@@ -11,19 +12,28 @@ const Wrapper = styled.div`
   display: flex;
   width: 100%;
   justify-content: center;
-  height: 100%;
-  padding-bottom: 4rem;
   overflow-y: auto;
-  margin-bottom: 4rem;
 `;
 
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
   padding: 1rem;
   gap: 1rem;
+  overflow-y: auto;
+  padding-bottom: 2rem;
+`;
+
+const LabelWrapper = styled.div`
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0.5rem 0 0;
+  border-bottom: 2px solid ${(props) => props.theme.colors.darkGreen};
+`;
+const ErrorWrapper = styled.div`
+  color: ${(props) => props.theme.colors.error};
 `;
 
 const MultiSPTool: React.FC = () => {
@@ -41,8 +51,19 @@ const MultiSPTool: React.FC = () => {
     }
   );
 
-  const { usersSP, handleAddUser, handleSetUsers } = useContext(MultiSPContext);
+  const {
+    usersSP,
+    errors,
+    handleAddUser,
+    handleSetUsers,
+    handleSetOrganization,
+    handleSubmit,
+  } = useContext(MultiSPContext);
   //function add new SP to SPEntry
+
+  useEffect(() => {
+    handleSetOrganization(organizationId as string);
+  }, [handleSetOrganization, organizationId]);
 
   const unselectedUsers = users?.data?.users?.filter((user) => {
     return !usersSP?.find((spUser) => spUser.id === user.id);
@@ -51,11 +72,8 @@ const MultiSPTool: React.FC = () => {
     <BasePageLayout>
       <Wrapper>
         <ContentWrapper>
-          Å sende in SP her fungerer ikke, men er et eksempel på hvordan å sende
-          in sp etter feks møte kan gjøres. Tanken er hovedsakelig at dette er
-          noe SP ansvarlig/OHM har tilgang på {":)"}
+          <LabelWrapper>Opprett flere SP</LabelWrapper>
           {usersSP.map((spUser) => {
-            console.log(spUser);
             return (
               <UserCreateMultipleSPInput
                 key={spUser.id}
@@ -65,6 +83,14 @@ const MultiSPTool: React.FC = () => {
             );
           })}
           <AddUserLine users={unselectedUsers} handleSelect={handleAddUser} />
+          {errors.length > 0 && (
+            <ErrorWrapper>
+              {errors.map((error, index) => (
+                <div key={index}>{error}</div>
+              ))}
+            </ErrorWrapper>
+          )}
+          <SubmitButton text={"Send inn SP"} onClick={handleSubmit} />
         </ContentWrapper>
       </Wrapper>
     </BasePageLayout>
