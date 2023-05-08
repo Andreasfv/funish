@@ -24,6 +24,8 @@ export const serverSchema = z.object({
   CLOUDINARY_API_KEY: z.string(),
   CLOUDINARY_API_SECRET: z.string(),
 
+  OPEN_AI_API_KEY: z.string(),
+
   JWT_SECRET: z.string(),
   KSG_NETT_API_URL: z.string().url(),
   DISCORD_CLIENT_ID: z.string(),
@@ -53,6 +55,8 @@ export const serverEnv = {
   AUTH0_CLIENT_SECRET: process.env.AUTH0_CLIENT_SECRET,
   AUTH0_DOMAIN: process.env.AUTH0_DOMAIN,
   JWT_SECRET: process.env.JWT_SECRET,
+
+  OPEN_AI_API_KEY: process.env.OPEN_AI_API_KEY,
 
   CLOUDINARY_URL: process.env.CLOUDINARY_URL,
   CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
