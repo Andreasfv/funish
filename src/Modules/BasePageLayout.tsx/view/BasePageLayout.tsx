@@ -25,6 +25,11 @@ interface BasePageLayoutProps {
   children: React.ReactNode;
 }
 
+/**
+ * This component is currently imported to each page view, it should be implemented somewhere higher in the hierarchy such that it wraps all
+ * pages requiring authentication to be viewed.
+ * TODO: Implement this component higher in the hierarchy such that it wraps all pages when authenticated.
+ */
 export const BasePageLayout: React.FC<BasePageLayoutProps> = ({ children }) => {
   const [open, setOpen] = useState(false);
   const mobile = useMediaQuery(theme.media.largeMobile);

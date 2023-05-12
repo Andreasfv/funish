@@ -63,6 +63,9 @@ const MultiSPTool: React.FC = () => {
 
   useEffect(() => {
     handleSetOrganization(organizationId as string);
+
+    // Should probably add fetch of reason options and type options for the UserCreateMultipleSPInput component into the context here.
+    // Such that it doesnt refetch for each member added. This is an oversight and will save queries over time.
   }, [handleSetOrganization, organizationId]);
 
   const unselectedUsers = users?.data?.users?.filter((user) => {

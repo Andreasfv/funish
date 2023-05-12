@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import FormSelect from "../../../components/input/formSelect";
 import { MultiSPContext } from "../context";
@@ -83,7 +83,23 @@ const SPRow: React.FC<SPRowProps> = ({
   const [reasonText, setReasonText] = useState("");
   const { handleSPChange, usersSP, handleRemoveSP } =
     useContext(MultiSPContext);
+
   const userIndex = usersSP.findIndex((user) => user.id === entry.id);
+  const setOnMount = useCallback(() => {
+    if (spTypeOptions[0]) {
+      setTypeText(spTypeOptions[0].label);
+      handleSPChange({
+        userId: entry.id,
+        spIndex: index,
+        field: "typeId",
+      })(spTypeOptions[0].value);
+    }
+  }, [entry.id, handleSPChange, index, spTypeOptions]);
+
+  useEffect(() => {
+    setOnMount();
+  }, []);
+
   if (!entry) {
     return <div>waiting for stupidity to fix itself</div>;
   }

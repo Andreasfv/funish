@@ -85,6 +85,10 @@ const OrganizationPaper: React.FC<OrganizationPaperProps> = ({
                 src={spKingData?.spKing?.image ?? ""}
                 width={50}
                 height={50}
+                onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                }}
                 onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                   e.stopPropagation();
 
