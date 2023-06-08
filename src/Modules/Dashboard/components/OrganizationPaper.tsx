@@ -99,7 +99,7 @@ const OrganizationPaper: React.FC<OrganizationPaperProps> = ({
             <span>Kongen av SP: </span>
             <>
               <ProfileIcon
-                src={spKingData?.spKing?.image ?? ""}
+                src={spKingData?.spKing?.image ?? "asd"}
                 width={50}
                 height={50}
                 onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => {
