@@ -7,6 +7,8 @@ import OrganizationPaper from "./components/OrganizationPaper";
 import PunishmentCard from "./components/PunishmentCard";
 import { api } from "../../utils/api";
 import Link from "next/link";
+import { useMemo } from "react";
+import { LatestSPRow } from "./components/LatestSPRow";
 
 const Wrapper = styled.div`
   display: flex;
@@ -20,7 +22,6 @@ const InnerWrapper = styled.div`
   display: flex;
   width: 100%;
   gap: 1rem;
-  padding-bottom: 1rem;
   @media ${(props) => props.theme.media.largeMobile} {
     flex-direction: column;
   }
@@ -47,6 +48,13 @@ const CardsWrapper = styled.div`
   border: 1px solid ${(props) => props.theme.colors.lightDarkGreen};
   background-color: ${(props) => props.theme.colors.lightGreen};
   box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.2);
+`;
+
+const SPWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
 `;
 
 const BigButton = styled(Link)`
@@ -79,6 +87,28 @@ const Dashboard: NextPage = () => {
       },
     });
 
+  const { data: latestSPData } = api.punishments.getPunishments.useQuery({
+    limit: 10,
+    organizationId: organizationId as string,
+    sort: "createdAt",
+    redeemed: false,
+    including: {
+      user: true,
+      createdBy: true,
+      type: true,
+      reason: true,
+    },
+  });
+
+  const latestSPRows = useMemo(
+    () =>
+      latestSPData?.punishment.map((punishment, key) => (
+        <LatestSPRow key={key} punishment={punishment} />
+      )),
+    [latestSPData]
+  );
+  console.log(latestSPRows);
+  console.log(latestSPData);
   if (userDataLoading) {
     return <BasePageLayout>Loading...</BasePageLayout>;
   }
@@ -132,6 +162,12 @@ const Dashboard: NextPage = () => {
                 )}
               </ContentWrapper>
             </InnerWrapper>
+            <CardsWrapper>
+              <SPWrapper>
+                <p>Siste SP</p>
+                {latestSPRows}
+              </SPWrapper>
+            </CardsWrapper>
           </ContentWrapper>
         </Wrapper>
       </BasePageLayout>
