@@ -50,11 +50,14 @@ export const LatestSPRow: React.FC<LatestSPRowProps> = ({ punishment }) => {
       `/${organizationId as string}/user-punishments/${punishment.user.id}`
     );
   }
-
+  const giverNames = punishment?.createdBy?.name?.split(" ");
+  const receiverNames = punishment?.user?.name?.split(" ");
   return (
     <Wrapper onClick={handleClick}>
-      {punishment.user.image && (
+      {punishment.user.image ? (
         <ProfileIcon src={punishment.user.image} width={32} height={32} />
+      ) : (
+        punishment.user.name?.split(" ")[0]
       )}
       <div>{punishment.reason.name}</div>
       <div>🍺x{punishment.quantity}</div>
@@ -66,12 +69,14 @@ export const LatestSPRow: React.FC<LatestSPRowProps> = ({ punishment }) => {
       )}:${`${punishment.createdAt.getMinutes()}`.padStart(2, "0")}`}</div>
       <div>
         👮‍♀️📝
-        {punishment.createdBy.image && (
+        {punishment.createdBy.image ? (
           <ProfileIcon
             src={punishment.createdBy.image}
             width={32}
             height={32}
           />
+        ) : (
+          punishment.createdBy.name
         )}
       </div>
     </Wrapper>
