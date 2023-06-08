@@ -46,16 +46,13 @@ const FormSelectWrapper = styled.div`
     min-width: 200px;
   }
 `;
-
+// This component is probably redundant, but Ill keep it as I have some ideas for it.
 const FormMobileRow = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   flex-wrap: wrap;
   flex: 1;
   gap: 1rem;
-  @media ${(props) => props.theme.media.largeMobile} {
-    flex-direction: row;
-  }
 `;
 const SPRowInput = styled.input`
   flex: 1;
