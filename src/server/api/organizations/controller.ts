@@ -403,10 +403,46 @@ export const getOrganizationUsersWithPunishmentDataController = async ({
             },
           },
           orderBy: orderBy(),
-          // ...{ orderBy: input.orderBy ? input.orderBy : { name: "asc" } },
         },
       },
     });
+
+    // Prisma can't sort by conditions on aggregated values, so we have to do it manually
+    if (
+      input.orderBy === "spCount" ||
+      input.orderBy === "-spCount" ||
+      input.orderBy === "unapprovedSPCount" ||
+      input.orderBy === "-unapprovedSPCount"
+    ) {
+      const approved =
+        input.orderBy == "spCount" || input.orderBy == "-spCount"
+          ? true
+          : false;
+      const direction =
+        input.orderBy == "spCount" || input.orderBy == "unapprovedSPCount"
+          ? 1
+          : -1;
+      organization?.users.sort((a, b) => {
+        const spQuantityA = a.receivedPunishments.reduce(
+          (acc, curr) => (curr.approved === approved ? acc + curr.quantity : 0),
+          0
+        );
+
+        const spQuantityB = b.receivedPunishments.reduce(
+          (acc, curr) => (curr.approved === approved ? acc + curr.quantity : 0),
+          0
+        );
+
+        if (spQuantityA > spQuantityB) {
+          return -1 * direction;
+        }
+        if (spQuantityA < spQuantityB) {
+          return 1 * direction;
+        }
+        return 0;
+      });
+    }
+
     return {
       status: "success",
       organization,
@@ -435,7 +471,7 @@ export const populateOrganizationWithUsersFromKSGNettController = async ({
       query: KSG_NETT_INTERNAL_GANGS_QUERY,
     }),
   });
-
+  console.log(internalGangsResponse);
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const internalGangsData: KSGInternalGangsResponse =
     await internalGangsResponse.json();
@@ -596,43 +632,53 @@ export const getOrganizationSPKingController = async ({
     });
   }
 
-  const organization = await prisma.organization.findUnique({
+  const king = await prisma.punishment.groupBy({
+    by: ["userId"],
     where: {
-      id: input,
+      organizationId: input,
+      reedemed: false,
+      approved: true,
     },
-    select: {
-      users: {
-        select: {
-          id: true,
-          name: true,
-          image: true,
-          receivedPunishments: true,
-          _count: {
-            select: {
-              receivedPunishments: true,
-            },
-          },
-        },
-        orderBy: {
-          receivedPunishments: {
-            _count: "desc",
-          },
-        },
+
+    _sum: {
+      quantity: true,
+    },
+    orderBy: {
+      _sum: {
+        quantity: "desc",
       },
     },
   });
 
-  if (organization?.users.length === 0) {
+  if (king.length === 0) {
     return {
       status: "success",
       spKing: null,
     };
   }
 
-  const spKing = organization?.users[0];
+  const spKing = king[0];
+
+  if (!spKing) {
+    return {
+      status: "success",
+      spKing: null,
+    };
+  }
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: spKing.userId,
+    },
+    select: {
+      id: true,
+      name: true,
+      image: true,
+    },
+  });
 
   return {
     status: "success",
-    spKing,
+    spKing: user,
   };
 };

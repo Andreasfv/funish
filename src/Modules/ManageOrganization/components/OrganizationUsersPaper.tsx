@@ -93,10 +93,10 @@ const UserPaper: React.FC<UserPaperProps> = ({ user, refetch }) => {
     });
 
   function transferAdminStatus() {
-    const confirmation = confirm(
+    const confirmed = confirm(
       "Er du sikker på at du vil overføre admin rettighetene dine til denne brukeren?"
     );
-    if (confirmation) {
+    if (confirmed) {
       transferAdmin({
         organizationId: organizationId as string,
         fromUserId: session.data?.user.id ?? "",

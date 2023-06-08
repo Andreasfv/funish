@@ -59,6 +59,7 @@ interface AddUserLineProps {
 
 const AddUserLine: React.FC<AddUserLineProps> = ({ users, handleSelect }) => {
   const [open, setOpen] = useState(false);
+  const [nameText, setNameText] = useState("");
   const wrapperRef = useRef<HTMLDivElement>(null);
   function handleToggleOpen() {
     setOpen(!open);
@@ -75,6 +76,10 @@ const AddUserLine: React.FC<AddUserLineProps> = ({ users, handleSelect }) => {
   function handleUserSelection(userId: string) {
     handleSelect(userId);
     setOpen(false);
+  }
+
+  function handleUserTextChange(text: string) {
+    setNameText(text);
   }
 
   // Handle close on click outside useEffect
@@ -107,9 +112,9 @@ const AddUserLine: React.FC<AddUserLineProps> = ({ users, handleSelect }) => {
         <SelectWrapper>
           <FormSelect
             options={selectOptions}
-            text={""}
+            text={nameText}
             handleChange={handleUserSelection}
-            handleTextChange={() => null}
+            handleTextChange={handleUserTextChange}
             focusOnSpawn={true}
           />
         </SelectWrapper>

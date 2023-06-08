@@ -266,10 +266,16 @@ export const redeemPunishmentsController = async ({
           where: {
             userId: input.userId,
             approved: true,
+            reedemed: false,
           },
           include: {
             createdBy: true,
             reason: true,
+            user: {
+              select: {
+                name: true,
+              },
+            },
           },
           orderBy: {
             createdAt: "desc",
@@ -286,6 +292,8 @@ export const redeemPunishmentsController = async ({
         (acc, cur) => acc + (cur?.approved ?? false ? cur?.quantity ?? 0 : 0),
         0
       );
+
+      console.log(punishmentQuantity);
 
       if (punishmentQuantity < input.quantity) {
         throw new TRPCError({

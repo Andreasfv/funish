@@ -10,18 +10,27 @@ interface ProfileIconProps {
   height?: number;
   alt?: string;
   onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onMouseEnter?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 const ProfileIconCld = styled(CldImage)`
   width: ${(props) => props.width}px;
   height: ${(props) => props.height}px;
   border-radius: 50%;
+
+  &:hover {
+    outline: 2px solid ${(props) => props.theme.colors.darkGreen};
+  }
 `;
 
 const ProfileIconNonCld = styled(Image)`
   width: ${(props) => props.width}px;
   height: ${(props) => props.height}px;
   border-radius: 50%;
+
+  &:hover {
+    outline: 2px solid ${(props) => props.theme.colors.darkGreen};
+  }
 `;
 export const ProfileIcon: React.FC<ProfileIconProps> = ({
   src,
