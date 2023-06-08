@@ -59,7 +59,6 @@ const MultiSPTool: React.FC = () => {
     handleSetOrganization,
     handleSubmit,
   } = useContext(MultiSPContext);
-  //function add new SP to SPEntry
 
   useEffect(() => {
     handleSetOrganization(organizationId as string);

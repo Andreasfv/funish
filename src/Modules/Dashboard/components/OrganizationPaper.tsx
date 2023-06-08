@@ -63,6 +63,7 @@ const OrganizationPaper: React.FC<OrganizationPaperProps> = ({
 
   const { data: spKingData, isLoading: spKingDataLoading } =
     api.organizations.getOrganizationSPKing.useQuery(organizationId);
+
   return (
     <Card onClick={onClick}>
       <p>{organization?.data?.organization?.name}</p>

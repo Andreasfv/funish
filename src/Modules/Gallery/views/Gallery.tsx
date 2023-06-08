@@ -22,11 +22,12 @@ const ContentWrapper = styled.div`
   gap: 1rem;
 `;
 
+// Super basic and more a proof of concept than anything else.
 const Gallery: React.FC = () => {
   const router = useRouter();
   const { organizationId } = router.query;
   const [ImageModal, openImage] = useImageModal();
-  const { data, isLoading } = api.image.getGalleryImages.useQuery(
+  const { data } = api.image.getGalleryImages.useQuery(
     {
       organizationId: organizationId as string,
     },

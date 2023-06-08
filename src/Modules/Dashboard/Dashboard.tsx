@@ -49,24 +49,6 @@ const CardsWrapper = styled.div`
   box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.2);
 `;
 
-const LogWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  width: 200px;
-  gap: 1rem;
-  justify-content: flex-start;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  border: 1px solid ${(props) => props.theme.colors.lightDarkGreen};
-  background-color: ${(props) => props.theme.colors.lightGreen};
-  box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.2);
-
-  @media ${(props) => props.theme.media.largeMobile} {
-    width: 100%;
-  }
-`;
-
 const BigButton = styled(Link)`
   display: flex;
   height: 3rem;
@@ -149,7 +131,6 @@ const Dashboard: NextPage = () => {
                   </CardsWrapper>
                 )}
               </ContentWrapper>
-              {/* <LogWrapper>###Event Log###</LogWrapper> */}
             </InnerWrapper>
           </ContentWrapper>
         </Wrapper>

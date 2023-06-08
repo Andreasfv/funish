@@ -12,8 +12,9 @@ const Wrapper = styled.div`
   flex: 1;
   gap: 1rem;
   @media ${(props) => props.theme.media.largeMobile} {
-    padding-bottom: 0.5rem;
+    padding: 0.5rem;
     border-bottom: 2px solid black;
+    border-left: 2px solid black;
   }
 `;
 
@@ -38,7 +39,6 @@ const FormSelectWrapper = styled.div`
 
   .-form-select--wrapper {
     max-width: 450px !important;
-    min-width: 200px;
   }
 
   .-form-select--base-input {
@@ -47,6 +47,16 @@ const FormSelectWrapper = styled.div`
   }
 `;
 
+const FormMobileRow = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  flex: 1;
+  gap: 1rem;
+  @media ${(props) => props.theme.media.largeMobile} {
+    flex-direction: row;
+  }
+`;
 const SPRowInput = styled.input`
   flex: 1;
   padding: 0.5rem;
@@ -98,11 +108,13 @@ const SPRow: React.FC<SPRowProps> = ({
 
   useEffect(() => {
     setOnMount();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!entry) {
     return <div>waiting for stupidity to fix itself</div>;
   }
+
   function handleTextChangeType(text: string) {
     setTypeText(text);
   }
@@ -111,6 +123,15 @@ const SPRow: React.FC<SPRowProps> = ({
     setReasonText(text);
   }
 
+  function handleTextChangeDescription(
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
+    handleSPChange({
+      userId: entry.id,
+      spIndex: index,
+      field: "description",
+    })(event.target.value);
+  }
   function handleNumberInput(event: React.ChangeEvent<HTMLInputElement>) {
     handleSPChange({
       userId: entry.id,
@@ -120,32 +141,39 @@ const SPRow: React.FC<SPRowProps> = ({
   }
   return (
     <Wrapper>
-      <FormSelectWrapper>
-        <FormSelect
-          options={spTypeOptions}
-          placeholder="SP Type"
-          handleChange={handleSPChange({
-            userId: entry.id,
-            spIndex: index,
-            field: "typeId",
-          })}
-          text={typeText}
-          handleTextChange={handleTextChangeType}
-        />
-      </FormSelectWrapper>
-      <FormSelectWrapper>
-        <FormSelect
-          options={spReasonOptions}
-          placeholder="SP Grunn"
-          handleChange={handleSPChange({
-            userId: entry.id,
-            spIndex: index,
-            field: "reasonId",
-          })}
-          handleTextChange={handleTextChangeReason}
-          text={reasonText}
-        />
-      </FormSelectWrapper>
+      <FormMobileRow>
+        <FormSelectWrapper>
+          <FormSelect
+            options={spTypeOptions}
+            placeholder="SP Type"
+            handleChange={handleSPChange({
+              userId: entry.id,
+              spIndex: index,
+              field: "typeId",
+            })}
+            text={typeText}
+            handleTextChange={handleTextChangeType}
+          />
+        </FormSelectWrapper>
+        <FormSelectWrapper>
+          <FormSelect
+            options={spReasonOptions}
+            placeholder="SP Grunn"
+            handleChange={handleSPChange({
+              userId: entry.id,
+              spIndex: index,
+              field: "reasonId",
+            })}
+            handleTextChange={handleTextChangeReason}
+            text={reasonText}
+          />
+        </FormSelectWrapper>
+      </FormMobileRow>
+      <SPRowInput
+        onChange={handleTextChangeDescription}
+        value={usersSP[userIndex]?.sp[index]?.description ?? ""}
+        placeholder="Beksrivelse"
+      />
       <InputAndRemoveWrapper>
         <SPRowInput
           type="number"
