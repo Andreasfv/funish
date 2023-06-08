@@ -32,7 +32,7 @@ interface SPRowProps {
   }[];
 }
 
-const FormSelectWrapper = styled.div`
+const FormElementWrapper = styled.div`
   flex: 1;
   max-width: 360px;
   width: 100%;
@@ -60,6 +60,7 @@ const SPRowInput = styled.input`
   border-radius: 4px;
   border: 2px solid ${(props) => props.theme.colors.green};
   height: 2.5rem;
+
   :focus {
     outline: ${(props) => props.theme.colors.darkGreen};
     border-color: ${(props) => props.theme.colors.darkGreen};
@@ -139,7 +140,7 @@ const SPRow: React.FC<SPRowProps> = ({
   return (
     <Wrapper>
       <FormMobileRow>
-        <FormSelectWrapper>
+        <FormElementWrapper>
           <FormSelect
             options={spTypeOptions}
             placeholder="SP Type"
@@ -151,8 +152,8 @@ const SPRow: React.FC<SPRowProps> = ({
             text={typeText}
             handleTextChange={handleTextChangeType}
           />
-        </FormSelectWrapper>
-        <FormSelectWrapper>
+        </FormElementWrapper>
+        <FormElementWrapper>
           <FormSelect
             options={spReasonOptions}
             placeholder="SP Grunn"
@@ -164,21 +165,21 @@ const SPRow: React.FC<SPRowProps> = ({
             handleTextChange={handleTextChangeReason}
             text={reasonText}
           />
-        </FormSelectWrapper>
-      </FormMobileRow>
-      <SPRowInput
-        onChange={handleTextChangeDescription}
-        value={usersSP[userIndex]?.sp[index]?.description ?? ""}
-        placeholder="Beksrivelse"
-      />
-      <InputAndRemoveWrapper>
+        </FormElementWrapper>
         <SPRowInput
-          type="number"
-          onChange={handleNumberInput}
-          value={usersSP[userIndex]?.sp[index]?.quantity ?? 0}
+          onChange={handleTextChangeDescription}
+          value={usersSP[userIndex]?.sp[index]?.description ?? ""}
+          placeholder="Beksrivelse"
         />
-        <RemoveIcon onClick={handleRemoveSP(entry.id, index)} />
-      </InputAndRemoveWrapper>
+        <InputAndRemoveWrapper>
+          <SPRowInput
+            type="number"
+            onChange={handleNumberInput}
+            value={usersSP[userIndex]?.sp[index]?.quantity ?? 0}
+          />
+          <RemoveIcon onClick={handleRemoveSP(entry.id, index)} />
+        </InputAndRemoveWrapper>
+      </FormMobileRow>
     </Wrapper>
   );
 };
