@@ -73,6 +73,7 @@ const OrganizationPaper: React.FC<OrganizationPaperProps> = ({
 
   const { data: spKingData, isLoading: spKingDataLoading } =
     api.organizations.getOrganizationSPKing.useQuery(organizationId);
+
   const SPCount =
     organization?.data?.organization?.punishments.reduce(
       (acc, punishment) =>
@@ -98,24 +99,29 @@ const OrganizationPaper: React.FC<OrganizationPaperProps> = ({
           <SPKingContent>
             <span>Kongen av SP: </span>
             <>
-              <ProfileIcon
-                src={spKingData?.spKing?.image ?? "asd"}
-                width={50}
-                height={50}
-                onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                }}
-                onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-                  e.stopPropagation();
+              {!!spKingData?.spKing?.image &&
+              spKingData?.spKing?.image !== "" ? (
+                <ProfileIcon
+                  src={spKingData?.spKing?.image ?? ""}
+                  width={50}
+                  height={50}
+                  onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                  }}
+                  onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                    e.stopPropagation();
 
-                  void router.push(
-                    `/${organizationId}/user-punishments/${
-                      spKingData?.spKing?.id ?? ""
-                    }`
-                  );
-                }}
-              />
+                    void router.push(
+                      `/${organizationId}/user-punishments/${
+                        spKingData?.spKing?.id ?? ""
+                      }`
+                    );
+                  }}
+                />
+              ) : (
+                "Ingen Konge - Tapere!"
+              )}
             </>
           </SPKingContent>
         )}

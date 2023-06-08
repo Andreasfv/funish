@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { PunishmentType } from "@prisma/client";
-import { useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import styled from "styled-components";
@@ -69,11 +69,20 @@ export const RedeemPunishmentsModal: React.FC<RedeemPunishmentsModalProps> = ({
     resolver: zodResolver(redeemFormSchema),
   });
 
-  function handleChange(formKey: keyof redeemFormType) {
-    return (value: redeemFormType[typeof formKey]) => {
-      setValue(formKey, value);
-    };
-  }
+  // function handleChange(formKey: keyof redeemFormType) {
+  //   return (value: redeemFormType[typeof formKey]) => {
+  //     setValue(formKey, value);
+  //   };
+  // }
+
+  const handleChange = useCallback(
+    (formKey: keyof redeemFormType) => {
+      return (value: redeemFormType[typeof formKey]) => {
+        setValue(formKey, value);
+      };
+    },
+    [setValue]
+  );
 
   const typeOptions: {
     value: string;
@@ -105,6 +114,13 @@ export const RedeemPunishmentsModal: React.FC<RedeemPunishmentsModalProps> = ({
       },
     });
 
+  useEffect(() => {
+    if (typeOptions && typeOptions[0]?.value) {
+      handleChange("type")(typeOptions[0].value);
+      handleChange("typeString")(typeOptions[0].label);
+    }
+  }, [handleChange, typeOptions]);
+
   const redeemPunisments = (data: redeemFormType) => {
     const input = {
       punishmentTypeId: data.type,
@@ -131,9 +147,9 @@ export const RedeemPunishmentsModal: React.FC<RedeemPunishmentsModalProps> = ({
   return (
     <ContentWrapper>
       <FormWrapper>
-        <RedemptionTitle>Redeem Punishments</RedemptionTitle>
+        <RedemptionTitle>Cæsh in SP</RedemptionTitle>
         <FormField>
-          <label>Punishment Type</label>
+          <label>SP Type?</label>
           <FormSelect
             text={watch("typeString") ?? ""}
             options={typeOptions}

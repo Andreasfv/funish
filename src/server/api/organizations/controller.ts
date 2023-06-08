@@ -636,6 +636,8 @@ export const getOrganizationSPKingController = async ({
     by: ["userId"],
     where: {
       organizationId: input,
+      reedemed: false,
+      approved: true,
     },
 
     _sum: {
