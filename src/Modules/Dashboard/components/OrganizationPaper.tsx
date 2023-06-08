@@ -44,6 +44,16 @@ const SPKingContent = styled.div`
     margin-left: auto;
   }
 `;
+
+const ContentRow = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const Title = styled.div`
+  font-size: 1.1rem;
+  font-weight: 500;
+`;
 interface OrganizationPaperProps {
   organizationId: string;
   onClick?: () => void;
@@ -63,18 +73,24 @@ const OrganizationPaper: React.FC<OrganizationPaperProps> = ({
 
   const { data: spKingData, isLoading: spKingDataLoading } =
     api.organizations.getOrganizationSPKing.useQuery(organizationId);
+  const SPCount =
+    organization?.data?.organization?.punishments.reduce(
+      (acc, punishment) =>
+        acc + (punishment.approved ? punishment.quantity : 0),
+      0
+    ) ?? 0;
 
   return (
     <Card onClick={onClick}>
-      <p>{organization?.data?.organization?.name}</p>
-      <p>{`Total SP: ${
-        organization?.data?.organization?.punishments.reduce(
-          (acc, punishment) =>
-            acc + (punishment.approved ? punishment.quantity : 0),
-          0
-        ) ?? ""
-      }`}</p>
-
+      <Title>
+        <p>{organization?.data?.organization?.name}</p>
+      </Title>
+      <ContentRow>
+        <p>{`Total SP: ${SPCount}`}</p>
+      </ContentRow>
+      <ContentRow>
+        <p>{`Liter øl: ${Math.round(SPCount * 0.33)}`}</p>
+      </ContentRow>
       <SPKingWrapper>
         {spKingDataLoading ? (
           <Spinner />

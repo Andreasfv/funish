@@ -73,7 +73,11 @@ const UserPunishmentsRow: React.FC<UserPunishmentsRowProps> = ({
     const disapproved = user.receivedPunishments.filter(
       (p) => !p.approved && p.user.id === user.id
     );
-    setApprovedCount(approved.length);
+
+    const approvedSPCount = approved.reduce((acc, curr) => {
+      return acc + curr.quantity;
+    }, 0);
+    setApprovedCount(approvedSPCount);
     setDisaprovedCount(disapproved.length);
   }, [user]);
 

@@ -403,10 +403,46 @@ export const getOrganizationUsersWithPunishmentDataController = async ({
             },
           },
           orderBy: orderBy(),
-          // ...{ orderBy: input.orderBy ? input.orderBy : { name: "asc" } },
         },
       },
     });
+
+    // Prisma can't sort by conditions on aggregated values, so we have to do it manually
+    if (
+      input.orderBy === "spCount" ||
+      input.orderBy === "-spCount" ||
+      input.orderBy === "unapprovedSPCount" ||
+      input.orderBy === "-unapprovedSPCount"
+    ) {
+      const approved =
+        input.orderBy == "spCount" || input.orderBy == "-spCount"
+          ? true
+          : false;
+      const direction =
+        input.orderBy == "spCount" || input.orderBy == "unapprovedSPCount"
+          ? 1
+          : -1;
+      organization?.users.sort((a, b) => {
+        const spQuantityA = a.receivedPunishments.reduce(
+          (acc, curr) => (curr.approved === approved ? acc + curr.quantity : 0),
+          0
+        );
+
+        const spQuantityB = b.receivedPunishments.reduce(
+          (acc, curr) => (curr.approved === approved ? acc + curr.quantity : 0),
+          0
+        );
+
+        if (spQuantityA > spQuantityB) {
+          return -1 * direction;
+        }
+        if (spQuantityA < spQuantityB) {
+          return 1 * direction;
+        }
+        return 0;
+      });
+    }
+
     return {
       status: "success",
       organization,
