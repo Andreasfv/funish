@@ -233,9 +233,9 @@ export const getPunishmentsController = async ({
     const orderBy: Prisma.Enumerable<Prisma.PunishmentOrderByWithRelationInput> =
       {
         createdAt:
-          input.sort === "type"
+          input.sort === "createdAt"
             ? "asc"
-            : input.sort === "-type"
+            : input.sort === "-createdAt"
             ? "desc"
             : undefined,
         quantity:

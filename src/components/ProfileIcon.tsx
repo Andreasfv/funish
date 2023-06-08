@@ -5,6 +5,7 @@ import Image from "next/image";
 export const ProfileIconWrapper = styled.div``;
 
 interface ProfileIconProps {
+  className?: string;
   src: string;
   width?: number;
   height?: number;
@@ -18,6 +19,14 @@ const ProfileIconCld = styled(CldImage)`
   height: ${(props) => props.height}px;
   border-radius: 50%;
 
+  ${(props) =>
+    props.onClick &&
+    `
+    &:hover {
+      cursor: pointer;
+    }
+  `}
+
   &:hover {
     outline: 2px solid ${(props) => props.theme.colors.darkGreen};
   }
@@ -27,6 +36,14 @@ const ProfileIconNonCld = styled(Image)`
   width: ${(props) => props.width}px;
   height: ${(props) => props.height}px;
   border-radius: 50%;
+
+  ${(props) =>
+    props.onClick &&
+    `
+    &:hover {
+      cursor: pointer;
+    }
+  `}
 
   &:hover {
     outline: 2px solid ${(props) => props.theme.colors.darkGreen};

@@ -39,6 +39,8 @@ export const filterPunishmentSchema = z.object({
   redeemed: z.boolean().optional(),
   sort: z
     .enum([
+      "createdAt",
+      "-createdAt",
       "type",
       "-type",
       "date",

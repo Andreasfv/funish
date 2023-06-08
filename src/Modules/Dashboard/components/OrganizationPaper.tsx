@@ -16,14 +16,16 @@ const Card = styled.div`
   border: ${(props) => props.theme.borders.cardBorder};
   box-shadow: ${(props) => props.theme.shadow.cardShadow};
 
-  ${(props) =>
-    props.onClick &&
-    `
+  &:not(:has(.profile-icon:hover)) {
+    ${(props) =>
+      props.onClick &&
+      `
       cursor: pointer;
       :hover {
         border: 1px solid ${props.theme.colors.blue}
       }
     `}
+  }
 `;
 
 const SPKingWrapper = styled.div`
@@ -102,6 +104,7 @@ const OrganizationPaper: React.FC<OrganizationPaperProps> = ({
               {!!spKingData?.spKing?.image &&
               spKingData?.spKing?.image !== "" ? (
                 <ProfileIcon
+                  className="profile-icon"
                   src={spKingData?.spKing?.image ?? ""}
                   width={50}
                   height={50}
@@ -111,6 +114,7 @@ const OrganizationPaper: React.FC<OrganizationPaperProps> = ({
                   }}
                   onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                     e.stopPropagation();
+                    e.preventDefault();
 
                     void router.push(
                       `/${organizationId}/user-punishments/${
