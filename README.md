@@ -1,4 +1,4 @@
-This website is for managing the "straffepils"/"punishment beer" of all the headwaitresses of the volunteers restaurant Lyche Bar & Restaurant department of the student voluntering organization Studentersamfundet in Trondheim. Idea was to make a easier way of creating and managing straffepils with some fun additions like a gallery of all the provided pictures etc. The idea was to create something you can just flick up your phone and send in an entry with a photo rather than having to send an email with an image attachment. 
+This website is for managing the "straffepils"/"punishment beer" of all the headwaitresses of the volunteers restaurant Lyche Bar & Restaurant department of the student voluntering organization Studentersamfundet in Trondheim. Idea was to make a easier way of creating and managing straffepils with some fun additions like a gallery of all the provided pictures etc. The idea was to create something you can just flick up your phone and send in an entry with a photo rather than having to send an email with an image attachment and manage an excell sheet.
 
 Created with the CreateT3App bootstrap.
 
