@@ -19,6 +19,7 @@ const ContentWrapper = styled.div`
   max-width: 500px;
   padding: 1rem;
   width: 100%;
+  overflow: scroll;
   border: 1px solid ${(props) => props.theme.colors.lightDarkGreen};
 `;
 

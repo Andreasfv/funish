@@ -5,7 +5,6 @@ const Card = styled.div`
   flex: 1;
   flex-direction: column;
   min-width: 200px;
-  width: 100%;
   height: 200px;
   background-color: white;
   border-radius: 0.7rem;
@@ -21,6 +20,10 @@ const Card = styled.div`
       }
 
     `}
+
+  @media ${(props) => props.theme.media.mobile} {
+    width: 100%;
+  }
 `;
 
 const NumberWrapper = styled.div`

@@ -20,6 +20,7 @@ const Wrapper = styled.div`
 
 const InnerWrapper = styled.div`
   display: flex;
+  flex-direction: column;
   width: 100%;
   gap: 1rem;
   @media ${(props) => props.theme.media.largeMobile} {
@@ -39,15 +40,26 @@ const CardsWrapper = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  width: 100%;
   gap: 1rem;
   flex-grow: 1;
-  justify-content: flex-start;
   padding: 1rem;
   border-radius: 0.5rem;
   border: 1px solid ${(props) => props.theme.colors.lightDarkGreen};
+  width: 100%;
   background-color: ${(props) => props.theme.colors.lightGreen};
   box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.2);
+
+  @media ${(props) => props.theme.media.largeMobile} {
+    flex-direction: row;
+  }
+`;
+
+const CardContent = styled.div`
+  min-width: 200px;
+
+  @media ${(props) => props.theme.media.largeMobile} {
+    width: 100%;
+  }
 `;
 
 const SPWrapper = styled.div`
@@ -107,59 +119,56 @@ const Dashboard: NextPage = () => {
       )),
     [latestSPData]
   );
-  console.log(latestSPRows);
-  console.log(latestSPData);
   if (userDataLoading) {
     return <BasePageLayout>Loading...</BasePageLayout>;
   }
 
   if (userData?.data?.user?.organization) {
     const { organization } = userData.data.user;
+    const punishmentCards =
+      userData.data?.user?.organizationId &&
+      userData?.data?.user?.organization?.punishmentTypes?.map(
+        (punishmentType, index) => (
+          <CardContent key={index}>
+            <PunishmentCard
+              onClick={() => {
+                void router.push(`/${organization.id}/my-punishments`);
+              }}
+              key={index}
+              punishmentType={punishmentType.name}
+              count={punishmentType.Punishments.reduce(
+                (acc, punishment) =>
+                  acc + (punishment.approved ? punishment.quantity : 0),
+                0
+              )}
+            />
+          </CardContent>
+        )
+      );
     return (
       <BasePageLayout>
         <Wrapper>
           <ContentWrapper>
             <InnerWrapper>
+              <BigButton href={`/${organization.id}/punishment/punish`}>
+                MELD SP!!
+              </BigButton>
               <ContentWrapper>
                 <CardsWrapper>
-                  <BigButton href={`/${organization.id}/punishment/punish`}>
-                    MELD SP!!
-                  </BigButton>
+                  {punishmentCards}
+                  {userData.data?.user?.organizationId && (
+                    <CardContent>
+                      <OrganizationPaper
+                        onClick={() => {
+                          void router.push(
+                            `/${organization.id}/all-users-punishments`
+                          );
+                        }}
+                        organizationId={(organizationId as string) ?? ""}
+                      />
+                    </CardContent>
+                  )}
                 </CardsWrapper>
-                <CardsWrapper>
-                  {userData.data?.user?.organizationId &&
-                    userData?.data?.user?.organization?.punishmentTypes?.map(
-                      (punishmentType, index) => (
-                        <PunishmentCard
-                          onClick={() => {
-                            void router.push(
-                              `/${organization.id}/my-punishments`
-                            );
-                          }}
-                          key={index}
-                          punishmentType={punishmentType.name}
-                          count={punishmentType.Punishments.reduce(
-                            (acc, punishment) =>
-                              acc +
-                              (punishment.approved ? punishment.quantity : 0),
-                            0
-                          )}
-                        />
-                      )
-                    )}
-                </CardsWrapper>
-                {userData.data?.user?.organizationId && (
-                  <CardsWrapper>
-                    <OrganizationPaper
-                      onClick={() => {
-                        void router.push(
-                          `/${organization.id}/all-users-punishments`
-                        );
-                      }}
-                      organizationId={(organizationId as string) ?? ""}
-                    />
-                  </CardsWrapper>
-                )}
               </ContentWrapper>
             </InnerWrapper>
             <CardsWrapper>
